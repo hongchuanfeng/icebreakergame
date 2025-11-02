@@ -23,6 +23,28 @@ app.use(express.urlencoded({ extended: true }));
 // 解析 Cookie
 app.use(cookieParser());
 
+// robots.txt 路由（必须在多语言中间件之前定义，用于搜索引擎爬虫）
+app.get('/robots.txt', (req, res) => {
+  const robotsFilePath = path.join(__dirname, 'robots.txt');
+  if (fs.existsSync(robotsFilePath)) {
+    res.type('text/plain');
+    res.sendFile(robotsFilePath);
+  } else {
+    res.status(404).send('Not Found');
+  }
+});
+
+// ads.txt 路由（必须在多语言中间件之前定义，用于广告联盟验证）
+app.get('/ads.txt', (req, res) => {
+  const adsFilePath = path.join(__dirname, 'ads.txt');
+  if (fs.existsSync(adsFilePath)) {
+    res.type('text/plain');
+    res.sendFile(adsFilePath);
+  } else {
+    res.status(404).send('Not Found');
+  }
+});
+
 // 语言切换路由（必须在多语言中间件之前定义）
 app.get('/set-locale/:locale', (req, res) => {
   const locale = req.params.locale;
@@ -670,4 +692,7 @@ app.listen(PORT, () => {
   console.log(`  - GET /api/categories - 获取所有分类`);
   console.log(`  - GET /api/search?q=关键词 - 搜索游戏`);
   console.log(`  - GET /crazy.json - 兼容接口`);
+  console.log(`📋 其他:`);
+  console.log(`  - GET /robots.txt - 搜索引擎爬虫规则文件`);
+  console.log(`  - GET /ads.txt - 广告联盟验证文件`);
 });
