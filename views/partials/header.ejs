@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<%= metaDescription || 'Ice Breaker Games - 免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩，随时随地享受游戏乐趣。' %>">
+    <meta name="keywords" content="<%= metaKeywords || 'ice breaker games, multiplayer games, online games, fun games, party games, HTML5 games, 免费游戏, 在线游戏' %>">
+    <meta name="robots" content="index, follow">
+    <title><%= pageTitle || 'Ice Breaker Games - 免费在线HTML5游戏平台' %></title>
+    <link rel="canonical" href="<%= canonicalUrl || 'https://www.icebreakgame.com/' %>">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    
+    <%- include('styles') %>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HT40C8VPYX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HT40C8VPYX');
+    </script>
+</head>
+<body>
+    <!-- 顶部搜索栏（带logo） -->
+    <div class="top-header">
+        <div class="header-content">
+            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/') : '/' %>" class="logo-section">
+                <span class="logo-icon">🎮</span>
+                <span>Ice Breaker Games</span>
+            </a>
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <form method="GET" action="<%= typeof localeUrl !== 'undefined' ? localeUrl('/search') : '/search' %>" style="display: inline-block; width: 100%;">
+                    <input type="text" name="q" id="searchInput" class="search-input" placeholder="<%= typeof t !== 'undefined' ? t('common.searchPlaceholder') : '搜索游戏...' %>" value="<%= searchQuery || '' %>">
+                </form>
+            </div>
+            <!-- 语言切换器 -->
+            <div class="language-switcher">
+                <% if (typeof supportedLocales !== 'undefined' && supportedLocales) { %>
+                    <% supportedLocales.forEach(loc => { %>
+                        <a href="/set-locale/<%= loc %>" 
+                           class="lang-btn <%= (typeof locale !== 'undefined' && locale === loc) ? 'active' : '' %>"
+                           data-locale="<%= loc %>">
+                            <%= loc === 'zh-CN' ? '中文' : loc.toUpperCase() %>
+                        </a>
+                    <% }); %>
+                <% } else { %>
+                    <!-- 默认显示中英文切换 -->
+                    <a href="/set-locale/en" class="lang-btn">EN</a>
+                    <a href="/set-locale/zh-CN" class="lang-btn">中文</a>
+                <% } %>
+            </div>
+        </div>
+    </div>

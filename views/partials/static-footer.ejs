@@ -1,0 +1,58 @@
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p><%= typeof t !== 'undefined' ? t('common.copyright') : '© 2024 Ice Breaker Games. 保留所有权利。' %></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        });
+
+        // 点击菜单项后关闭移动端菜单
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.getElementById('navMenu').classList.remove('active');
+            });
+        });
+
+        // 平滑滚动到锚点
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 处理团队图片加载错误（仅about页面）
+        document.querySelectorAll('.team-img').forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+                const avatar = this.parentElement;
+                const emojiMap = {
+                    'David': '👨‍💼',
+                    'Sarah': '👩‍💻',
+                    'William': '👨‍🔧',
+                    'Jennifer': '👩‍💼',
+                    'Kevin': '👨‍💻',
+                    'Jessica': '👩‍🎨'
+                };
+                const name = this.alt;
+                const emoji = emojiMap[name] || '👤';
+                avatar.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 3rem;">${emoji}</div>`;
+            });
+        });
+    </script>
+</body>
+</html>
+

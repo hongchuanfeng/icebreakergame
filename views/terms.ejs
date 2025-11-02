@@ -1,0 +1,136 @@
+<%- include('partials/static-header', {
+    pageTitle: typeof t !== 'undefined' ? t('terms.title') : '服务条款 - Ice Breaker Games',
+    metaDescription: typeof t !== 'undefined' ? t('terms.subtitle') : '服务条款 - Ice Breaker Games，使用本网站即表示您已阅读、理解并同意遵守本条款全部内容',
+    metaKeywords: 'ice breaker games, 服务条款, 使用条款, 法律协议, 用户协议',
+    canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/terms') : 'https://www.icebreakgame.com/terms',
+    currentPage: 'terms'
+}) %>
+
+<main>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title"><%= typeof t !== 'undefined' ? t('terms.title').replace(' - Ice Breaker Games', '') : '服务条款' %></h1>
+            <p class="page-subtitle"><%= typeof t !== 'undefined' ? t('terms.subtitle') : '使用本网站即表示您已阅读、理解并同意遵守本条款全部内容' %></p>
+        </div>
+
+        <div class="effective-date">
+            <%= typeof t !== 'undefined' ? t('terms.effectiveDate') : '生效日期：2024年12月21日' %>
+        </div>
+
+        <div class="agreement-notice">
+            <h3>📋 <%= typeof t !== 'undefined' ? t('terms.importantNotice') : '重要提示' %></h3>
+            <p><%= typeof t !== 'undefined' ? t('terms.importantNoticeDesc') : '本服务条款（以下简称"条款"）是您（用户）与Ice Breaker Games（以下简称"我们"）之间就使用本网站及相关服务所达成的法律协议。使用本网站即表示您已阅读、理解并同意遵守本条款全部内容。' %></p>
+        </div>
+
+        <div class="toc">
+            <h3>📋 <%= typeof t !== 'undefined' ? t('terms.tableOfContents') : '目录' %></h3>
+            <ul>
+                <li><a href="#section1"><%= typeof t !== 'undefined' ? t('terms.toc.section1') : '1. 网站使用权限' %></a></li>
+                <li><a href="#section2"><%= typeof t !== 'undefined' ? t('terms.toc.section2') : '2. 用户行为规范' %></a></li>
+                <li><a href="#section3"><%= typeof t !== 'undefined' ? t('terms.toc.section3') : '3. 知识产权声明' %></a></li>
+                <li><a href="#section4"><%= typeof t !== 'undefined' ? t('terms.toc.section4') : '4. 免责声明' %></a></li>
+                <li><a href="#section5"><%= typeof t !== 'undefined' ? t('terms.toc.section5') : '5. 隐私保护' %></a></li>
+                <li><a href="#section6"><%= typeof t !== 'undefined' ? t('terms.toc.section6') : '6. 条款的修改与终止' %></a></li>
+                <li><a href="#section7"><%= typeof t !== 'undefined' ? t('terms.toc.section7') : '7. 法律适用与争议解决' %></a></li>
+                <li><a href="#section8"><%= typeof t !== 'undefined' ? t('terms.toc.section8') : '8. 联系方式' %></a></li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <div id="section1" class="section-title"><%= typeof t !== 'undefined' ? t('terms.section1.title') : '1. 网站使用权限' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('terms.section1.desc') : '您承诺仅出于合法、非商业或个人合理用途使用本网站，不得利用网站从事任何违反法律法规、损害我们或第三方权益的行为。' %></p>
+                
+                <div class="warning-box">
+                    <h4>⚠️ <%= typeof t !== 'undefined' ? t('terms.section1.prohibitedTitle') : '禁止行为' %></h4>
+                    <ul>
+                        <li><%= typeof t !== 'undefined' ? t('terms.section1.li1') : '禁止未经授权访问、篡改网站数据' %></li>
+                        <li><%= typeof t !== 'undefined' ? t('terms.section1.li2') : '禁止传播恶意软件（如病毒、木马）' %></li>
+                        <li><%= typeof t !== 'undefined' ? t('terms.section1.li3') : '禁止通过自动化工具（如爬虫）大量抓取网站内容（经书面许可除外）' %></li>
+                        <li><%= typeof t !== 'undefined' ? t('terms.section1.li4') : '禁止利用网站进行任何违法活动' %></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="section2" class="section-title"><%= typeof t !== 'undefined' ? t('terms.section2.title') : '2. 用户行为规范' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('terms.section2.intro') : '您在使用网站互动功能（如评论、留言）时，不得发布包含以下内容的信息：' %></p>
+                <ul>
+                    <li><%= typeof t !== 'undefined' ? t('terms.section2.li1') : '违法违规、诽谤辱骂、色情暴力内容' %></li>
+                    <li><%= typeof t !== 'undefined' ? t('terms.section2.li2') : '盗版侵权、虚假误导信息' %></li>
+                    <li><%= typeof t !== 'undefined' ? t('terms.section2.li3') : '侵犯他人隐私、知识产权的内容' %></li>
+                    <li><%= typeof t !== 'undefined' ? t('terms.section2.li4') : '任何违反法律法规或社会公德的内容' %></li>
+                </ul>
+                
+                <div class="highlight-box highlight-box-border">
+                    <h4>📝 <%= typeof t !== 'undefined' ? t('terms.section2.violationTitle') : '违规处理' %></h4>
+                    <p><%= typeof t !== 'undefined' ? t('terms.section2.violationDesc') : '如您违反上述规范，我们有权不经通知删除相关内容、限制您的使用权限，甚至终止您对网站的访问资格，由此产生的损失由您自行承担。' %></p>
+                </div>
+            </div>
+
+            <div id="section3" class="section-title"><%= typeof t !== 'undefined' ? t('terms.section3.title') : '3. 知识产权声明' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('terms.section3.desc') : '本网站所有内容（包括但不限于文字、图片、LOGO、代码、设计）的知识产权均归我们或相关权利人所有，受《中华人民共和国著作权法》及国际知识产权条约保护。' %></p>
+                
+                <div class="warning-box">
+                    <h4>🚫 <%= typeof t !== 'undefined' ? t('terms.section3.restrictionTitle') : '使用限制' %></h4>
+                    <p><%= typeof t !== 'undefined' ? t('terms.section3.restrictionDesc') : '未经我们书面许可，您不得擅自复制、传播、修改、商用网站任何内容，否则需承担相应的法律责任。' %></p>
+                </div>
+            </div>
+
+            <div id="section4" class="section-title"><%= typeof t !== 'undefined' ? t('terms.section4.title') : '4. 免责声明' %></div>
+            <div class="section-content">
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('terms.section4.accuracyTitle') : '内容准确性' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('terms.section4.accuracyDesc') : '我们尽力确保网站内容的准确性和时效性，但不对内容的绝对正确性、完整性或适用性作出承诺；如因内容错误导致您产生损失，我们不承担赔偿责任（故意或重大过失除外）。' %></p>
+                
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('terms.section4.thirdPartyTitle') : '第三方链接' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('terms.section4.thirdPartyDesc') : '网站可能包含第三方链接，此类链接仅为方便用户提供，我们不对第三方网站的内容、服务及安全性负责，访问第三方网站的风险由您自行承担。' %></p>
+                
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('terms.section4.forceMajeureTitle') : '不可抗力' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('terms.section4.forceMajeureDesc') : '因不可抗力（如自然灾害、网络故障、政策调整）或非我们可控的技术问题导致网站服务中断，我们不承担违约责任，但会尽力协助恢复服务。' %></p>
+            </div>
+
+            <div id="section5" class="section-title"><%= typeof t !== 'undefined' ? t('terms.section5.title') : '5. 隐私保护' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('terms.section5.desc') : '我们将按照《Ice Breaker Games隐私政策》处理您在使用网站时提供的个人信息（如邮箱、浏览记录），请您仔细阅读该政策以了解信息收集、使用及保护规则。' %></p>
+                
+                <div class="highlight-box highlight-box-border">
+                    <h4>🔒 <%= typeof t !== 'undefined' ? t('terms.section5.commitmentTitle') : '隐私承诺' %></h4>
+                    <p><%= typeof t !== 'undefined' ? t('terms.section5.commitmentDesc') : '我们承诺保护您的个人隐私，不会向第三方泄露您的个人信息，除非获得您的明确同意或法律法规要求。' %></p>
+                </div>
+            </div>
+
+            <div id="section6" class="section-title"><%= typeof t !== 'undefined' ? t('terms.section6.title') : '6. 条款的修改与终止' %></div>
+            <div class="section-content">
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('terms.section6.modifyTitle') : '条款修改' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('terms.section6.modifyDesc') : '我们有权根据法律法规变化或业务调整，随时修改本条款，修改后的内容将在网站显著位置公示，公示后继续使用网站即视为您接受修改。' %></p>
+                
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('terms.section6.terminationTitle') : '服务终止' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('terms.section6.terminationDesc') : '如您严重违反本条款，或法律法规要求，我们有权随时终止您对网站的使用权限，且无需承担赔偿责任。' %></p>
+            </div>
+
+            <div id="section7" class="section-title"><%= typeof t !== 'undefined' ? t('terms.section7.title') : '7. 法律适用与争议解决' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('terms.section7.desc') : '本条款受《中华人民共和国法律》管辖，如您与我们就本条款产生争议，应首先通过友好协商解决；协商不成的，任何一方均有权向深圳市龙华区人民法院提起诉讼。' %></p>
+            </div>
+
+            <div id="section8" class="section-title"><%= typeof t !== 'undefined' ? t('terms.section8.title') : '8. 联系方式' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('terms.section8.desc') : '如您对本条款有疑问，请通过以下方式联系我们：' %></p>
+            </div>
+
+            <div class="contact-info">
+                <h3>📞 <%= typeof t !== 'undefined' ? t('terms.section8.contactUs') : '联系我们' %></h3>
+                <p><%= typeof t !== 'undefined' ? t('terms.section8.officialEmail') : '官方邮箱：' %><a href="mailto:hcf@foxmail.com">hcf@foxmail.com</a></p>
+                <p><%= typeof t !== 'undefined' ? t('terms.section8.operationAddress') : '运营地址：' %><%= typeof t !== 'undefined' ? t('terms.section8.addressDetail') : '深圳市龙华区龙华大道130号' %></p>
+            </div>
+
+            <div class="highlight-box highlight-box-border">
+                <h4>✅ <%= typeof t !== 'undefined' ? t('terms.confirmation.title') : '条款确认' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('terms.confirmation.desc') : '通过使用本网站，您确认已阅读、理解并同意遵守本服务条款的所有内容。如果您不同意本条款的任何部分，请停止使用本网站。' %></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/static-footer') %>

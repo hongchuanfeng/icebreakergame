@@ -1,0 +1,73 @@
+<%- include('partials/header', { 
+    pageTitle: typeof t !== 'undefined' ? (searchQuery ? t('search.title', { query: searchQuery }) : t('search.title', { query: '' })) : (searchQuery ? `搜索 "${searchQuery}" - Ice Breaker Games` : '搜索游戏 - Ice Breaker Games'),
+    metaDescription: typeof t !== 'undefined' ? (searchQuery ? t('search.description', { query: searchQuery }) : t('search.description', { query: '' })) : (searchQuery ? `搜索"${searchQuery}"相关的游戏 - Ice Breaker Games` : '搜索你喜欢的游戏 - Ice Breaker Games'),
+    metaKeywords: searchQuery + ', ice breaker games, search games',
+    canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/search?q=' + encodeURIComponent(searchQuery || '')) : ('https://www.icebreakgame.com/search?q=' + encodeURIComponent(searchQuery || '')),
+    searchQuery: searchQuery || ''
+}) %>
+
+<!-- 主内容区 -->
+<div class="main-content">
+    <!-- 左侧导航栏 -->
+    <nav class="sidebar">
+        <ul class="nav-menu">
+            <% categories.forEach(category => { %>
+                <li class="nav-item">
+                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/#category-' + category.replace(/\s+/g, '-')) : '/#category-' + category.replace(/\s+/g, '-') %>" class="nav-link">
+                        <span class="nav-icon"><%= getCategoryIcon(category) %></span>
+                        <span><%= category %></span>
+                    </a>
+                </li>
+            <% }); %>
+        </ul>
+    </nav>
+
+    <!-- 右侧内容区 -->
+    <div class="content-area">
+        <% if (searchResults.length > 0) { %>
+            <% 
+                // 按分类分组
+                const groupedResults = {};
+                searchResults.forEach(game => {
+                    const category = game.category || (typeof t !== 'undefined' ? t('search.uncategorized') : '未分类');
+                    if (!groupedResults[category]) {
+                        groupedResults[category] = [];
+                    }
+                    groupedResults[category].push(game);
+                });
+            %>
+            <% Object.keys(groupedResults).forEach(category => { %>
+                <div class="category-section">
+                    <div class="category-header">
+                        <h2 class="category-title"><%= typeof t !== 'undefined' ? t('search.searchFor', { query: searchQuery }) : ('搜索 "' + searchQuery + '"') %> - <%= category %></h2>
+                    </div>
+                    <div class="games-grid">
+                        <% groupedResults[category].forEach(game => { %>
+                            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/game?name=' + encodeURIComponent(game.name) + '&link=' + encodeURIComponent(game.link || '') + '&href=' + encodeURIComponent(game.href || '') + '&category=' + encodeURIComponent(game.originalCategory || category)) : '/game?name=' + encodeURIComponent(game.name) + '&link=' + encodeURIComponent(game.link || '') + '&href=' + encodeURIComponent(game.href || '') + '&category=' + encodeURIComponent(game.originalCategory || category) %>" 
+                               class="game-card">
+                                <% if (game.icon) { %>
+                                    <img src="<%= game.icon %>" alt="<%= game.name %>" class="game-card-image" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;game-card-image&quot;>🎮</div><div class=&quot;game-card-info&quot;><div class=&quot;game-card-name&quot;><%- game.name %></div></div>'">
+                                <% } else { %>
+                                    <div class="game-card-image">🎮</div>
+                                <% } %>
+                                <div class="game-card-info">
+                                    <div class="game-card-name"><%- game.name %></div>
+                                </div>
+                            </a>
+                        <% }); %>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="category-section">
+                <div style="text-align: center; color: rgba(255, 255, 255, 0.7); padding: 3rem;">
+                    <h2 style="margin-bottom: 1rem;"><%= typeof t !== 'undefined' ? t('search.noResults') : '未找到相关游戏' %></h2>
+                    <p><%= typeof t !== 'undefined' ? t('search.tryOtherKeywords') : '请尝试其他搜索关键词，或' %><a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/') : '/' %>" style="color: rgba(102, 126, 234, 0.8); text-decoration: underline;"><%= typeof t !== 'undefined' ? t('common.backToHome') : '返回首页' %></a></p>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
+

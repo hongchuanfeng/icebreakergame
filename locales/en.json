@@ -1,0 +1,410 @@
+{
+  "common": {
+    "siteName": "Ice Breaker Games",
+    "searchPlaceholder": "Search games...",
+    "allGames": "All Games",
+    "home": "Home",
+    "about": "About Us",
+    "contact": "Contact",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "backToHome": "Back to Home",
+    "backToCategory": "Back to Category",
+    "viewAll": "View All",
+    "more": "More",
+    "copyright": "© 2024 Ice Breaker Games. All rights reserved.",
+    "version": "Version 1.0.0"
+  },
+  "categories": {
+    "Top picks for you": "Top picks for you",
+    "Featured games": "Featured games",
+    "Play on Comet": "Play on Comet",
+    "Games to Play with Friends": "Games to Play with Friends",
+    "Thinky Games": "Thinky Games",
+    "New games": "New games",
+    "Climb the Ranks": "Climb the Ranks",
+    "Premium Perks": "Premium Perks",
+    "Driving Games": "Driving Games",
+    "Casual Games": "Casual Games",
+    "Shooting Games": "Shooting Games",
+    "Action Games": "Action Games",
+    "Puzzle Games": "Puzzle Games",
+    "Clicker Games": "Clicker Games",
+    "Adventure Games": "Adventure Games",
+    "Sports Games": "Sports Games",
+    ".io Games": ".io Games",
+    "Recommended this week": "Recommended this week",
+    "Platform Games": "Platform Games",
+    "Bike Games": "Bike Games",
+    "Horror Games": "Horror Games",
+    "Stickman Games": "Stickman Games",
+    "Airplane Games": "Airplane Games",
+    "Mini Games": "Mini Games"
+  },
+  "home": {
+    "title": "Ice Breaker Games - Free Online HTML5 Games Platform",
+    "description": "Ice Breaker Games - Free online HTML5 games platform offering diverse gaming experiences. No download required, play instantly anytime, anywhere.",
+    "keywords": "ice breaker games, multiplayer games, online games, fun games, party games, HTML5 games",
+    "sidebarTitle": "Ice Breaker Games",
+    "sidebarIntro": "Free online HTML5 games platform offering diverse gaming experiences. No download required, play instantly anytime, anywhere.",
+    "gameCategories": "Game Categories:",
+    "gamesCount": "games"
+  },
+  "search": {
+    "title": "Search \"{{query}}\" - Ice Breaker Games",
+    "description": "Search results for \"{{query}}\" - Ice Breaker Games",
+    "noResults": "No games found",
+    "resultsFound": "Found {{count}} games",
+    "searchFor": "Search for \"{{query}}\"",
+    "tryOtherKeywords": "Please try other search keywords, or",
+    "uncategorized": "Uncategorized"
+  },
+  "category": {
+    "title": "{{categoryName}} - Ice Breaker Games",
+    "description": "Browse all games in the {{categoryName}} category, total {{totalGames}} games. Recommended {{categoryName}} games, free online HTML5 games platform.",
+    "gamesFound": "Total {{count}} games",
+    "searchFound": "Found {{count}} games for \"{{query}}\"",
+    "pageInfo": "(Page {{current}} / {{total}})",
+    "previousPage": "Previous",
+    "nextPage": "Next",
+    "clearSearch": "Clear Search",
+    "noGames": "No games found",
+    "tryOtherKeywords": "Please try other search keywords, or",
+    "viewAllGames": "view all games",
+    "searchPlaceholder": "Search in this category...",
+    "searchButton": "Search",
+    "backToHome": "Back to Home"
+  },
+  "game": {
+    "title": "{{gameName}} - Ice Breaker Games",
+    "description": "Play {{gameName}} - Free online HTML5 game. {{categoryName}} category. No download required, play instantly.",
+    "playNow": "Play Now",
+    "viewDetails": "View Details",
+    "gameIntroduction": "Game Introduction",
+    "gameFeatures": "Game Features",
+    "features": {
+      "free": "Free online games, no download required",
+      "crossPlatform": "Support PC and mobile devices",
+      "html5": "HTML5 technology, instant play",
+      "category": "Category: {{category}}"
+    },
+    "relatedGames": "Related Games",
+    "viewAllInCategory": "View all games in {{category}} →",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit Fullscreen",
+    "noLink": "This game has no link available",
+    "viewDetailPage": "View game detail page",
+    "backToCategory": "Back to Category",
+    "backToHome": "Back to Home"
+  },
+  "about": {
+    "title": "About Us - Ice Breaker Games",
+    "subtitle": "Tech Evangelism Games: Empowering Enterprise Digital Transformation with Code and AI",
+    "description": "About Ice Breaker Games - Tech Evangelism Games: Empowering Enterprise Digital Transformation with Code and AI",
+    "companyIntro": {
+      "title": "Company Overview",
+      "paragraph1": "Since its establishment in 2019, Tech Evangelism AI has been anchored in the core positioning of \"using technology to solve business pain points and using AI to activate growth potential.\" Starting as a startup team focused on software development, we have gradually grown into a digital solutions service provider covering 18 core cities nationwide and serving over 300 enterprise clients.",
+      "paragraph2": "We deeply understand that in the era of deep integration of AI and industry, \"good software\" is not just a collection of code, but a \"digital engine\" that fits business logic and carries strategic goals. Therefore, over the past five years, we have always been driven by \"technology deep cultivation + demand insight\" dual-wheel drive, continuously breaking through in the field of software development, and helping enterprises cross the \"last mile\" of digital transformation."
+    },
+    "mission": {
+      "title": "Our Mission",
+      "content": "Using technology to solve business pain points, using AI to activate growth potential, and empowering enterprise digital transformation"
+    },
+    "iceBreakerGames": {
+      "title": "About Ice Breaker Games",
+      "intro": "Ice Breaker Games is a gaming platform dedicated to providing free online HTML5 games. We are committed to creating a rich, fun, and easy-to-use gaming experience platform for players worldwide.",
+      "platformFeatures": "Platform Features",
+      "feature1": "<strong>Diverse Game Library:</strong> Covering various game types such as action, puzzle, arcade, and sports, meeting the preferences of different players.",
+      "feature2": "<strong>Instant Play, No Download:</strong> All games are in HTML5 format, requiring no client installation. Just open your browser and enjoy gaming anytime, anywhere.",
+      "feature3": "<strong>Curated Quality Content:</strong> Strictly screening high-quality games to ensure every game provides an exciting experience for players.",
+      "feature4": "<strong>Continuous Content Updates:</strong> Regularly launching new games to maintain the freshness and appeal of platform content.",
+      "feature5": "<strong>Completely Free:</strong> All games on the platform are provided free of charge with no hidden fees, allowing players to enjoy gaming with peace of mind.",
+      "gameCategories": "Game Categories",
+      "categoriesIntro": "Our game library includes the following main categories:",
+      "actionGames": {
+        "title": "Action Games",
+        "desc": "Thrilling adventure and combat games that test players' reaction speed and operational skills."
+      },
+      "puzzleGames": {
+        "title": "Puzzle Games",
+        "desc": "Classic puzzle game collections that exercise logical thinking and problem-solving abilities."
+      },
+      "arcadeGames": {
+        "title": "Arcade Games",
+        "desc": "Classic arcade-style casual games that bring nostalgic and fun gaming experiences."
+      },
+      "sportsGames": {
+        "title": "Sports Games",
+        "desc": "Various sports-themed games that experience the fun of competition and cooperation."
+      },
+      "vision": {
+        "title": "Our Vision",
+        "content": "Ice Breaker Games aims to become the world's leading free online gaming platform, providing quality gaming experiences for millions of players. We believe that games are not just entertainment, but also a bridge connecting people and spreading joy. By continuously optimizing platform features and enriching game content, we hope every player can find their own gaming fun here."
+      },
+      "coreValues": {
+        "title": "Core Values",
+        "userFirst": "User First: Always centered on user experience, continuously optimizing platform features and interaction design.",
+        "contentKing": "Content is King: Curating quality game content, ensuring every game undergoes strict screening and testing.",
+        "innovation": "Innovation Driven: Keeping up with technological development trends, continuously introducing new technologies and gameplay, maintaining platform competitiveness.",
+        "openSharing": "Open Sharing: Adhering to the concept of open sharing, providing completely free gaming experiences for players."
+      }
+    },
+    "techTeam": {
+      "title": "Technical Strength and Team Building",
+      "content": "Tech Evangelism AI has built a core team of \"practical + innovative\" members, with over 120 current members, more than 70% of whom are technical R&D personnel, and 85% have more than 6 years of software development experience. Core team members come from major internet companies and leading technology enterprises, having led the development of projects with tens of millions of users, such as financial risk control systems, intelligent manufacturing management platforms, and new retail data middle platforms.",
+      "stats": {
+        "teamMembers": "Team Members",
+        "techRatio": "Technical R&D Personnel Ratio",
+        "clients": "Enterprise Clients Served",
+        "copyrights": "Software Copyrights"
+      }
+    },
+    "business": {
+      "title": "Core Business and Service System",
+      "customDev": {
+        "title": "Customized Software Development",
+        "content": "For enterprise personalized needs, providing end-to-end services from requirement research, architecture design, code development to test launch, covering enterprise management systems (ERP/CRM/OA), industry-specific software (medical data management platforms, educational smart classroom systems, manufacturing MES systems), and mobile applications (APP/Mini Programs/H5) in three major directions."
+      },
+      "aiSolutions": {
+        "title": "AI-Enabled Solutions",
+        "content": "Deeply integrating AI technology with industry scenarios, developing software systems with intelligent decision-making and automated processing capabilities, such as the \"AI Risk Control Review System\" built for financial industry clients, which uses machine learning algorithms to analyze user credit data in real-time, reducing review efficiency from 1 hour per case manually to 3 minutes per case, and reducing bad debt rate by 18%."
+      },
+      "opsServices": {
+        "title": "Full-Cycle Technical Operations Services",
+        "content": "Breaking the traditional model of \"development as the end point,\" providing 1-3 years of dedicated operation services for clients, including system bug fixes, functional iterations, performance optimization, data security assurance, etc., equipped with 7×24-hour technical support team, with average response time not exceeding 30 minutes, ensuring long-term stable operation of software systems."
+      }
+    },
+    "socialResponsibility": {
+      "title": "Social Responsibility and Brand Philosophy",
+      "content": "Tech Evangelism AI has always practiced the value of \"technology for good,\" closely integrating enterprise development with social value. In 2021, we launched the \"AI Enterprise Assistance Public Welfare Program,\" providing free basic management software development and digital consulting services to 15 small and medium-sized enterprises; in 2023, we partnered with universities to launch the \"Tech Evangelism AI Technology Training Camp,\" training over 500 software development talents with practical capabilities."
+    },
+    "team": {
+      "title": "Core Team",
+      "intro": "Tech Evangelism AI has a diverse team of technical elites, product experts, and industry advisors. Team members come from well-known technology companies at home and abroad, with rich practical experience and innovative thinking, committed to providing the highest quality digital solutions for clients.",
+      "roles": {
+        "ceo": "CEO & Founder",
+        "cto": "CTO & Technical Director",
+        "product": "Product Director",
+        "ai": "AI Algorithm Lead",
+        "architect": "Technical Architect",
+        "design": "UI/UX Design Director"
+      },
+      "descriptions": {
+        "david": "15+ years of software industry experience, former Alibaba senior technical expert, focused on enterprise digital transformation and AI technology innovation.",
+        "sarah": "12+ years of software development experience, former Tencent architect, skilled in large-scale system design and AI algorithm optimization, led multiple projects with tens of millions of users.",
+        "william": "10+ years of product design experience, former Baidu product manager, proficient in user experience design and business model innovation, successfully incubated multiple enterprise-level products.",
+        "jennifer": "8+ years of machine learning experience, Ph.D. from Chinese Academy of Sciences, focused on NLP and computer vision technology, with in-depth research in AI risk control and intelligent decision-making.",
+        "kevin": "10+ years of backend development experience, former JD.com senior engineer, skilled in microservices architecture and cloud-native technology, with rich practice in distributed system design.",
+        "jessica": "8+ years of design experience, former ByteDance design expert, proficient in enterprise-level product visual design and interaction experience optimization, winner of multiple international design awards."
+      }
+    },
+    "future": {
+      "title": "Future Outlook",
+      "paragraph1": "Looking to the future, Tech Evangelism AI will continue to take \"software development\" as the foundation and \"AI technology innovation\" as the breakthrough point. We plan to launch an \"AI Lightweight Management Suite\" for small and medium-sized enterprises in 2025 to reduce digital transformation costs; at the same time, we will expand new tracks such as industrial software and cross-border e-commerce systems, creating more industry benchmark projects.",
+      "paragraph2": "We always remember that \"Tech Evangelism\" is not just a brand name, but our original intention - to not only pass on cutting-edge technologies and solutions, but also to pass on the concept of \"serving business with technology.\" We work hand in hand with every client to grow together in the wave of digitalization, writing a new chapter of enterprise development with code and AI."
+    }
+  },
+  "contact": {
+    "title": "Contact Us - Ice Breaker Games",
+    "subtitle": "Feel free to get in touch with us",
+    "contactInfo": "Contact Information",
+    "officialEmail": "Official Email",
+    "sendEmail": "Send Email",
+    "companyAddress": "Company Address",
+    "addressDetail": "130 Longhua Avenue, Longhua District, Shenzhen",
+    "viewMap": "View Map",
+    "responseTime": "Response Time",
+    "responseTimeDesc": "We will reply to your email within 1-3 business days",
+    "workingHours": "Working Hours",
+    "mondayFriday": "Monday - Friday",
+    "mondayFridayTime": "09:00 - 18:00",
+    "saturday": "Saturday",
+    "saturdayTime": "10:00 - 16:00",
+    "sunday": "Closed",
+    "sendMessage": "Send Message",
+    "name": "Name",
+    "nameRequired": "Name *",
+    "email": "Email",
+    "emailRequired": "Email *",
+    "subject": "Subject",
+    "message": "Message",
+    "messageRequired": "Message *",
+    "messagePlaceholder": "Please describe your question or needs in detail...",
+    "companyLocation": "Company Location",
+    "mapPlaceholder": "Click to view detailed map",
+    "mapAddress": "130 Longhua Avenue, Longhua District, Shenzhen",
+    "mapNearby": "Nearby landmarks: Longhua Cultural Square, Longhua District Government",
+    "mapTransport": "Transportation: 5 minutes walk from Exit A of Longhua Station on Metro Line 4",
+    "mapViewOnBaidu": "View on Baidu Map",
+    "emailInstructions": "Email Instructions",
+    "emailInstructionsDesc": "For copyright, infringement, cooperation, and business communications, please include your requirements and background information in the email for efficient processing.",
+    "subjects": {
+      "general": "General Inquiry",
+      "technical": "Technical Support",
+      "business": "Business Cooperation",
+      "feedback": "Feedback",
+      "other": "Other"
+    },
+    "emailSent": "Email client opened, please send us an email!",
+    "formName": "Name",
+    "formEmail": "Email",
+    "formSubject": "Subject",
+    "formMessage": "Message"
+  },
+  "privacy": {
+    "title": "Privacy Policy - Ice Breaker Games",
+    "subtitle": "We respect and protect user privacy",
+    "effectiveDate": "Effective Date: December 21, 2024",
+    "tableOfContents": "Table of Contents",
+    "intro": "Ice Breaker Games (hereinafter referred to as \"we\") respects and protects users' personal privacy. This privacy policy aims to explain how we collect, use, store, and protect your personal information, and your rights regarding personal information. By using this website and related services, you have read, understood, and agreed to all the contents of this policy.",
+    "section1": {
+      "title": "1. Types of Information We Collect",
+      "intro": "We only collect information necessary to provide services, mainly including the following two categories:",
+      "activeTitle": "Information you actively provide:",
+      "activeDesc": "Such as your name, email address, contact number filled in when registering an account, submitting a message, or contacting us; if you use specific website functions (such as comments, submissions), it may involve the content you publish and related information.",
+      "autoTitle": "Information we automatically collect:",
+      "autoDesc": "When you visit the website, server automatically records device information (such as device model, operating system), browsing data (such as visited pages, stay time, IP address), Cookie and similar technical data (used to optimize page display and user experience, you can disable Cookie in browser settings, but it may affect the use of some functions)."
+    },
+    "section2": {
+      "title": "2. Purpose of Information Use",
+      "intro": "The personal information we collect is only used for the following legitimate purposes and will not exceed the necessary scope:",
+      "li1": "Provide and maintain website services, ensure normal page loading and stable function operation",
+      "li2": "Optimize user experience, such as recommending relevant content based on browsing habits, improving website design",
+      "li3": "Communication and feedback, such as replying to your inquiries, sending service-related notifications (non-marketing, you can unsubscribe at any time)",
+      "li4": "Security assurance, identify and prevent malicious access, fraudulent behavior, protect the legitimate rights and interests of the website and users",
+      "li5": "Comply with legal and regulatory requirements, such as cooperating with regulatory compliance inspections, responding to legal disputes"
+    },
+    "section3": {
+      "title": "3. Information Storage and Protection",
+      "storageTitle": "Storage method and period:",
+      "storageDesc": "Your personal information will be stored in our authorized secure servers, and the storage period is \"a reasonable time required to achieve the collection purpose\", or the minimum retention period required by laws and regulations; after the expiration, we will clear the information through anonymization or permanent deletion.",
+      "securityTitle": "Security protection measures:",
+      "securityDesc": "We adopt dual protection of technology and management, such as data encryption, access control, regular security audits, etc., to prevent information from being leaked, tampered with, or lost; but please note that internet transmission has certain security risks, we cannot guarantee 100% absolute security, you need to properly keep your account information (such as password)."
+    },
+    "section4": {
+      "title": "4. Information Sharing and Disclosure",
+      "intro": "We promise not to sell or rent your personal information to any third party, and will only share or disclose it in the following limited circumstances:",
+      "li1": "With your explicit consent, share with authorized partners (such as third-party customer service tools, partners must comply with the same privacy protection standards)",
+      "li2": "According to laws and regulations, judicial or administrative regulatory requirements, when information must be provided",
+      "li3": "To protect our or users' legitimate rights and interests, public interests (such as responding to fraud, illegal activities), disclose within a reasonably necessary scope"
+    },
+    "section5": {
+      "title": "5. Your Rights",
+      "intro": "As the information subject, you enjoy the following rights in accordance with the law, and you can apply to exercise them through the contact information in Article 7 of this policy:",
+      "li1": "Access and Correction Rights: Inquire about the storage of your personal information and apply to correct incorrect or incomplete information",
+      "li2": "Deletion Rights: If you believe that the information collection exceeds the necessary scope, or you no longer use the website services, you can apply to delete relevant personal information",
+      "li3": "Withdrawal of Consent Rights: You can withdraw your consent to \"non-essential information collection\" (such as Cookie use) at any time, but it may affect the experience of some functions",
+      "li4": "Complaint Rights: If you believe that our information processing behavior violates this policy or laws and regulations, you can complain to us, and we will reply to the processing result within 15 working days"
+    },
+    "section6": {
+      "title": "6. Third-Party Service Description",
+      "desc": "The website may contain third-party links (such as social media icons, advertising alliance links) or embed third-party tools (such as statistical analysis tools). These third parties have independent privacy policies, and we are not responsible for their information collection behavior. It is recommended that you read their privacy policies carefully before accessing third-party services."
+    },
+    "section7": {
+      "title": "7. Policy Modification and Contact Us",
+      "modifyTitle": "Policy modification:",
+      "modifyDesc": "We may modify this policy based on changes in laws and regulations or business adjustments. The modified content will be announced in a prominent position on the website (such as the bottom of the homepage), and your continued use of the website after the announcement will be deemed as your acceptance of the modification.",
+      "contactTitle": "Contact information:",
+      "contactDesc": "If you have any questions about this policy, need to exercise personal information rights, or have complaints and feedback, you can contact us through the following methods:",
+      "contactUs": "Contact Us",
+      "officialEmail": "Official Email:",
+      "operationAddress": "Operation Address:",
+      "addressDetail": "130 Longhua Avenue, Longhua District, Shenzhen"
+    },
+    "importantReminder": {
+      "title": "Important Reminder",
+      "desc": "We attach great importance to your privacy protection. If you have any questions or suggestions about our privacy policy, please feel free to contact us. We promise to reply within 15 working days after receiving your feedback."
+    },
+    "toc": {
+      "section1": "1. Types of Information We Collect",
+      "section2": "2. Purpose of Information Use",
+      "section3": "3. Information Storage and Protection",
+      "section4": "4. Information Sharing and Disclosure",
+      "section5": "5. Your Rights",
+      "section6": "6. Third-Party Service Description",
+      "section7": "7. Policy Modification and Contact Us"
+    }
+  },
+  "terms": {
+    "title": "Terms of Service - Ice Breaker Games",
+    "subtitle": "By using this website, you have read, understood, and agreed to comply with all terms",
+    "effectiveDate": "Effective Date: December 21, 2024",
+    "importantNotice": "Important Notice",
+    "importantNoticeDesc": "These Terms of Service (hereinafter referred to as \"Terms\") are a legal agreement between you (user) and Ice Breaker Games (hereinafter referred to as \"we\") regarding the use of this website and related services. By using this website, you have read, understood, and agreed to abide by all the contents of these terms.",
+    "tableOfContents": "Table of Contents",
+    "section1": {
+      "title": "1. Website Usage Rights",
+      "desc": "You promise to use this website only for legal, non-commercial or personal reasonable purposes, and shall not use the website to engage in any acts that violate laws and regulations or harm the legitimate rights and interests of us or third parties.",
+      "prohibitedTitle": "Prohibited Actions",
+      "li1": "Prohibit unauthorized access to, tampering with website data",
+      "li2": "Prohibit the dissemination of malicious software (such as viruses, Trojans)",
+      "li3": "Prohibit large-scale crawling of website content through automated tools (such as crawlers) without written permission",
+      "li4": "Prohibit the use of the website for any illegal activities"
+    },
+    "section2": {
+      "title": "2. User Behavior Norms",
+      "intro": "When using interactive functions of the website (such as comments, messages), you shall not publish information containing the following content:",
+      "li1": "Illegal, defamatory, abusive, pornographic, violent content",
+      "li2": "Pirated, infringing, false, misleading information",
+      "li3": "Content that infringes on others' privacy, intellectual property rights",
+      "li4": "Any content that violates laws and regulations or social morality",
+      "violationTitle": "Violation Handling",
+      "violationDesc": "If you violate the above norms, we have the right to delete relevant content without notice, restrict your usage rights, or even terminate your access to the website, and you shall bear the losses arising therefrom."
+    },
+    "section3": {
+      "title": "3. Intellectual Property Statement",
+      "desc": "The intellectual property rights of all content on this website (including but not limited to text, pictures, LOGO, code, design) belong to us or relevant rights holders, and are protected by the \"Copyright Law of the People's Republic of China\" and international intellectual property treaties.",
+      "restrictionTitle": "Usage Restrictions",
+      "restrictionDesc": "Without our written permission, you shall not copy, disseminate, modify, or commercialize any content of the website without authorization, otherwise you shall bear corresponding legal responsibilities."
+    },
+    "section4": {
+      "title": "4. Disclaimer",
+      "accuracyTitle": "Content accuracy",
+      "accuracyDesc": "We strive to ensure the accuracy and timeliness of website content, but do not make commitments to the absolute correctness, completeness, or applicability of the content; if you suffer losses due to content errors, we will not bear compensation liability (except for intentional or gross negligence).",
+      "thirdPartyTitle": "Third-party links",
+      "thirdPartyDesc": "The website may contain third-party links, which are provided only for the convenience of users. We are not responsible for the content, services, and security of third-party websites, and you shall bear the risks of accessing third-party websites.",
+      "forceMajeureTitle": "Force majeure",
+      "forceMajeureDesc": "We shall not be liable for breach of contract due to force majeure (such as natural disasters, network failures, policy adjustments) or technical problems beyond our control that cause website service interruptions, but we will try our best to assist in restoring services."
+    },
+    "section5": {
+      "title": "5. Privacy Protection",
+      "desc": "We will process your personal information (such as email, browsing records) provided when you use the website in accordance with the \"Ice Breaker Games Privacy Policy\". Please read this policy carefully to understand the rules for information collection, use, and protection.",
+      "commitmentTitle": "Privacy Commitment",
+      "commitmentDesc": "We are committed to protecting your personal privacy and will not disclose your personal information to third parties unless we obtain your explicit consent or are required by laws and regulations."
+    },
+    "section6": {
+      "title": "6. Terms Modification and Termination",
+      "modifyTitle": "Terms modification",
+      "modifyDesc": "We have the right to modify these terms at any time based on changes in laws and regulations or business adjustments. The modified content will be announced in a prominent position on the website, and your continued use of the website after the announcement will be deemed as your acceptance of the modification.",
+      "terminationTitle": "Service termination",
+      "terminationDesc": "If you seriously violate these terms, or if required by laws and regulations, we have the right to terminate your access to the website at any time without compensation liability."
+    },
+    "section7": {
+      "title": "7. Applicable Law and Dispute Resolution",
+      "desc": "These terms are governed by the \"Laws of the People's Republic of China\". If you have any disputes with us regarding these terms, you should first resolve them through friendly negotiation; if negotiation fails, either party has the right to file a lawsuit with the Longhua District People's Court of Shenzhen."
+    },
+    "section8": {
+      "title": "8. Contact Information",
+      "desc": "If you have any questions about these terms, please contact us through the following methods:",
+      "contactUs": "Contact Us",
+      "officialEmail": "Official Email:",
+      "operationAddress": "Operation Address:",
+      "addressDetail": "130 Longhua Avenue, Longhua District, Shenzhen"
+    },
+    "confirmation": {
+      "title": "Terms Confirmation",
+      "desc": "By using this website, you confirm that you have read, understood, and agreed to abide by all the contents of these Terms of Service. If you do not agree to any part of these terms, please stop using this website."
+    },
+    "toc": {
+      "section1": "1. Website Usage Rights",
+      "section2": "2. User Behavior Norms",
+      "section3": "3. Intellectual Property Statement",
+      "section4": "4. Disclaimer",
+      "section5": "5. Privacy Protection",
+      "section6": "6. Terms Modification and Termination",
+      "section7": "7. Applicable Law and Dispute Resolution",
+      "section8": "8. Contact Information"
+    }
+  }
+}
+

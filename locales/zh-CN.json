@@ -1,0 +1,410 @@
+{
+  "common": {
+    "siteName": "Ice Breaker Games",
+    "searchPlaceholder": "搜索游戏...",
+    "allGames": "所有游戏",
+    "home": "首页",
+    "about": "关于我们",
+    "contact": "联系我们",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "backToHome": "返回首页",
+    "backToCategory": "返回分类",
+    "viewAll": "查看全部",
+    "more": "更多",
+    "copyright": "© 2024 Ice Breaker Games. 保留所有权利。",
+    "version": "版本 1.0.0"
+  },
+  "categories": {
+    "Top picks for you": "为您推荐",
+    "Featured games": "精选游戏",
+    "Play on Comet": "Comet 平台游戏",
+    "Games to Play with Friends": "好友联机游戏",
+    "Thinky Games": "益智游戏",
+    "New games": "新游戏",
+    "Climb the Ranks": "排行榜挑战",
+    "Premium Perks": "高级会员",
+    "Driving Games": "驾驶游戏",
+    "Casual Games": "休闲游戏",
+    "Shooting Games": "射击游戏",
+    "Action Games": "动作游戏",
+    "Puzzle Games": "解谜游戏",
+    "Clicker Games": "点击游戏",
+    "Adventure Games": "冒险游戏",
+    "Sports Games": "体育游戏",
+    ".io Games": ".io 游戏",
+    "Recommended this week": "本周推荐",
+    "Platform Games": "平台游戏",
+    "Bike Games": "自行车游戏",
+    "Horror Games": "恐怖游戏",
+    "Stickman Games": "火柴人游戏",
+    "Airplane Games": "飞机游戏",
+    "Mini Games": "小游戏"
+  },
+  "home": {
+    "title": "Ice Breaker Games - 免费在线HTML5游戏平台",
+    "description": "Ice Breaker Games - 免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩，随时随地享受游戏乐趣。",
+    "keywords": "ice breaker games, multiplayer games, online games, fun games, party games, HTML5 games, 免费游戏, 在线游戏",
+    "sidebarTitle": "Ice Breaker Games",
+    "sidebarIntro": "免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩，随时随地享受游戏乐趣。",
+    "gameCategories": "游戏分类：",
+    "gamesCount": "款游戏"
+  },
+  "search": {
+    "title": "搜索 \"{{query}}\" - Ice Breaker Games",
+    "description": "搜索\"{{query}}\"相关的游戏 - Ice Breaker Games",
+    "noResults": "未找到相关游戏",
+    "resultsFound": "找到 {{count}} 款游戏",
+    "searchFor": "搜索 \"{{query}}\"",
+    "tryOtherKeywords": "请尝试其他搜索关键词，或",
+    "uncategorized": "未分类"
+  },
+  "category": {
+    "title": "{{categoryName}} - Ice Breaker Games",
+    "description": "浏览 {{categoryName}} 分类下的所有游戏，共 {{totalGames}} 款游戏。{{categoryName}} 类游戏推荐，免费在线HTML5游戏平台。",
+    "gamesFound": "共 {{count}} 款游戏",
+    "searchFound": "搜索 \"{{query}}\" 找到 {{count}} 款游戏",
+    "pageInfo": "（第 {{current}} / {{total}} 页）",
+    "previousPage": "上一页",
+    "nextPage": "下一页",
+    "clearSearch": "清除搜索",
+    "noGames": "未找到相关游戏",
+    "tryOtherKeywords": "请尝试其他搜索关键词，或",
+    "viewAllGames": "查看所有游戏",
+    "searchPlaceholder": "在本分类中搜索...",
+    "searchButton": "搜索",
+    "backToHome": "返回首页"
+  },
+  "game": {
+    "title": "{{gameName}} - Ice Breaker Games",
+    "description": "玩 {{gameName}} - 免费在线HTML5游戏。{{categoryName}} 分类。无需下载，即开即玩。",
+    "playNow": "立即游玩",
+    "viewDetails": "查看详情",
+    "gameIntroduction": "游戏介绍",
+    "gameFeatures": "游戏特性",
+    "features": {
+      "free": "免费在线游戏，无需下载",
+      "crossPlatform": "支持PC和移动端",
+      "html5": "HTML5技术，即开即玩",
+      "category": "属于{{category}}分类"
+    },
+    "relatedGames": "相关游戏推荐",
+    "viewAllInCategory": "查看 {{category}} 分类下的所有游戏 →",
+    "fullscreen": "全屏",
+    "exitFullscreen": "退出全屏",
+    "noLink": "该游戏暂无链接",
+    "viewDetailPage": "查看游戏详情页",
+    "backToCategory": "返回分类",
+    "backToHome": "返回首页"
+  },
+  "about": {
+    "title": "关于我们 - Ice Breaker Games",
+    "subtitle": "传道游戏：以代码为墨，以AI为锋，赋能企业数字化新生",
+    "description": "关于Ice Breaker Games - 传道游戏：以代码为墨，以AI为锋，赋能企业数字化新生",
+    "companyIntro": {
+      "title": "公司简介",
+      "paragraph1": "自2019年成立以来，传道AI始终锚定\"用技术破解业务痛点，用AI激活增长潜力\"的核心定位，从专注软件开发的初创团队，逐步成长为覆盖全国18个核心城市、服务超300家企业客户的数字化解决方案服务商。",
+      "paragraph2": "我们深知，在AI与产业深度融合的时代，\"好的软件\"不仅是代码的集合，更是贴合业务逻辑、承载战略目标的\"数字引擎\"，因此五年来始终以\"技术深耕+需求洞察\"双轮驱动，在软件开发领域持续突破，助力企业跨越数字化转型的\"最后一公里\"。"
+    },
+    "mission": {
+      "title": "我们的使命",
+      "content": "用技术破解业务痛点，用AI激活增长潜力，赋能企业数字化新生"
+    },
+    "iceBreakerGames": {
+      "title": "关于 Ice Breaker Games",
+      "intro": "Ice Breaker Games 是一个专注于提供免费在线HTML5游戏的游戏平台。我们致力于为全球玩家打造一个丰富、有趣、易用的游戏体验平台。",
+      "platformFeatures": "平台特色",
+      "feature1": "<strong>丰富多样的游戏库：</strong>涵盖动作、益智、街机、体育等多种游戏类型，满足不同玩家的喜好需求。",
+      "feature2": "<strong>无需下载即开即玩：</strong>所有游戏均为HTML5格式，无需安装客户端，打开浏览器即可畅玩，随时随地享受游戏乐趣。",
+      "feature3": "<strong>精选优质内容：</strong>严格筛选高质量游戏，确保每一款游戏都能为玩家带来精彩体验。",
+      "feature4": "<strong>持续更新内容：</strong>定期上线新游戏，保持平台内容的新鲜度和吸引力。",
+      "feature5": "<strong>完全免费：</strong>平台所有游戏均为免费提供，无隐藏费用，让玩家放心畅玩。",
+      "gameCategories": "游戏分类",
+      "categoriesIntro": "我们的游戏库包含以下主要分类：",
+      "actionGames": {
+        "title": "动作游戏",
+        "desc": "紧张刺激的冒险与战斗游戏，考验玩家的反应速度和操作技巧。"
+      },
+      "puzzleGames": {
+        "title": "益智游戏",
+        "desc": "锻炼逻辑思维和问题解决能力的经典益智游戏集合。"
+      },
+      "arcadeGames": {
+        "title": "街机游戏",
+        "desc": "经典街机风格的休闲游戏，带来怀旧与乐趣并存的游戏体验。"
+      },
+      "sportsGames": {
+        "title": "体育游戏",
+        "desc": "各类体育运动主题游戏，体验竞技与合作的乐趣。"
+      },
+      "vision": {
+        "title": "我们的愿景",
+        "content": "Ice Breaker Games 旨在成为全球领先的免费在线游戏平台，为亿万玩家提供优质的游戏体验。我们相信，游戏不仅是娱乐方式，更是连接人与人、传递快乐的桥梁。通过不断优化平台功能和丰富游戏内容，我们希望让每一位玩家都能在这里找到属于自己的游戏乐趣。"
+      },
+      "coreValues": {
+        "title": "核心价值",
+        "userFirst": "用户至上：始终以用户体验为中心，持续优化平台功能和交互设计。",
+        "contentKing": "内容为王：精选优质游戏内容，确保每一款游戏都经过严格筛选和测试。",
+        "innovation": "创新驱动：紧跟技术发展趋势，不断引入新技术和新玩法，保持平台的竞争力。",
+        "openSharing": "开放共享：秉持开放共享的理念，为玩家提供完全免费的游戏体验。"
+      }
+    },
+    "techTeam": {
+      "title": "技术实力与团队建设",
+      "content": "传道AI构建了一支\"实战型+创新型\"的核心团队，现有成员120余人，其中技术研发人员占比超70%，85%拥有6年以上软件开发经验。团队核心成员均来自互联网大厂、头部科技企业，曾主导过金融风控系统、智能制造管理平台、新零售数据中台等千万级用户规模的项目开发。",
+      "stats": {
+        "teamMembers": "团队成员",
+        "techRatio": "技术研发人员占比",
+        "clients": "服务企业客户",
+        "copyrights": "软件著作权"
+      }
+    },
+    "business": {
+      "title": "核心业务与服务体系",
+      "customDev": {
+        "title": "定制化软件开发",
+        "content": "针对企业个性化需求，提供从需求调研、架构设计、代码开发到测试上线的全流程服务，涵盖企业管理系统（ERP/CRM/OA）、行业专用软件（医疗数据管理平台、教育智慧课堂系统、制造业MES系统）、移动端应用（APP/小程序/H5）三大方向。"
+      },
+      "aiSolutions": {
+        "title": "AI赋能型解决方案",
+        "content": "将AI技术与行业场景深度结合，开发具备智能决策、自动化处理能力的软件系统，如为金融行业客户打造的\"AI风控审核系统\"，通过机器学习算法实时分析用户信用数据，将审核效率从人工1小时/单缩短至3分钟/单，坏账率降低18%。"
+      },
+      "opsServices": {
+        "title": "全周期技术运维服务",
+        "content": "打破\"开发即终点\"的传统模式，为客户提供1-3年的专属运维服务，包括系统bug修复、功能迭代、性能优化、数据安全保障等，配备7×24小时技术支持团队，平均响应时间不超过30分钟，确保软件系统长期稳定运行。"
+      }
+    },
+    "socialResponsibility": {
+      "title": "社会责任与品牌理念",
+      "content": "传道AI始终践行\"技术向善\"的价值观，将企业发展与社会价值紧密结合。2021年发起\"AI助企公益计划\"，为15家中小微企业免费提供基础版管理软件开发与数字化咨询服务；2023年联合高校开展\"传道AI技术实训营\"，累计培养500余名具备实战能力的软件开发人才。"
+    },
+    "team": {
+      "title": "核心团队",
+      "intro": "传道AI拥有一支由技术精英、产品专家和行业顾问组成的多元化团队。团队成员来自国内外知名科技企业，拥有丰富的实战经验和技术创新思维，致力于为客户提供最优质的数字化解决方案。",
+      "roles": {
+        "ceo": "CEO & 创始人",
+        "cto": "CTO & 技术总监",
+        "product": "产品总监",
+        "ai": "AI算法负责人",
+        "architect": "技术架构师",
+        "design": "UI/UX设计总监"
+      },
+      "descriptions": {
+        "david": "15年+软件行业经验，前阿里巴巴高级技术专家，专注企业数字化转型与AI技术创新。",
+        "sarah": "12年+软件开发经验，前腾讯架构师，擅长大规模系统设计与AI算法优化，主导过多个千万级用户项目。",
+        "william": "10年+产品设计经验，前百度产品经理，精通用户体验设计与商业模式创新，成功孵化多款企业级产品。",
+        "jennifer": "8年+机器学习经验，中科院博士，专注NLP与计算机视觉技术，在AI风控与智能决策领域有深入研究。",
+        "kevin": "10年+后端开发经验，前京东高级工程师，擅长微服务架构与云原生技术，在分布式系统设计方面有丰富实践。",
+        "jessica": "8年+设计经验，前字节跳动设计专家，精通企业级产品视觉设计与交互体验优化，多次获得国际设计奖项。"
+      }
+    },
+    "future": {
+      "title": "未来展望",
+      "paragraph1": "面向未来，传道AI将继续以\"软件开发\"为根基，以\"AI技术创新\"为突破点，计划在2025年推出面向中小企业的\"AI轻量化管理套件\"，降低数字化转型成本；同时拓展工业软件、跨境电商系统等新赛道，打造更多行业标杆项目。",
+      "paragraph2": "我们始终记得，\"传道\"二字不仅是品牌名，更是我们的初心——既要传递前沿的技术与方案，更要传递\"以技术服务业务\"的理念，与每一位客户携手，在数字化浪潮中共同成长，用代码与AI，书写企业发展的新篇章。"
+    }
+  },
+  "contact": {
+    "title": "联系我们 - Ice Breaker Games",
+    "subtitle": "欢迎随时与我们取得联系",
+    "contactInfo": "联系方式",
+    "officialEmail": "官方邮箱",
+    "sendEmail": "发送邮件",
+    "companyAddress": "公司地址",
+    "addressDetail": "深圳市龙华区龙华大道130号",
+    "viewMap": "查看地图",
+    "responseTime": "响应时间",
+    "responseTimeDesc": "我们会在收到您的邮件后1-3个工作日内回复",
+    "workingHours": "工作时间",
+    "mondayFriday": "周一至周五",
+    "mondayFridayTime": "09:00 - 18:00",
+    "saturday": "周六",
+    "saturdayTime": "10:00 - 16:00",
+    "sunday": "休息",
+    "sendMessage": "发送消息",
+    "name": "姓名",
+    "nameRequired": "姓名 *",
+    "email": "邮箱",
+    "emailRequired": "邮箱 *",
+    "subject": "主题",
+    "message": "消息内容",
+    "messageRequired": "消息内容 *",
+    "messagePlaceholder": "请详细描述您的问题或需求...",
+    "companyLocation": "公司位置",
+    "mapPlaceholder": "点击查看详细地图",
+    "mapAddress": "深圳市龙华区龙华大道130号",
+    "mapNearby": "附近地标：龙华文化广场、龙华区政府",
+    "mapTransport": "交通：地铁4号线龙华站A出口步行5分钟",
+    "mapViewOnBaidu": "在百度地图中查看",
+    "emailInstructions": "邮件说明",
+    "emailInstructionsDesc": "涉及版权、侵权、合作与商务沟通，请尽量在邮件中说明您的需求与背景信息，以便我们高效处理。",
+    "subjects": {
+      "general": "一般咨询",
+      "technical": "技术支持",
+      "business": "商务合作",
+      "feedback": "意见反馈",
+      "other": "其他"
+    },
+    "emailSent": "邮件客户端已打开，请发送邮件联系我们！",
+    "formName": "姓名",
+    "formEmail": "邮箱",
+    "formSubject": "主题",
+    "formMessage": "消息内容"
+  },
+  "privacy": {
+    "title": "隐私政策 - Ice Breaker Games",
+    "subtitle": "我们尊重并保护用户的个人隐私",
+    "effectiveDate": "生效日期：2024年12月21日",
+    "tableOfContents": "目录",
+    "intro": "Ice Breaker Games（以下简称\"我们\"）尊重并保护用户的个人隐私。本隐私政策旨在说明我们如何收集、使用、存储、保护您的个人信息，以及您对个人信息所享有的权利。使用本网站及相关服务，即表示您已阅读、理解并同意本政策的全部内容。",
+    "section1": {
+      "title": "1. 我们收集的信息类型",
+      "intro": "我们仅收集为提供服务所必需的信息，主要包括以下两类：",
+      "activeTitle": "您主动提供的信息：",
+      "activeDesc": "如您在注册账号、提交留言或联系我们时填写的姓名、电子邮箱、联系电话等；若您使用网站特定功能（如评论、投稿），可能涉及您发布的内容及关联信息。",
+      "autoTitle": "我们自动收集的信息：",
+      "autoDesc": "当您访问网站时，服务器自动记录的设备信息（如设备型号、操作系统）、浏览数据（如访问页面、停留时间、IP地址）、Cookie及类似技术数据（用于优化页面展示和用户体验，您可在浏览器设置中禁用Cookie，但可能影响部分功能使用）。"
+    },
+    "section2": {
+      "title": "2. 信息的使用目的",
+      "intro": "我们收集的个人信息仅用于以下合法目的，且不会超出必要范围：",
+      "li1": "提供并维护网站服务，确保页面正常加载、功能稳定运行",
+      "li2": "优化用户体验，例如根据浏览习惯推荐相关内容、改进网站设计",
+      "li3": "沟通与反馈，如回复您的咨询、发送服务相关通知（非营销类，您可随时取消订阅）",
+      "li4": "安全保障，识别并防范恶意访问、欺诈行为，保护网站及用户的合法权益",
+      "li5": "遵守法律法规要求，如配合监管部门的合规检查、应对法律纠纷"
+    },
+    "section3": {
+      "title": "3. 信息的存储与保护",
+      "storageTitle": "存储方式与期限：",
+      "storageDesc": "您的个人信息将存储在我们授权的安全服务器中，存储期限为\"实现收集目的所需的合理时间\"，或法律法规要求的最短保存期限；超出期限后，我们将通过匿名化处理或永久删除的方式清除信息。",
+      "securityTitle": "安全保护措施：",
+      "securityDesc": "我们采用技术与管理双重保护，如数据加密、访问权限控制、定期安全审计等，防止信息被泄露、篡改、丢失；但请注意，互联网传输存在一定安全风险，我们无法保证100%绝对安全，您需妥善保管自身账号信息（如密码）。"
+    },
+    "section4": {
+      "title": "4. 信息的共享与披露",
+      "intro": "我们承诺不向任何第三方出售、出租您的个人信息，仅在以下有限情况下共享或披露：",
+      "li1": "获得您的明确同意后，向授权的合作方共享（如第三方客服工具，合作方需遵守同等隐私保护标准）",
+      "li2": "依据法律法规、司法机关或行政监管部门的要求，必须提供信息时",
+      "li3": "为保护我们或用户的合法权益、公共利益（如应对欺诈、违法活动），在合理必要范围内披露"
+    },
+    "section5": {
+      "title": "5. 您的权利",
+      "intro": "作为信息主体，您依法享有以下权利，可通过本政策第7条的联系方式申请行使：",
+      "li1": "访问与更正权：查询您的个人信息存储情况，并申请更正错误或不完整的信息",
+      "li2": "删除权：若您认为信息收集超出必要范围，或不再使用网站服务，可申请删除相关个人信息",
+      "li3": "撤回同意权：您可随时撤回对\"非必需信息收集\"的同意（如Cookie使用），但可能影响部分功能体验",
+      "li4": "投诉权：若您认为我们的信息处理行为违反本政策或法律法规，可向我们投诉，我们将在15个工作日内回复处理结果"
+    },
+    "section6": {
+      "title": "6. 第三方服务说明",
+      "desc": "网站可能包含第三方链接（如社交媒体图标、广告联盟链接）或嵌入第三方工具（如统计分析工具）。这些第三方有独立的隐私政策，我们不对其信息收集行为负责。建议您访问第三方服务前，仔细阅读其隐私政策。"
+    },
+    "section7": {
+      "title": "7. 政策的修改与联系我们",
+      "modifyTitle": "政策修改：",
+      "modifyDesc": "我们可能根据法律法规变化或业务调整修改本政策，修改后的内容将在网站显著位置（如首页底部）公示，公示后继续使用网站即视为您接受修改。",
+      "contactTitle": "联系方式：",
+      "contactDesc": "如您对本政策有疑问、需行使个人信息权利，或投诉反馈，可通过以下方式联系我们：",
+      "contactUs": "联系我们",
+      "officialEmail": "官方邮箱：",
+      "operationAddress": "运营地址：",
+      "addressDetail": "深圳市龙华区龙华大道130号"
+    },
+    "importantReminder": {
+      "title": "重要提醒",
+      "desc": "我们非常重视您的隐私保护，如果您对我们的隐私政策有任何疑问或建议，请随时与我们联系。我们承诺在收到您的反馈后15个工作日内给予回复。"
+    },
+    "toc": {
+      "section1": "1. 我们收集的信息类型",
+      "section2": "2. 信息的使用目的",
+      "section3": "3. 信息的存储与保护",
+      "section4": "4. 信息的共享与披露",
+      "section5": "5. 您的权利",
+      "section6": "6. 第三方服务说明",
+      "section7": "7. 政策的修改与联系我们"
+    }
+  },
+  "terms": {
+    "title": "服务条款 - Ice Breaker Games",
+    "subtitle": "使用本网站即表示您已阅读、理解并同意遵守本条款全部内容",
+    "effectiveDate": "生效日期：2024年12月21日",
+    "importantNotice": "重要提示",
+    "importantNoticeDesc": "本服务条款（以下简称\"条款\"）是您（用户）与Ice Breaker Games（以下简称\"我们\"）之间就使用本网站及相关服务所达成的法律协议。使用本网站即表示您已阅读、理解并同意遵守本条款全部内容。",
+    "tableOfContents": "目录",
+    "section1": {
+      "title": "1. 网站使用权限",
+      "desc": "您承诺仅出于合法、非商业或个人合理用途使用本网站，不得利用网站从事任何违反法律法规、损害我们或第三方权益的行为。",
+      "prohibitedTitle": "禁止行为",
+      "li1": "禁止未经授权访问、篡改网站数据",
+      "li2": "禁止传播恶意软件（如病毒、木马）",
+      "li3": "禁止通过自动化工具（如爬虫）大量抓取网站内容（经书面许可除外）",
+      "li4": "禁止利用网站进行任何违法活动"
+    },
+    "section2": {
+      "title": "2. 用户行为规范",
+      "intro": "您在使用网站互动功能（如评论、留言）时，不得发布包含以下内容的信息：",
+      "li1": "违法违规、诽谤辱骂、色情暴力内容",
+      "li2": "盗版侵权、虚假误导信息",
+      "li3": "侵犯他人隐私、知识产权的内容",
+      "li4": "任何违反法律法规或社会公德的内容",
+      "violationTitle": "违规处理",
+      "violationDesc": "如您违反上述规范，我们有权不经通知删除相关内容、限制您的使用权限，甚至终止您对网站的访问资格，由此产生的损失由您自行承担。"
+    },
+    "section3": {
+      "title": "3. 知识产权声明",
+      "desc": "本网站所有内容（包括但不限于文字、图片、LOGO、代码、设计）的知识产权均归我们或相关权利人所有，受《中华人民共和国著作权法》及国际知识产权条约保护。",
+      "restrictionTitle": "使用限制",
+      "restrictionDesc": "未经我们书面许可，您不得擅自复制、传播、修改、商用网站任何内容，否则需承担相应的法律责任。"
+    },
+    "section4": {
+      "title": "4. 免责声明",
+      "accuracyTitle": "内容准确性",
+      "accuracyDesc": "我们尽力确保网站内容的准确性和时效性，但不对内容的绝对正确性、完整性或适用性作出承诺；如因内容错误导致您产生损失，我们不承担赔偿责任（故意或重大过失除外）。",
+      "thirdPartyTitle": "第三方链接",
+      "thirdPartyDesc": "网站可能包含第三方链接，此类链接仅为方便用户提供，我们不对第三方网站的内容、服务及安全性负责，访问第三方网站的风险由您自行承担。",
+      "forceMajeureTitle": "不可抗力",
+      "forceMajeureDesc": "因不可抗力（如自然灾害、网络故障、政策调整）或非我们可控的技术问题导致网站服务中断，我们不承担违约责任，但会尽力协助恢复服务。"
+    },
+    "section5": {
+      "title": "5. 隐私保护",
+      "desc": "我们将按照《Ice Breaker Games隐私政策》处理您在使用网站时提供的个人信息（如邮箱、浏览记录），请您仔细阅读该政策以了解信息收集、使用及保护规则。",
+      "commitmentTitle": "隐私承诺",
+      "commitmentDesc": "我们承诺保护您的个人隐私，不会向第三方泄露您的个人信息，除非获得您的明确同意或法律法规要求。"
+    },
+    "section6": {
+      "title": "6. 条款的修改与终止",
+      "modifyTitle": "条款修改",
+      "modifyDesc": "我们有权根据法律法规变化或业务调整，随时修改本条款，修改后的内容将在网站显著位置公示，公示后继续使用网站即视为您接受修改。",
+      "terminationTitle": "服务终止",
+      "terminationDesc": "如您严重违反本条款，或法律法规要求，我们有权随时终止您对网站的使用权限，且无需承担赔偿责任。"
+    },
+    "section7": {
+      "title": "7. 法律适用与争议解决",
+      "desc": "本条款受《中华人民共和国法律》管辖，如您与我们就本条款产生争议，应首先通过友好协商解决；协商不成的，任何一方均有权向深圳市龙华区人民法院提起诉讼。"
+    },
+    "section8": {
+      "title": "8. 联系方式",
+      "desc": "如您对本条款有疑问，请通过以下方式联系我们：",
+      "contactUs": "联系我们",
+      "officialEmail": "官方邮箱：",
+      "operationAddress": "运营地址：",
+      "addressDetail": "深圳市龙华区龙华大道130号"
+    },
+    "confirmation": {
+      "title": "条款确认",
+      "desc": "通过使用本网站，您确认已阅读、理解并同意遵守本服务条款的所有内容。如果您不同意本条款的任何部分，请停止使用本网站。"
+    },
+    "toc": {
+      "section1": "1. 网站使用权限",
+      "section2": "2. 用户行为规范",
+      "section3": "3. 知识产权声明",
+      "section4": "4. 免责声明",
+      "section5": "5. 隐私保护",
+      "section6": "6. 条款的修改与终止",
+      "section7": "7. 法律适用与争议解决",
+      "section8": "8. 联系方式"
+    }
+  }
+}
+

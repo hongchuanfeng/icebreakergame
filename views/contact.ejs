@@ -1,0 +1,158 @@
+<%- include('partials/static-header', {
+    pageTitle: typeof t !== 'undefined' ? t('contact.title') : '联系我们 - Ice Breaker Games',
+    metaDescription: typeof t !== 'undefined' ? t('contact.subtitle') : '联系我们 - Ice Breaker Games，欢迎随时与我们取得联系，官方邮箱：hcf@foxmail.com',
+    metaKeywords: 'ice breaker games, 联系我们, 联系方式, 官方邮箱, 深圳龙华',
+    canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/contact') : 'https://www.icebreakgame.com/contact',
+    currentPage: 'contact'
+}) %>
+
+<main>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title"><%= typeof t !== 'undefined' ? t('contact.title').replace(' - Ice Breaker Games', '') : '联系我们' %></h1>
+            <p class="page-subtitle"><%= typeof t !== 'undefined' ? t('contact.subtitle') : '欢迎随时与我们取得联系' %></p>
+        </div>
+
+        <div class="contact-content">
+            <div class="contact-info">
+                <h2 class="section-title"><%= typeof t !== 'undefined' ? t('contact.contactInfo') : '联系方式' %></h2>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <div class="contact-details">
+                        <h3><%= typeof t !== 'undefined' ? t('contact.officialEmail') : '官方邮箱' %></h3>
+                        <p>hcf@foxmail.com</p>
+                        <a href="mailto:hcf@foxmail.com"><%= typeof t !== 'undefined' ? t('contact.sendEmail') : '发送邮件' %></a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">📍</div>
+                    <div class="contact-details">
+                        <h3><%= typeof t !== 'undefined' ? t('contact.companyAddress') : '公司地址' %></h3>
+                        <p><%= typeof t !== 'undefined' ? t('contact.addressDetail') : '深圳市龙华区龙华大道130号' %></p>
+                        <a href="#" onclick="showMap()"><%= typeof t !== 'undefined' ? t('contact.viewMap') : '查看地图' %></a>
+                    </div>
+                </div>
+
+                <div class="response-time">
+                    <h3>⏰ <%= typeof t !== 'undefined' ? t('contact.responseTime') : '响应时间' %></h3>
+                    <p><%= typeof t !== 'undefined' ? t('contact.responseTimeDesc') : '我们会在收到您的邮件后1-3个工作日内回复' %></p>
+                </div>
+
+                <div class="office-hours">
+                    <h3>🕒 <%= typeof t !== 'undefined' ? t('contact.workingHours') : '工作时间' %></h3>
+                    <ul class="hours-list">
+                        <li>
+                            <span class="day"><%= typeof t !== 'undefined' ? t('contact.mondayFriday') : '周一至周五' %></span>
+                            <span class="time"><%= typeof t !== 'undefined' ? t('contact.mondayFridayTime') : '09:00 - 18:00' %></span>
+                        </li>
+                        <li>
+                            <span class="day"><%= typeof t !== 'undefined' ? t('contact.saturday') : '周六' %></span>
+                            <span class="time"><%= typeof t !== 'undefined' ? t('contact.saturdayTime') : '10:00 - 16:00' %></span>
+                        </li>
+                        <li>
+                            <span class="day"><%= typeof t !== 'undefined' ? t('contact.sunday') : '周日' %></span>
+                            <span class="time"><%= typeof t !== 'undefined' ? t('contact.sunday') : '休息' %></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <h2 class="section-title"><%= typeof t !== 'undefined' ? t('contact.sendMessage') : '发送消息' %></h2>
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name"><%= typeof t !== 'undefined' ? t('contact.nameRequired') : '姓名 *' %></label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email"><%= typeof t !== 'undefined' ? t('contact.emailRequired') : '邮箱 *' %></label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject"><%= typeof t !== 'undefined' ? t('contact.subject') : '主题' %></label>
+                        <select id="subject" name="subject">
+                            <option value="general"><%= typeof t !== 'undefined' ? t('contact.subjects.general') : '一般咨询' %></option>
+                            <option value="technical"><%= typeof t !== 'undefined' ? t('contact.subjects.technical') : '技术支持' %></option>
+                            <option value="business"><%= typeof t !== 'undefined' ? t('contact.subjects.business') : '商务合作' %></option>
+                            <option value="feedback"><%= typeof t !== 'undefined' ? t('contact.subjects.feedback') : '意见反馈' %></option>
+                            <option value="other"><%= typeof t !== 'undefined' ? t('contact.subjects.other') : '其他' %></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message"><%= typeof t !== 'undefined' ? t('contact.messageRequired') : '消息内容 *' %></label>
+                        <textarea id="message" name="message" placeholder="<%= typeof t !== 'undefined' ? t('contact.messagePlaceholder') : '请详细描述您的问题或需求...' %>" required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn"><%= typeof t !== 'undefined' ? t('contact.sendMessage') : '发送消息' %></button>
+                </form>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <h2 class="section-title"><%= typeof t !== 'undefined' ? t('contact.companyLocation') : '公司位置' %></h2>
+            <div class="map-placeholder" id="mapPlaceholder">
+                🗺️ <%= typeof t !== 'undefined' ? t('contact.mapAddress') : '深圳市龙华区龙华大道130号' %>
+                <br>
+                <small><%= typeof t !== 'undefined' ? t('contact.mapPlaceholder') : '点击查看详细地图' %></small>
+            </div>
+        </div>
+
+        <div class="response-time">
+            <h3>📋 <%= typeof t !== 'undefined' ? t('contact.emailInstructions') : '邮件说明' %></h3>
+            <p><%= typeof t !== 'undefined' ? t('contact.emailInstructionsDesc') : '涉及版权、侵权、合作与商务沟通，请尽量在邮件中说明您的需求与背景信息，以便我们高效处理。' %></p>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/static-footer') %>
+
+<script>
+    // 表单提交处理
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+        
+        // 获取翻译后的标签文本
+        const nameLabel = '<%= typeof t !== "undefined" ? t("contact.formName") : "姓名" %>';
+        const emailLabel = '<%= typeof t !== "undefined" ? t("contact.formEmail") : "邮箱" %>';
+        const subjectLabel = '<%= typeof t !== "undefined" ? t("contact.formSubject") : "主题" %>';
+        const messageLabel = '<%= typeof t !== "undefined" ? t("contact.formMessage") : "消息内容" %>';
+        
+        // 创建邮件链接
+        const subject = encodeURIComponent(data.subject);
+        const body = encodeURIComponent(`${nameLabel}: ${data.name}\n${emailLabel}: ${data.email}\n${subjectLabel}: ${data.subject}\n\n${messageLabel}:\n${data.message}`);
+        const mailtoLink = `mailto:hcf@foxmail.com?subject=${subject}&body=${body}`;
+        
+        // 打开邮件客户端
+        window.location.href = mailtoLink;
+        
+        // 显示成功消息
+        alert('<%= typeof t !== "undefined" ? t("contact.emailSent") : "邮件客户端已打开，请发送邮件联系我们！" %>');
+    });
+
+    // 显示地图
+    function showMap() {
+        const mapPlaceholder = document.getElementById('mapPlaceholder');
+        mapPlaceholder.innerHTML = `
+            <div style="text-align: center;">
+                <h3><%= typeof t !== 'undefined' ? t('contact.mapAddress') : '深圳市龙华区龙华大道130号' %></h3>
+                <p><%= typeof t !== 'undefined' ? t('contact.mapNearby') : '附近地标：龙华文化广场、龙华区政府' %></p>
+                <p><%= typeof t !== 'undefined' ? t('contact.mapTransport') : '交通：地铁4号线龙华站A出口步行5分钟' %></p>
+                <br>
+                <a href="https://map.baidu.com/search/深圳市龙华区龙华大道130号" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold;">
+                    🗺️ <%= typeof t !== 'undefined' ? t('contact.mapViewOnBaidu') : '在百度地图中查看' %>
+                </a>
+            </div>
+        `;
+    }
+
+    // 点击地图占位符显示地图
+    document.getElementById('mapPlaceholder').addEventListener('click', showMap);
+</script>

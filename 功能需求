@@ -1,0 +1,27 @@
+1、使用Node.js 服务端渲染（SSR）基础实现方案
+基于 Express 框架搭建，核心是在服务端拼接 HTML 与数据，
+直接返回完整页面给浏览器和爬虫，兼顾 SEO 与开发效率。
+
+2、使用node.js技术框架，express框架，获取json数据，把json数据渲染到前端。
+
+3、UI布局，顶部是logo，搜索框，左边是导航栏，右边是数据，底部是版权信息
+
+4、把data.json里面的category 作为导航栏，games显示在中间，右边是数据，底部是版权信息
+
+5、页面要支持SEO，title关键词是 ice breaker games,UI 要适应pc端和手机端，UI要高大上
+
+
+6、使用Node.js 服务端渲染（SSR）基础实现方案，再创建一个category页面，
+该页面显示该分类下面的数据，默认加载20个游戏，要有分页，使用ssr渲染，要支持SEO，
+title关键词是该分类的名称+ice breaker games，描述是该分类的描述，
+关键词是该分类的关键词，canonicalUrl是该分类的URL，要支持手机端和pc端，UI要高大上，UI背景色跟index一样，
+要适应pc端和手机端，UI要高大上，还有有该分类的搜索功能，底部跟index页面一样，请创建该页面
+
+
+7、使用Node.js 服务端渲染（SSR）基础实现方案，再创建一个game页面，是二级页面，
+该页面显示该游戏的数据，使用ssr渲染，要支持SEO，title关键词是该游戏的名称+ice breaker games，
+描述是该游戏的描述，关键词是该游戏的关键词，canonicalUrl是该游戏的URL，
+要支持手机端和pc端，UI要高大上，UI背景色跟index一样，底部跟index页面一样，请创建该页面
+
+
+8、对所有页面再创建中文版本，然后页面都放到cn目录下，请修改

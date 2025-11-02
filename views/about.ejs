@@ -1,0 +1,203 @@
+<%- include('partials/static-header', {
+    pageTitle: typeof t !== 'undefined' ? t('about.title') : '关于我们 - Ice Breaker Games',
+    metaDescription: typeof t !== 'undefined' ? t('about.description') : '关于Ice Breaker Games - 传道游戏：以代码为墨，以AI为锋，赋能企业数字化新生',
+    metaKeywords: 'ice breaker games, 关于我们, 传道游戏, 软件开发, AI技术, 数字化解决方案',
+    canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/about') : 'https://www.icebreakgame.com/about',
+    currentPage: 'about'
+}) %>
+
+<main>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title"><%= typeof t !== 'undefined' ? t('about.title') : '关于我们' %></h1>
+            <p class="page-subtitle"><%= typeof t !== 'undefined' ? t('about.subtitle') : '传道游戏：以代码为墨，以AI为锋，赋能企业数字化新生' %></p>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title"><%= typeof t !== 'undefined' ? t('about.companyIntro.title') : '公司简介' %></h2>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('about.companyIntro.paragraph1') : '自2019年成立以来，传道AI始终锚定"用技术破解业务痛点，用AI激活增长潜力"的核心定位，从专注软件开发的初创团队，逐步成长为覆盖全国18个核心城市、服务超300家企业客户的数字化解决方案服务商。' %></p>
+                
+                <p><%= typeof t !== 'undefined' ? t('about.companyIntro.paragraph2') : '我们深知，在AI与产业深度融合的时代，"好的软件"不仅是代码的集合，更是贴合业务逻辑、承载战略目标的"数字引擎"，因此五年来始终以"技术深耕+需求洞察"双轮驱动，在软件开发领域持续突破，助力企业跨越数字化转型的"最后一公里"。' %></p>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h3><%= typeof t !== 'undefined' ? t('about.mission.title') : '我们的使命' %></h3>
+            <p><%= typeof t !== 'undefined' ? t('about.mission.content') : '用技术破解业务痛点，用AI激活增长潜力，赋能企业数字化新生' %></p>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title"><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.title') : '关于 Ice Breaker Games' %></h2>
+            <div class="section-content">
+                <p><strong>Ice Breaker Games</strong> <%= typeof t !== 'undefined' ? t('about.iceBreakerGames.intro') : '是一个专注于提供免费在线HTML5游戏的游戏平台。我们致力于为全球玩家打造一个丰富、有趣、易用的游戏体验平台。' %></p>
+                
+                <h3 style="color: rgba(102, 126, 234, 0.9); margin: 2rem 0 1rem;">🎮 <%= typeof t !== 'undefined' ? t('about.iceBreakerGames.platformFeatures') : '平台特色' %></h3>
+                <ul style="margin-left: 2rem; margin-bottom: 1.5rem;">
+                    <li style="margin-bottom: 0.8rem;"><%- typeof t !== 'undefined' ? t('about.iceBreakerGames.feature1') : '<strong>丰富多样的游戏库：</strong>涵盖动作、益智、街机、体育等多种游戏类型，满足不同玩家的喜好需求。' %></li>
+                    <li style="margin-bottom: 0.8rem;"><%- typeof t !== 'undefined' ? t('about.iceBreakerGames.feature2') : '<strong>无需下载即开即玩：</strong>所有游戏均为HTML5格式，无需安装客户端，打开浏览器即可畅玩，随时随地享受游戏乐趣。' %></li>
+                    <li style="margin-bottom: 0.8rem;"><%- typeof t !== 'undefined' ? t('about.iceBreakerGames.feature3') : '<strong>精选优质内容：</strong>严格筛选高质量游戏，确保每一款游戏都能为玩家带来精彩体验。' %></li>
+                    <li style="margin-bottom: 0.8rem;"><%- typeof t !== 'undefined' ? t('about.iceBreakerGames.feature4') : '<strong>持续更新内容：</strong>定期上线新游戏，保持平台内容的新鲜度和吸引力。' %></li>
+                    <li style="margin-bottom: 0.8rem;"><%- typeof t !== 'undefined' ? t('about.iceBreakerGames.feature5') : '<strong>完全免费：</strong>平台所有游戏均为免费提供，无隐藏费用，让玩家放心畅玩。' %></li>
+                </ul>
+
+                <h3 style="color: rgba(102, 126, 234, 0.9); margin: 2rem 0 1rem;">🌟 <%= typeof t !== 'undefined' ? t('about.iceBreakerGames.gameCategories') : '游戏分类' %></h3>
+                <p><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.categoriesIntro') : '我们的游戏库包含以下主要分类：' %></p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15);">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚔️</div>
+                        <div style="font-weight: bold; color: rgba(255, 255, 255, 0.95); margin-bottom: 0.5rem;"><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.actionGames.title') : '动作游戏' %></div>
+                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;"><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.actionGames.desc') : '紧张刺激的冒险与战斗游戏，考验玩家的反应速度和操作技巧。' %></div>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15);">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧩</div>
+                        <div style="font-weight: bold; color: rgba(255, 255, 255, 0.95); margin-bottom: 0.5rem;"><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.puzzleGames.title') : '益智游戏' %></div>
+                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;"><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.puzzleGames.desc') : '锻炼逻辑思维和问题解决能力的经典益智游戏集合。' %></div>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15);">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎰</div>
+                        <div style="font-weight: bold; color: rgba(255, 255, 255, 0.95); margin-bottom: 0.5rem;"><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.arcadeGames.title') : '街机游戏' %></div>
+                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;"><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.arcadeGames.desc') : '经典街机风格的休闲游戏，带来怀旧与乐趣并存的游戏体验。' %></div>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15);">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚽</div>
+                        <div style="font-weight: bold; color: rgba(255, 255, 255, 0.95); margin-bottom: 0.5rem;"><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.sportsGames.title') : '体育游戏' %></div>
+                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;"><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.sportsGames.desc') : '各类体育运动主题游戏，体验竞技与合作的乐趣。' %></div>
+                    </div>
+                </div>
+
+                <h3 style="color: rgba(102, 126, 234, 0.9); margin: 2rem 0 1rem;">💡 <%= typeof t !== 'undefined' ? t('about.iceBreakerGames.vision.title') : '我们的愿景' %></h3>
+                <p><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.vision.content') : 'Ice Breaker Games 旨在成为全球领先的免费在线游戏平台，为亿万玩家提供优质的游戏体验。我们相信，游戏不仅是娱乐方式，更是连接人与人、传递快乐的桥梁。通过不断优化平台功能和丰富游戏内容，我们希望让每一位玩家都能在这里找到属于自己的游戏乐趣。' %></p>
+
+                <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 2rem; border-radius: 16px; margin: 2rem 0; border: 1px solid rgba(255, 255, 255, 0.15); border-left: 4px solid rgba(102, 126, 234, 0.8);">
+                    <h4 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem; font-size: 1.2rem;">🎯 <%= typeof t !== 'undefined' ? t('about.iceBreakerGames.coreValues.title') : '核心价值' %></h4>
+                    <p style="margin-bottom: 0.8rem;"><strong><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.coreValues.userFirst') : '用户至上：始终以用户体验为中心，持续优化平台功能和交互设计。' %></strong></p>
+                    <p style="margin-bottom: 0.8rem;"><strong><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.coreValues.contentKing') : '内容为王：精选优质游戏内容，确保每一款游戏都经过严格筛选和测试。' %></strong></p>
+                    <p style="margin-bottom: 0.8rem;"><strong><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.coreValues.innovation') : '创新驱动：紧跟技术发展趋势，不断引入新技术和新玩法，保持平台的竞争力。' %></strong></p>
+                    <p><strong><%= typeof t !== 'undefined' ? t('about.iceBreakerGames.coreValues.openSharing') : '开放共享：秉持开放共享的理念，为玩家提供完全免费的游戏体验。' %></strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title"><%= typeof t !== 'undefined' ? t('about.techTeam.title') : '技术实力与团队建设' %></h2>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('about.techTeam.content') : '传道AI构建了一支"实战型+创新型"的核心团队，现有成员120余人，其中技术研发人员占比超70%，85%拥有6年以上软件开发经验。团队核心成员均来自互联网大厂、头部科技企业，曾主导过金融风控系统、智能制造管理平台、新零售数据中台等千万级用户规模的项目开发。' %></p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">120+</span>
+                    <div class="stat-label"><%= typeof t !== 'undefined' ? t('about.techTeam.stats.teamMembers') : '团队成员' %></div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">70%</span>
+                    <div class="stat-label"><%= typeof t !== 'undefined' ? t('about.techTeam.stats.techRatio') : '技术研发人员占比' %></div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">300+</span>
+                    <div class="stat-label"><%= typeof t !== 'undefined' ? t('about.techTeam.stats.clients') : '服务企业客户' %></div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">42</span>
+                    <div class="stat-label"><%= typeof t !== 'undefined' ? t('about.techTeam.stats.copyrights') : '软件著作权' %></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title"><%= typeof t !== 'undefined' ? t('about.business.title') : '核心业务与服务体系' %></h2>
+            <div class="section-content">
+                <h3 style="color: rgba(102, 126, 234, 0.9); margin-bottom: 1rem;"><%= typeof t !== 'undefined' ? t('about.business.customDev.title') : '定制化软件开发' %></h3>
+                <p><%= typeof t !== 'undefined' ? t('about.business.customDev.content') : '针对企业个性化需求，提供从需求调研、架构设计、代码开发到测试上线的全流程服务，涵盖企业管理系统（ERP/CRM/OA）、行业专用软件（医疗数据管理平台、教育智慧课堂系统、制造业MES系统）、移动端应用（APP/小程序/H5）三大方向。' %></p>
+                
+                <h3 style="color: rgba(102, 126, 234, 0.9); margin: 2rem 0 1rem;"><%= typeof t !== 'undefined' ? t('about.business.aiSolutions.title') : 'AI赋能型解决方案' %></h3>
+                <p><%= typeof t !== 'undefined' ? t('about.business.aiSolutions.content') : '将AI技术与行业场景深度结合，开发具备智能决策、自动化处理能力的软件系统，如为金融行业客户打造的"AI风控审核系统"，通过机器学习算法实时分析用户信用数据，将审核效率从人工1小时/单缩短至3分钟/单，坏账率降低18%。' %></p>
+                
+                <h3 style="color: rgba(102, 126, 234, 0.9); margin: 2rem 0 1rem;"><%= typeof t !== 'undefined' ? t('about.business.opsServices.title') : '全周期技术运维服务' %></h3>
+                <p><%= typeof t !== 'undefined' ? t('about.business.opsServices.content') : '打破"开发即终点"的传统模式，为客户提供1-3年的专属运维服务，包括系统bug修复、功能迭代、性能优化、数据安全保障等，配备7×24小时技术支持团队，平均响应时间不超过30分钟，确保软件系统长期稳定运行。' %></p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title"><%= typeof t !== 'undefined' ? t('about.socialResponsibility.title') : '社会责任与品牌理念' %></h2>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('about.socialResponsibility.content') : '传道AI始终践行"技术向善"的价值观，将企业发展与社会价值紧密结合。2021年发起"AI助企公益计划"，为15家中小微企业免费提供基础版管理软件开发与数字化咨询服务；2023年联合高校开展"传道AI技术实训营"，累计培养500余名具备实战能力的软件开发人才。' %></p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title"><%= typeof t !== 'undefined' ? t('about.team.title') : '核心团队' %></h2>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('about.team.intro') : '传道AI拥有一支由技术精英、产品专家和行业顾问组成的多元化团队。团队成员来自国内外知名科技企业，拥有丰富的实战经验和技术创新思维，致力于为客户提供最优质的数字化解决方案。' %></p>
+            </div>
+
+            <div class="team-section">
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=David" alt="David" class="team-img">
+                    </div>
+                    <div class="team-name">David Chen</div>
+                    <div class="team-role"><%= typeof t !== 'undefined' ? t('about.team.roles.ceo') : 'CEO & 创始人' %></div>
+                    <div class="team-desc"><%= typeof t !== 'undefined' ? t('about.team.descriptions.david') : '15年+软件行业经验，前阿里巴巴高级技术专家，专注企业数字化转型与AI技术创新。' %></div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Sarah" alt="Sarah" class="team-img">
+                    </div>
+                    <div class="team-name">Sarah Li</div>
+                    <div class="team-role"><%= typeof t !== 'undefined' ? t('about.team.roles.cto') : 'CTO & 技术总监' %></div>
+                    <div class="team-desc"><%= typeof t !== 'undefined' ? t('about.team.descriptions.sarah') : '12年+软件开发经验，前腾讯架构师，擅长大规模系统设计与AI算法优化，主导过多个千万级用户项目。' %></div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=William" alt="William" class="team-img">
+                    </div>
+                    <div class="team-name">William Wang</div>
+                    <div class="team-role"><%= typeof t !== 'undefined' ? t('about.team.roles.product') : '产品总监' %></div>
+                    <div class="team-desc"><%= typeof t !== 'undefined' ? t('about.team.descriptions.william') : '10年+产品设计经验，前百度产品经理，精通用户体验设计与商业模式创新，成功孵化多款企业级产品。' %></div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Jennifer" alt="Jennifer" class="team-img">
+                    </div>
+                    <div class="team-name">Jennifer Liu</div>
+                    <div class="team-role"><%= typeof t !== 'undefined' ? t('about.team.roles.ai') : 'AI算法负责人' %></div>
+                    <div class="team-desc"><%= typeof t !== 'undefined' ? t('about.team.descriptions.jennifer') : '8年+机器学习经验，中科院博士，专注NLP与计算机视觉技术，在AI风控与智能决策领域有深入研究。' %></div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Kevin" alt="Kevin" class="team-img">
+                    </div>
+                    <div class="team-name">Kevin Chen</div>
+                    <div class="team-role"><%= typeof t !== 'undefined' ? t('about.team.roles.architect') : '技术架构师' %></div>
+                    <div class="team-desc"><%= typeof t !== 'undefined' ? t('about.team.descriptions.kevin') : '10年+后端开发经验，前京东高级工程师，擅长微服务架构与云原生技术，在分布式系统设计方面有丰富实践。' %></div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Jessica" alt="Jessica" class="team-img">
+                    </div>
+                    <div class="team-name">Jessica Zhao</div>
+                    <div class="team-role"><%= typeof t !== 'undefined' ? t('about.team.roles.design') : 'UI/UX设计总监' %></div>
+                    <div class="team-desc"><%= typeof t !== 'undefined' ? t('about.team.descriptions.jessica') : '8年+设计经验，前字节跳动设计专家，精通企业级产品视觉设计与交互体验优化，多次获得国际设计奖项。' %></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title"><%= typeof t !== 'undefined' ? t('about.future.title') : '未来展望' %></h2>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('about.future.paragraph1') : '面向未来，传道AI将继续以"软件开发"为根基，以"AI技术创新"为突破点，计划在2025年推出面向中小企业的"AI轻量化管理套件"，降低数字化转型成本；同时拓展工业软件、跨境电商系统等新赛道，打造更多行业标杆项目。' %></p>
+                
+                <p><%= typeof t !== 'undefined' ? t('about.future.paragraph2') : '我们始终记得，"传道"二字不仅是品牌名，更是我们的初心——既要传递前沿的技术与方案，更要传递"以技术服务业务"的理念，与每一位客户携手，在数字化浪潮中共同成长，用代码与AI，书写企业发展的新篇章。' %></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/static-footer') %>

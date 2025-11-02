@@ -1,0 +1,119 @@
+<%- include('partials/static-header', {
+    pageTitle: typeof t !== 'undefined' ? t('privacy.title') : '隐私政策 - Ice Breaker Games',
+    metaDescription: typeof t !== 'undefined' ? t('privacy.subtitle') : '隐私政策 - Ice Breaker Games，我们尊重并保护用户的个人隐私，详细说明信息收集、使用、存储和保护规则',
+    metaKeywords: 'ice breaker games, 隐私政策, 个人信息保护, 数据安全, 隐私权',
+    canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/privacy') : 'https://www.icebreakgame.com/privacy',
+    currentPage: 'privacy'
+}) %>
+
+<main>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title"><%= typeof t !== 'undefined' ? t('privacy.title').replace(' - Ice Breaker Games', '') : '隐私政策' %></h1>
+            <p class="page-subtitle"><%= typeof t !== 'undefined' ? t('privacy.subtitle') : '我们尊重并保护用户的个人隐私' %></p>
+        </div>
+
+        <div class="effective-date">
+            <%= typeof t !== 'undefined' ? t('privacy.effectiveDate') : '生效日期：2024年12月21日' %>
+        </div>
+
+        <div class="toc">
+            <h3>📋 <%= typeof t !== 'undefined' ? t('privacy.tableOfContents') : '目录' %></h3>
+            <ul>
+                <li><a href="#section1"><%= typeof t !== 'undefined' ? t('privacy.toc.section1') : '1. 我们收集的信息类型' %></a></li>
+                <li><a href="#section2"><%= typeof t !== 'undefined' ? t('privacy.toc.section2') : '2. 信息的使用目的' %></a></li>
+                <li><a href="#section3"><%= typeof t !== 'undefined' ? t('privacy.toc.section3') : '3. 信息的存储与保护' %></a></li>
+                <li><a href="#section4"><%= typeof t !== 'undefined' ? t('privacy.toc.section4') : '4. 信息的共享与披露' %></a></li>
+                <li><a href="#section5"><%= typeof t !== 'undefined' ? t('privacy.toc.section5') : '5. 您的权利' %></a></li>
+                <li><a href="#section6"><%= typeof t !== 'undefined' ? t('privacy.toc.section6') : '6. 第三方服务说明' %></a></li>
+                <li><a href="#section7"><%= typeof t !== 'undefined' ? t('privacy.toc.section7') : '7. 政策的修改与联系我们' %></a></li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; color: rgba(255, 255, 255, 0.85);">
+                <%= typeof t !== 'undefined' ? t('privacy.intro') : 'Ice Breaker Games（以下简称"我们"）尊重并保护用户的个人隐私。本隐私政策旨在说明我们如何收集、使用、存储、保护您的个人信息，以及您对个人信息所享有的权利。使用本网站及相关服务，即表示您已阅读、理解并同意本政策的全部内容。' %>
+            </p>
+
+            <div id="section1" class="section-title"><%= typeof t !== 'undefined' ? t('privacy.section1.title') : '1. 我们收集的信息类型' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('privacy.section1.intro') : '我们仅收集为提供服务所必需的信息，主要包括以下两类：' %></p>
+                
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('privacy.section1.activeTitle') : '您主动提供的信息：' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('privacy.section1.activeDesc') : '如您在注册账号、提交留言或联系我们时填写的姓名、电子邮箱、联系电话等；若您使用网站特定功能（如评论、投稿），可能涉及您发布的内容及关联信息。' %></p>
+                
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('privacy.section1.autoTitle') : '我们自动收集的信息：' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('privacy.section1.autoDesc') : '当您访问网站时，服务器自动记录的设备信息（如设备型号、操作系统）、浏览数据（如访问页面、停留时间、IP地址）、Cookie及类似技术数据（用于优化页面展示和用户体验，您可在浏览器设置中禁用Cookie，但可能影响部分功能使用）。' %></p>
+            </div>
+
+            <div id="section2" class="section-title"><%= typeof t !== 'undefined' ? t('privacy.section2.title') : '2. 信息的使用目的' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('privacy.section2.intro') : '我们收集的个人信息仅用于以下合法目的，且不会超出必要范围：' %></p>
+                <ul>
+                    <li><%= typeof t !== 'undefined' ? t('privacy.section2.li1') : '提供并维护网站服务，确保页面正常加载、功能稳定运行' %></li>
+                    <li><%= typeof t !== 'undefined' ? t('privacy.section2.li2') : '优化用户体验，例如根据浏览习惯推荐相关内容、改进网站设计' %></li>
+                    <li><%= typeof t !== 'undefined' ? t('privacy.section2.li3') : '沟通与反馈，如回复您的咨询、发送服务相关通知（非营销类，您可随时取消订阅）' %></li>
+                    <li><%= typeof t !== 'undefined' ? t('privacy.section2.li4') : '安全保障，识别并防范恶意访问、欺诈行为，保护网站及用户的合法权益' %></li>
+                    <li><%= typeof t !== 'undefined' ? t('privacy.section2.li5') : '遵守法律法规要求，如配合监管部门的合规检查、应对法律纠纷' %></li>
+                </ul>
+            </div>
+
+            <div id="section3" class="section-title"><%= typeof t !== 'undefined' ? t('privacy.section3.title') : '3. 信息的存储与保护' %></div>
+            <div class="section-content">
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('privacy.section3.storageTitle') : '存储方式与期限：' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('privacy.section3.storageDesc') : '您的个人信息将存储在我们授权的安全服务器中，存储期限为"实现收集目的所需的合理时间"，或法律法规要求的最短保存期限；超出期限后，我们将通过匿名化处理或永久删除的方式清除信息。' %></p>
+                
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('privacy.section3.securityTitle') : '安全保护措施：' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('privacy.section3.securityDesc') : '我们采用技术与管理双重保护，如数据加密、访问权限控制、定期安全审计等，防止信息被泄露、篡改、丢失；但请注意，互联网传输存在一定安全风险，我们无法保证100%绝对安全，您需妥善保管自身账号信息（如密码）。' %></p>
+            </div>
+
+            <div id="section4" class="section-title"><%= typeof t !== 'undefined' ? t('privacy.section4.title') : '4. 信息的共享与披露' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('privacy.section4.intro') : '我们承诺不向任何第三方出售、出租您的个人信息，仅在以下有限情况下共享或披露：' %></p>
+                <ul>
+                    <li><%= typeof t !== 'undefined' ? t('privacy.section4.li1') : '获得您的明确同意后，向授权的合作方共享（如第三方客服工具，合作方需遵守同等隐私保护标准）' %></li>
+                    <li><%= typeof t !== 'undefined' ? t('privacy.section4.li2') : '依据法律法规、司法机关或行政监管部门的要求，必须提供信息时' %></li>
+                    <li><%= typeof t !== 'undefined' ? t('privacy.section4.li3') : '为保护我们或用户的合法权益、公共利益（如应对欺诈、违法活动），在合理必要范围内披露' %></li>
+                </ul>
+            </div>
+
+            <div id="section5" class="section-title"><%= typeof t !== 'undefined' ? t('privacy.section5.title') : '5. 您的权利' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('privacy.section5.intro') : '作为信息主体，您依法享有以下权利，可通过本政策第7条的联系方式申请行使：' %></p>
+                <ul>
+                    <li><strong><%= typeof t !== 'undefined' ? t('privacy.section5.li1') : '访问与更正权：查询您的个人信息存储情况，并申请更正错误或不完整的信息' %></strong></li>
+                    <li><strong><%= typeof t !== 'undefined' ? t('privacy.section5.li2') : '删除权：若您认为信息收集超出必要范围，或不再使用网站服务，可申请删除相关个人信息' %></strong></li>
+                    <li><strong><%= typeof t !== 'undefined' ? t('privacy.section5.li3') : '撤回同意权：您可随时撤回对"非必需信息收集"的同意（如Cookie使用），但可能影响部分功能体验' %></strong></li>
+                    <li><strong><%= typeof t !== 'undefined' ? t('privacy.section5.li4') : '投诉权：若您认为我们的信息处理行为违反本政策或法律法规，可向我们投诉，我们将在15个工作日内回复处理结果' %></strong></li>
+                </ul>
+            </div>
+
+            <div id="section6" class="section-title"><%= typeof t !== 'undefined' ? t('privacy.section6.title') : '6. 第三方服务说明' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('privacy.section6.desc') : '网站可能包含第三方链接（如社交媒体图标、广告联盟链接）或嵌入第三方工具（如统计分析工具）。这些第三方有独立的隐私政策，我们不对其信息收集行为负责。建议您访问第三方服务前，仔细阅读其隐私政策。' %></p>
+            </div>
+
+            <div id="section7" class="section-title"><%= typeof t !== 'undefined' ? t('privacy.section7.title') : '7. 政策的修改与联系我们' %></div>
+            <div class="section-content">
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('privacy.section7.modifyTitle') : '政策修改：' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('privacy.section7.modifyDesc') : '我们可能根据法律法规变化或业务调整修改本政策，修改后的内容将在网站显著位置（如首页底部）公示，公示后继续使用网站即视为您接受修改。' %></p>
+                
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('privacy.section7.contactTitle') : '联系方式：' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('privacy.section7.contactDesc') : '如您对本政策有疑问、需行使个人信息权利，或投诉反馈，可通过以下方式联系我们：' %></p>
+            </div>
+
+            <div class="contact-info">
+                <h3>📞 <%= typeof t !== 'undefined' ? t('privacy.section7.contactUs') : '联系我们' %></h3>
+                <p><%= typeof t !== 'undefined' ? t('privacy.section7.officialEmail') : '官方邮箱：' %><a href="mailto:hcf@foxmail.com">hcf@foxmail.com</a></p>
+                <p><%= typeof t !== 'undefined' ? t('privacy.section7.operationAddress') : '运营地址：' %><%= typeof t !== 'undefined' ? t('privacy.section7.addressDetail') : '深圳市龙华区龙华大道130号' %></p>
+            </div>
+
+            <div class="highlight-box highlight-box-border">
+                <h4>🔒 <%= typeof t !== 'undefined' ? t('privacy.importantReminder.title') : '重要提醒' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('privacy.importantReminder.desc') : '我们非常重视您的隐私保护，如果您对我们的隐私政策有任何疑问或建议，请随时与我们联系。我们承诺在收到您的反馈后15个工作日内给予回复。' %></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/static-footer') %>

@@ -1,0 +1,270 @@
+<%- include('partials/header', { 
+    pageTitle: typeof t !== 'undefined' ? t('game.title', { gameName: gameName }) : (pageTitle || (gameName + ' - Ice Breaker Games')),
+    metaDescription: typeof t !== 'undefined' ? t('game.description', { gameName: gameName, categoryName: gameCategory || '' }) : (gameDescription || ('玩 ' + gameName + ' - 免费在线HTML5游戏')),
+    metaKeywords: gameKeywords || (gameName + ', ice breaker games'),
+    canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/game?name=' + encodeURIComponent(gameName)) : (canonicalUrl || ('https://www.icebreakgame.com/game?name=' + encodeURIComponent(gameName))),
+    searchQuery: ''
+}) %>
+
+<!-- 主内容区 -->
+<div class="main-content">
+    <!-- 内容区（全宽显示） -->
+    <div class="content-area" style="width: 100%;">
+        <!-- 游戏控制栏 -->
+        <div class="game-control-bar">
+            <div class="game-control-left">
+                <h1 class="game-detail-title-inline"><%- game.name %></h1>
+                <% if (gameCategory) { %>
+                    <div class="game-detail-category-inline">
+                        <span class="nav-icon"><%= getCategoryIcon(gameCategory) %></span>
+                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory)) : '/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory) %>" style="color: rgba(255, 255, 255, 0.8); text-decoration: none;">
+                            <%= gameCategory %>
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+            <div class="game-control-right">
+                <% if (gameCategory) { %>
+                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory)) : '/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory) %>" class="game-control-btn">
+                        ← <%= typeof t !== 'undefined' ? t('game.backToCategory') : '返回分类' %>
+                    </a>
+                <% } %>
+                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/') : '/' %>" class="game-control-btn">
+                    ← <%= typeof t !== 'undefined' ? t('game.backToHome') : '返回首页' %>
+                </a>
+                <button id="fullscreenBtn" class="game-control-btn fullscreen-btn">
+                    ⛶ <%= typeof t !== 'undefined' ? t('game.fullscreen') : '全屏' %>
+                </button>
+            </div>
+        </div>
+
+        <!-- 游戏iframe容器 -->
+        <div class="game-iframe-container" id="gameContainer">
+            <% if (game.link) { %>
+                <iframe 
+                    id="gameIframe" 
+                    src="<%= game.link %>" 
+                    frameborder="0" 
+                    allowfullscreen
+                    style="width: 100%; height: 100%; border: none;">
+                </iframe>
+            <% } else { %>
+                <div class="game-iframe-placeholder">
+                    <div style="text-align: center; color: rgba(255, 255, 255, 0.7); padding: 3rem;">
+                        <h2 style="margin-bottom: 1rem; font-size: 2rem;">🎮</h2>
+                        <p style="font-size: 1.2rem; margin-bottom: 0.5rem;"><%= typeof t !== 'undefined' ? t('game.noLink') : '该游戏暂无链接' %></p>
+                        <p style="font-size: 0.9rem;">
+                            <% if (game.href) { %>
+                                <a href="<%= game.href %>" target="_blank" style="color: rgba(102, 126, 234, 0.9); text-decoration: underline;">
+                                    <%= typeof t !== 'undefined' ? t('game.viewDetailPage') : '查看游戏详情页' %>
+                                </a>
+                            <% } %>
+                        </p>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+        
+        <!-- 游戏详情信息 -->
+        <div class="game-detail-section">
+
+            <!-- 游戏头部信息（折叠显示） -->
+            <div class="game-info-header">
+                <div class="game-info-header-content">
+                    <% if (game.icon) { %>
+                        <img src="<%= game.icon %>" alt="<%= game.name %>" class="game-info-image" onerror="this.style.display='none';">
+                    <% } %>
+                    <div class="game-info-text">
+                        <h2 class="game-info-title"><%- game.name %></h2>
+                        <% if (gameCategory) { %>
+                            <div class="game-info-category">
+                                <span class="nav-icon"><%= getCategoryIcon(gameCategory) %></span>
+                                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory)) : '/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory) %>" style="color: rgba(102, 126, 234, 0.9); text-decoration: none;">
+                                    <%= gameCategory %>
+                                </a>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 游戏描述 -->
+            <% if (game.detail) { %>
+                <div class="game-detail-content">
+                    <h2 class="game-detail-section-title"><%= typeof t !== 'undefined' ? t('game.gameIntroduction') : '游戏介绍' %></h2>
+                    <div class="game-detail-text">
+                        <% 
+                            // 格式化描述文本，将换行转换为段落
+                            const detailLines = game.detail.split('\n').filter(line => line.trim());
+                            let inParagraph = false;
+                            let skipNext = false;
+                            
+                            detailLines.forEach((line, index) => {
+                                const trimmedLine = line.trim();
+                                
+                                // 跳过一些元数据行和分隔符
+                                if (trimmedLine.includes('Games»') || 
+                                    trimmedLine === 'Share' ||
+                                    trimmedLine.includes('Developer') && !trimmedLine.includes(':') ||
+                                    trimmedLine.includes('Rating') && !trimmedLine.includes(':') ||
+                                    trimmedLine.includes('Released') && !trimmedLine.includes(':') ||
+                                    trimmedLine.includes('Technology') && !trimmedLine.includes(':') ||
+                                    trimmedLine.includes('Platform') && !trimmedLine.includes(':') ||
+                                    trimmedLine.includes('Wiki pages') ||
+                                    trimmedLine.match(/^[0-9]+$/) ||  // 纯数字
+                                    trimmedLine.length < 5) {
+                                    return;
+                                }
+                                
+                                // 如果是标题行（短且可能是标题，且没有标点符号）
+                                if (trimmedLine.length < 60 && 
+                                    !trimmedLine.includes('.') && 
+                                    !trimmedLine.includes(',') &&
+                                    !trimmedLine.includes('?') &&
+                                    !trimmedLine.includes('!') &&
+                                    trimmedLine.length > 10 &&
+                                    index < 15) {
+                                    if (inParagraph) {
+                                        inParagraph = false;
+                                        %>
+                                        </p>
+                                        <%
+                                    }
+                                    // 检查是否是常见的标题格式
+                                    if (trimmedLine.match(/^[A-Z][a-z]+ [A-Z][a-z]+/) || 
+                                        trimmedLine.match(/^[A-Z][a-z]+ [a-z]+ [A-Z]/) ||
+                                        trimmedLine.includes('How to') ||
+                                        trimmedLine.includes('Features') ||
+                                        trimmedLine.includes('Controls') ||
+                                        trimmedLine.includes('FAQ')) {
+                                        %>
+                                        <h3 class="game-detail-subtitle"><%= trimmedLine %></h3>
+                                        <%
+                                    }
+                                    return;
+                                }
+                                
+                                // 如果是段落内容（长度合理且有意义的文本）
+                                if (trimmedLine.length > 15) {
+                                    // 转义HTML特殊字符（除了我们允许的格式）
+                                    const escapedLine = trimmedLine
+                                        .replace(/&/g, '&amp;')
+                                        .replace(/</g, '&lt;')
+                                        .replace(/>/g, '&gt;')
+                                        .replace(/&lt;strong&gt;/g, '<strong>')
+                                        .replace(/&lt;\/strong&gt;/g, '</strong>');
+                                    
+                                    if (!inParagraph) {
+                                        inParagraph = true;
+                                        %>
+                                        <p>
+                                        <%
+                                    } else {
+                                        %>
+                                        <br><br>
+                                        <%
+                                    }
+                                    %>
+                                    <%- escapedLine %>
+                                    <%
+                                }
+                            });
+                            if (inParagraph) {
+                                %>
+                                </p>
+                                <%
+                            }
+                        %>
+                    </div>
+                </div>
+            <% } %>
+
+            <!-- 游戏特性 -->
+            <div class="game-features">
+                <h2 class="game-detail-section-title"><%= typeof t !== 'undefined' ? t('game.gameFeatures') : '游戏特性' %></h2>
+                <ul class="game-features-list">
+                    <li>✅ <%= typeof t !== 'undefined' ? t('game.features.free') : '免费在线游戏，无需下载' %></li>
+                    <li>✅ <%= typeof t !== 'undefined' ? t('game.features.crossPlatform') : '支持PC和移动端' %></li>
+                    <li>✅ <%= typeof t !== 'undefined' ? t('game.features.html5') : 'HTML5技术，即开即玩' %></li>
+                    <% if (gameCategory) { %>
+                        <li>✅ <%= typeof t !== 'undefined' ? t('game.features.category', { category: gameCategory }) : ('属于' + gameCategory + '分类') %></li>
+                    <% } %>
+                </ul>
+            </div>
+
+            <!-- 相关游戏推荐 -->
+            <% if (gameCategory) { %>
+                <div class="game-related">
+                    <h2 class="game-detail-section-title"><%= typeof t !== 'undefined' ? t('game.relatedGames') : '相关游戏推荐' %></h2>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory)) : '/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory) %>" class="more-btn">
+                            <%= typeof t !== 'undefined' ? t('game.viewAllInCategory', { category: gameCategory }) : ('查看 ' + gameCategory + ' 分类下的所有游戏 →') %>
+                        </a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 全屏功能
+    document.addEventListener('DOMContentLoaded', function() {
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const gameContainer = document.getElementById('gameContainer');
+        const gameIframe = document.getElementById('gameIframe');
+        
+        if (!fullscreenBtn || !gameContainer) return;
+        
+        const fullscreenText = '<%= typeof t !== "undefined" ? t("game.fullscreen") : "全屏" %>';
+        const exitFullscreenText = '<%= typeof t !== "undefined" ? t("game.exitFullscreen") : "退出全屏" %>';
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+                // 进入全屏
+                if (gameContainer.requestFullscreen) {
+                    gameContainer.requestFullscreen();
+                } else if (gameContainer.webkitRequestFullscreen) {
+                    gameContainer.webkitRequestFullscreen();
+                } else if (gameContainer.mozRequestFullScreen) {
+                    gameContainer.mozRequestFullScreen();
+                } else if (gameContainer.msRequestFullscreen) {
+                    gameContainer.msRequestFullscreen();
+                }
+            } else {
+                // 退出全屏
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+        
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        
+        // 监听全屏状态变化
+        function handleFullscreenChange() {
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                fullscreenBtn.textContent = '❌ ' + exitFullscreenText;
+                fullscreenBtn.classList.add('active');
+            } else {
+                fullscreenBtn.textContent = '⛶ ' + fullscreenText;
+                fullscreenBtn.classList.remove('active');
+            }
+        }
+        
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+        
+        // 键盘快捷键：F11 全屏，ESC 退出（浏览器默认处理）
+    });
+</script>
+
+<%- include('partials/footer') %>

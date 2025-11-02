@@ -1,0 +1,79 @@
+<%- include('partials/header', { 
+    pageTitle: typeof t !== 'undefined' ? t('home.title') : 'Ice Breaker Games - 免费在线HTML5游戏平台',
+    metaDescription: typeof t !== 'undefined' ? t('home.description') : 'Ice Breaker Games - 免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩，随时随地享受游戏乐趣。',
+    metaKeywords: typeof t !== 'undefined' ? t('home.keywords') : 'ice breaker games, multiplayer games, online games, fun games, party games, HTML5 games',
+    canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/') : 'https://www.icebreakgame.com/'
+}) %>
+
+<!-- 主内容区 -->
+<div class="main-content">
+    <!-- 左侧导航栏 -->
+    <nav class="sidebar">
+        <ul class="nav-menu">
+            <% categories.forEach(category => { %>
+                <li class="nav-item">
+                    <a href="#category-<%= category.replace(/\s+/g, '-') %>" class="nav-link" data-category="<%= category %>">
+                        <span class="nav-icon"><%= getCategoryIcon(category) %></span>
+                        <span><%= category %></span>
+                    </a>
+                </li>
+            <% }); %>
+        </ul>
+
+        <!-- 游戏列表区（左侧下方） -->
+        <div class="sidebar-games">
+            <div class="sidebar-games-title"><%= typeof t !== 'undefined' ? t('home.sidebarTitle') : 'Ice Breaker Games' %></div>
+            <div class="sidebar-games-intro">
+                <p style="margin-bottom: 0.75rem;"><%= typeof t !== 'undefined' ? t('home.sidebarIntro') : '免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩，随时随地享受游戏乐趣。' %></p>
+                <p style="margin-bottom: 0.75rem; font-weight: 600; color: rgba(255, 255, 255, 0.9);">🎮 <%= typeof t !== 'undefined' ? t('home.gameCategories') : '游戏分类：' %></p>
+                <div style="font-size: 0.8rem; line-height: 1.6;">
+                    <% categories.forEach(category => { %>
+                        <div style="margin-bottom: 0.5rem;">
+                            <%= getCategoryIcon(category) %> <strong><%= category %></strong> - 
+                            <% 
+                                const categoryData = gameData.find(item => item.category === category);
+                                const gameCount = categoryData ? categoryData.games.length : 0;
+                            %>
+                            <%= gameCount %><%= typeof t !== 'undefined' ? t('home.gamesCount') : '款游戏' %>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 右侧内容区 -->
+    <div class="content-area">
+        <% gameData.forEach(categoryItem => { %>
+            <% if (categoryItem.category && categoryItem.games && categoryItem.games.length > 0) { %>
+                <% const displayGames = categoryItem.games.slice(0, 12); %>
+                <div class="category-section" id="category-<%= categoryItem.category.replace(/\s+/g, '-') %>">
+                    <div class="category-header">
+                        <h2 class="category-title"><%= categoryItem.category %></h2>
+                        <% if (categoryItem.games.length > 12) { %>
+                            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(categoryItem.originalCategory || categoryItem.category)) : '/category/' + encodeURIComponent(categoryItem.originalCategory || categoryItem.category) %>" class="more-btn"><%= typeof t !== 'undefined' ? t('common.more') + ' →' : '更多 →' %></a>
+                        <% } %>
+                    </div>
+                    <div class="games-grid">
+                        <% displayGames.forEach(game => { %>
+                            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/game?name=' + encodeURIComponent(game.name) + '&link=' + encodeURIComponent(game.link || '') + '&href=' + encodeURIComponent(game.href || '') + '&category=' + encodeURIComponent(categoryItem.originalCategory || categoryItem.category)) : '/game?name=' + encodeURIComponent(game.name) + '&link=' + encodeURIComponent(game.link || '') + '&href=' + encodeURIComponent(game.href || '') + '&category=' + encodeURIComponent(categoryItem.originalCategory || categoryItem.category) %>" 
+                               class="game-card">
+                                <% if (game.icon) { %>
+                                    <img src="<%= game.icon %>" alt="<%= game.name %>" class="game-card-image" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;game-card-image&quot;>🎮</div><div class=&quot;game-card-info&quot;><div class=&quot;game-card-name&quot;><%- game.name %></div></div>'">
+                                <% } else { %>
+                                    <div class="game-card-image">🎮</div>
+                                <% } %>
+                                <div class="game-card-info">
+                                    <div class="game-card-name"><%- game.name %></div>
+                                </div>
+                            </a>
+                        <% }); %>
+                    </div>
+                </div>
+            <% } %>
+        <% }); %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
+

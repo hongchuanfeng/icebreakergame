@@ -1,0 +1,45 @@
+百度AI开放平台使用OAuth2.0授权调用开放API，调用API时必须在URL中带上Access_token参数，Access token默认有效期为30天，获取Access_token的流程如下：
+
+请求URL数据格式
+向授权服务地址https://aip.baidubce.com/oauth/2.0/token发送请求（推荐使用POST），并在URL中带上以下参数：
+
+grant_type： 必须参数，固定为client_credentials；
+client_id： 必须参数，应用的API Key, vUi8ehLSHu6FwdGZxpACv7bo
+client_secret： 必须参数，应用的Secret Key, TlLaapNfsJ6gyNnb6USPDsPznRcKVYJk
+
+
+https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=Va5yQRHlA4Fq5eR3LT0vuXV4&client_secret=0rDSjzQ20XUj5itV6WRtznPQSzr5pVw2&
+
+
+文本翻译-通用版
+HTTP 方法：
+请求 URL：
+URL 参数：
+参数 值
+access_token 通过API Key和Secret Key获取的access_token,参考“Access Token获取”
+Header 如下：
+参数 值
+Content-Type application/json;charset=utf-8
+Body中放置请求参数，参数详情如下：
+请求参数
+POST
+https://aip.baidubce.com/rpc/2.0/mt/texttrans/v1
+
+
+{"q":"hello" ,"from":"en","to":"zh","termlds":"xx1,xx2"}
+
+返回值：
+
+{
+    "result": {
+        "trans_result":[
+            {
+                "dst":"你好"，
+                "src": "hello"
+            }
+        ],
+        "from": "en",
+        "to": "zh"
+    },
+    "log_id":1413395986911332328
+}
