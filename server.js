@@ -34,6 +34,17 @@ app.get('/robots.txt', (req, res) => {
   }
 });
 
+// sitemap.xml 路由（必须在多语言中间件之前定义，用于搜索引擎网站地图）
+app.get('/sitemap.xml', (req, res) => {
+  const sitemapFilePath = path.join(__dirname, 'sitemap.xml');
+  if (fs.existsSync(sitemapFilePath)) {
+    res.type('application/xml');
+    res.sendFile(sitemapFilePath);
+  } else {
+    res.status(404).send('Not Found');
+  }
+});
+
 // ads.txt 路由（必须在多语言中间件之前定义，用于广告联盟验证）
 app.get('/ads.txt', (req, res) => {
   const adsFilePath = path.join(__dirname, 'ads.txt');
@@ -694,5 +705,6 @@ app.listen(PORT, () => {
   console.log(`  - GET /crazy.json - 兼容接口`);
   console.log(`📋 其他:`);
   console.log(`  - GET /robots.txt - 搜索引擎爬虫规则文件`);
+  console.log(`  - GET /sitemap.xml - 网站地图文件（SEO）`);
   console.log(`  - GET /ads.txt - 广告联盟验证文件`);
 });
