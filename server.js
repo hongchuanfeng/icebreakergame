@@ -98,13 +98,15 @@ app.get('/set-locale/:locale', (req, res) => {
       search = '';
     }
     
-    // 移除现有的语言前缀
+    // 移除现有的语言前缀（大小写不敏感）
     let cleanPath = pathname;
     for (const loc of SUPPORTED_LOCALES) {
-      if (cleanPath.startsWith(`/${loc}/`)) {
-        cleanPath = cleanPath.replace(`/${loc}/`, '/');
+      const locLower = String(loc).toLowerCase();
+      const lowerPath = cleanPath.toLowerCase();
+      if (lowerPath.startsWith(`/${locLower}/`)) {
+        cleanPath = '/' + cleanPath.substring(loc.length + 2); // 移除 '/{loc}/'
         break;
-      } else if (cleanPath === `/${loc}`) {
+      } else if (lowerPath === `/${locLower}`) {
         cleanPath = '/';
         break;
       }
@@ -190,9 +192,12 @@ function translateCategories(data, locale) {
 
 // 多语言中间件：检测和设置语言
 app.use((req, res, next) => {
-  // 从 URL 路径中提取语言代码（如果存在）
-  const pathLocale = req.path.split('/')[1];
-  let locale = pathLocale && SUPPORTED_LOCALES.includes(pathLocale) ? pathLocale : null;
+  // 从 URL 路径中提取语言代码（如果存在，兼容大小写）
+  const pathLocaleRaw = req.path.split('/')[1] || '';
+  const pathLocaleLower = pathLocaleRaw.toLowerCase();
+  let locale = null;
+  if (pathLocaleLower === 'zh-cn') locale = 'zh-CN';
+  else if (pathLocaleLower === 'en') locale = 'en';
   
   // 如果没有在 URL 中，则使用检测逻辑
   if (!locale) {
@@ -232,9 +237,12 @@ app.use((req, res, next) => {
     let cleanPath = pathPart.startsWith('/') ? pathPart : '/' + pathPart;
     const pathParts = cleanPath.split('/').filter(p => p);
     
-    // 如果第一个部分是语言代码，移除它
-    if (pathParts.length > 0 && SUPPORTED_LOCALES.includes(pathParts[0])) {
-      pathParts.shift();
+    // 如果第一个部分是语言代码，移除它（大小写不敏感）
+    if (pathParts.length > 0) {
+      const first = (pathParts[0] || '').toLowerCase();
+      if (first === 'en' || first === 'zh-cn') {
+        pathParts.shift();
+      }
     }
     
     // 构建基础路径
