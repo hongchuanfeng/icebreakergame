@@ -10,11 +10,13 @@
     <!-- 左侧导航栏 -->
     <nav class="sidebar">
         <ul class="nav-menu">
-            <% categories.forEach(category => { %>
+            <% (gameData || []).forEach(function(categoryItem){
+                const displayCategory = categoryItem && categoryItem.category ? categoryItem.category : '';
+            %>
                 <li class="nav-item">
-                    <a href="#category-<%= category.replace(/\s+/g, '-') %>" class="nav-link" data-category="<%= category %>">
-                        <span class="nav-icon"><%= getCategoryIcon(category) %></span>
-                        <span><%= category %></span>
+                    <a href="#category-<%= (displayCategory || '').replace(/\s+/g, '-') %>" class="nav-link" data-category="<%= displayCategory %>">
+                        <span class="nav-icon"><%= getCategoryIcon(displayCategory) %></span>
+                        <span><%= displayCategory %></span>
                     </a>
                 </li>
             <% }); %>
@@ -27,13 +29,12 @@
                 <p style="margin-bottom: 0.75rem;"><%= typeof t !== 'undefined' ? t('home.sidebarIntro') : '免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩，随时随地享受游戏乐趣。' %></p>
                 <p style="margin-bottom: 0.75rem; font-weight: 600; color: rgba(255, 255, 255, 0.9);">🎮 <%= typeof t !== 'undefined' ? t('home.gameCategories') : '游戏分类：' %></p>
                 <div style="font-size: 0.8rem; line-height: 1.6;">
-                    <% categories.forEach(category => { %>
+                    <% (gameData || []).forEach(function(categoryItem){
+                        const displayCategory = categoryItem && categoryItem.category ? categoryItem.category : '';
+                        const gameCount = (categoryItem && categoryItem.games) ? categoryItem.games.length : 0;
+                    %>
                         <div style="margin-bottom: 0.5rem;">
-                            <%= getCategoryIcon(category) %> <strong><%= category %></strong> - 
-                            <% 
-                                const categoryData = gameData.find(item => item.category === category);
-                                const gameCount = categoryData ? categoryData.games.length : 0;
-                            %>
+                            <%= getCategoryIcon(displayCategory) %> <strong><%= displayCategory %></strong> - 
                             <%= gameCount %><%= typeof t !== 'undefined' ? t('home.gamesCount') : '款游戏' %>
                         </div>
                     <% }); %>
