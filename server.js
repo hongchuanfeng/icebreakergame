@@ -208,14 +208,22 @@ function translateCategories(data, locale) {
   
   return data.map(item => {
     if (item.category) {
-      // 保存原始 category
+      // 保存原始 category（第一次调用时 originalCategory 可能不存在，使用 item.category）
       const originalCategory = item.originalCategory || item.category;
       
-      const translatedCategory = t(locale, `categories.${originalCategory}`, {});
-      // 如果没有找到翻译，返回原值
-      const finalCategory = translatedCategory === `categories.${originalCategory}` 
+      // 尝试翻译
+      const translationKey = `categories.${originalCategory}`;
+      const translatedCategory = t(locale, translationKey, {});
+      
+      // 如果翻译失败（返回的是 key 本身），使用原值
+      const finalCategory = (translatedCategory === translationKey) 
         ? originalCategory 
         : translatedCategory;
+      
+      // 调试日志（生产环境可以注释掉）
+      if (locale === 'zh-CN' && finalCategory === originalCategory && originalCategory !== 'Mini Games') {
+        console.log(`[TranslateCategories] Warning: Failed to translate "${originalCategory}" for locale ${locale}`);
+      }
       
       return {
         ...item,
@@ -231,23 +239,36 @@ function translateCategories(data, locale) {
 app.use((req, res, next) => {
   // 从 URL 路径中提取语言代码（如果存在，兼容大小写，兼容 originalUrl）
   const urlToParse = (req.originalUrl || req.url || req.path || '/');
-  const first = (urlToParse.split('?')[0] || '/').split('/')[1] || '';
+  const pathWithoutQuery = (urlToParse.split('?')[0] || '/');
+  const first = (pathWithoutQuery.split('/').filter(p => p)[0] || '').trim();
   const pathLocaleLower = first.toLowerCase();
   let locale = null;
-  if (pathLocaleLower === 'zh-cn') locale = 'zh-CN';
-  else if (pathLocaleLower === 'en') locale = 'en';
   
-  // 如果没有在 URL 中，则使用检测逻辑
+  // 优先从 URL 路径识别语言
+  if (pathLocaleLower === 'zh-cn') {
+    locale = 'zh-CN';
+  } else if (pathLocaleLower === 'en') {
+    locale = 'en';
+  }
+  
+  // 如果没有在 URL 中，则使用检测逻辑（Cookie > Accept-Language > 默认）
   if (!locale) {
     locale = detectLocale(req);
   }
   
-  // 如果 URL 明确是 zh-CN，但 locale 未识别，强制设为 zh-CN（兜底）
+  // 最终兜底：如果还是没识别到，且 URL 路径明确包含 zh-CN，强制设为 zh-CN
+  if (!locale && pathLocaleLower === 'zh-cn') {
+    locale = 'zh-CN';
+  }
+  
+  // 如果还是 null，使用默认语言
   if (!locale) {
-    const firstSeg = ((req.originalUrl || req.url || req.path || '/').split('?')[0] || '/').split('/')[1] || '';
-    if (firstSeg.toLowerCase() === 'zh-cn') {
-      locale = 'zh-CN';
-    }
+    locale = DEFAULT_LOCALE;
+  }
+
+  // 调试日志（生产环境可以注释掉）
+  if (pathLocaleLower === 'zh-cn' || req.cookies?.locale === 'zh-CN') {
+    console.log(`[Locale Middleware] URL: ${req.originalUrl || req.url}, Path: ${req.path}, First segment: "${first}", Detected locale: ${locale}, Cookie locale: ${req.cookies?.locale || 'none'}`);
   }
 
   // 将语言代码存储到 req 和 res.locals
@@ -255,7 +276,7 @@ app.use((req, res, next) => {
   res.locals.locale = locale;
   res.locals.supportedLocales = SUPPORTED_LOCALES;
   res.locals.defaultLocale = DEFAULT_LOCALE;
-  try { res.setHeader('Content-Language', locale || DEFAULT_LOCALE); } catch (e) {}
+  try { res.setHeader('Content-Language', locale); } catch (e) {}
   
   // 设置翻译函数到 res.locals，模板中可以直接使用 t()
   res.locals.t = function(key, params = {}) {
@@ -336,11 +357,20 @@ function createLocaleRoutes(basePath, handler) {
 // SSR 路由：主页
 createLocaleRoutes('/', (req, res) => {
   const data = getGameData();
-  const locale = req.locale;
+  const locale = req.locale || DEFAULT_LOCALE;
+  
+  // 调试日志
+  console.log(`[Index Route] Locale: ${locale}, Path: ${req.path}, OriginalUrl: ${req.originalUrl}`);
   
   // 翻译 categories 用于显示
   const translatedData = translateCategories(data, locale);
   const categories = getCategories(translatedData);
+  
+  // 调试日志：检查前几个分类是否翻译成功
+  if (locale === 'zh-CN' && categories.length > 0) {
+    console.log(`[Index Route] First 3 categories: ${categories.slice(0, 3).join(', ')}`);
+    console.log(`[Index Route] First translated item category: ${translatedData[0]?.category || 'N/A'}`);
+  }
   
   res.render('index', {
     gameData: translatedData,
