@@ -27,6 +27,34 @@ app.use(express.urlencoded({ extended: true }));
 // 解析 Cookie
 app.use(cookieParser());
 
+// 统一 URL 语言前缀大小写（如 /zh-cn -> /zh-CN），避免路由与检测不一致
+app.use((req, res, next) => {
+  const firstSeg = (req.path.split('/')[1] || '').trim();
+  if (!firstSeg) return next();
+  const lower = firstSeg.toLowerCase();
+  if (lower === 'zh-cn' && firstSeg !== 'zh-CN') {
+    const rest = req.url.slice(firstSeg.length + 1); // 保留后续路径与查询
+    return res.redirect(301, '/zh-CN' + (rest || ''));
+  }
+  if (lower === 'en' && firstSeg !== 'en') {
+    const rest = req.url.slice(firstSeg.length + 1);
+    return res.redirect(301, '/en' + (rest || ''));
+  }
+  next();
+});
+
+// 提示中间层按语言与 Cookie 区分缓存，避免生产缓存导致语言不一致
+app.use((req, res, next) => {
+  try {
+    const existingVary = res.getHeader('Vary');
+    const varyValue = existingVary ? String(existingVary) + ', Accept-Language, Cookie' : 'Accept-Language, Cookie';
+    res.setHeader('Vary', varyValue);
+  } catch (e) {}
+  // SSR 页面不应被长期缓存
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  next();
+});
+
 // robots.txt 路由（必须在多语言中间件之前定义，用于搜索引擎爬虫）
 app.get('/robots.txt', (req, res) => {
   const robotsFilePath = path.join(__dirname, 'robots.txt');
@@ -192,9 +220,10 @@ function translateCategories(data, locale) {
 
 // 多语言中间件：检测和设置语言
 app.use((req, res, next) => {
-  // 从 URL 路径中提取语言代码（如果存在，兼容大小写）
-  const pathLocaleRaw = req.path.split('/')[1] || '';
-  const pathLocaleLower = pathLocaleRaw.toLowerCase();
+  // 从 URL 路径中提取语言代码（如果存在，兼容大小写，兼容 originalUrl）
+  const urlToParse = (req.originalUrl || req.url || req.path || '/');
+  const first = (urlToParse.split('?')[0] || '/').split('/')[1] || '';
+  const pathLocaleLower = first.toLowerCase();
   let locale = null;
   if (pathLocaleLower === 'zh-cn') locale = 'zh-CN';
   else if (pathLocaleLower === 'en') locale = 'en';
