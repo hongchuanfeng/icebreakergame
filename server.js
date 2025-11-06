@@ -7,6 +7,10 @@ const { t, detectLocale, SUPPORTED_LOCALES, DEFAULT_LOCALE } = require('./utils/
 const { translateLongText } = require('./utils/translate');
 
 const app = express();
+
+// 生产环境常见：在反向代理（如 Nginx/Cloudflare）后面运行，启用 trust proxy
+// 这样 req.secure 才能在 HTTPS 场景下正确为 true，用于设置安全 Cookie
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 // 设置视图引擎为 EJS
@@ -62,8 +66,15 @@ app.get('/set-locale/:locale', (req, res) => {
   let referer = req.get('Referer') || '/';
   
   if (SUPPORTED_LOCALES.includes(locale)) {
-    // 设置 Cookie，有效期 1 年
-    res.cookie('locale', locale, { maxAge: 365 * 24 * 60 * 60 * 1000, httpOnly: false });
+    // 设置 Cookie（生产环境：在 HTTPS + 反向代理下，需开启 secure）
+    const isSecure = req.secure || (req.headers['x-forwarded-proto'] === 'https');
+    res.cookie('locale', locale, {
+      maxAge: 365 * 24 * 60 * 60 * 1000,
+      httpOnly: false,
+      path: '/',
+      sameSite: 'lax',
+      secure: !!isSecure
+    });
     
     // 从 referer 中提取路径和查询参数
     let pathname = '/';
