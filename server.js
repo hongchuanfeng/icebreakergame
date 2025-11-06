@@ -255,6 +255,7 @@ app.use((req, res, next) => {
   res.locals.locale = locale;
   res.locals.supportedLocales = SUPPORTED_LOCALES;
   res.locals.defaultLocale = DEFAULT_LOCALE;
+  try { res.setHeader('Content-Language', locale || DEFAULT_LOCALE); } catch (e) {}
   
   // 设置翻译函数到 res.locals，模板中可以直接使用 t()
   res.locals.t = function(key, params = {}) {
