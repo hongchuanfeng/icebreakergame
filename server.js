@@ -156,10 +156,19 @@ app.get('/set-locale/:locale', (req, res) => {
     
     // 添加查询参数
     redirectUrl += search;
-    
-    res.redirect(redirectUrl);
+
+    // 生成绝对 URL，避免在部分平台/代理下相对重定向异常
+    const proto = (req.secure || (req.headers['x-forwarded-proto'] === 'https')) ? 'https' : 'http';
+    const host = req.headers.host;
+    const absoluteUrl = `${proto}://${host}${redirectUrl}`;
+
+    // 语言切换不缓存，并使用 303 显式指示 GET 跳转
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    return res.redirect(303, absoluteUrl);
   } else {
-    res.redirect(referer.startsWith('http') ? referer : '/');
+    const fallback = referer.startsWith('http') ? referer : '/';
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    return res.redirect(303, fallback);
   }
 });
 
@@ -233,6 +242,14 @@ app.use((req, res, next) => {
     locale = detectLocale(req);
   }
   
+  // 如果 URL 明确是 zh-CN，但 locale 未识别，强制设为 zh-CN（兜底）
+  if (!locale) {
+    const firstSeg = ((req.originalUrl || req.url || req.path || '/').split('?')[0] || '/').split('/')[1] || '';
+    if (firstSeg.toLowerCase() === 'zh-cn') {
+      locale = 'zh-CN';
+    }
+  }
+
   // 将语言代码存储到 req 和 res.locals
   req.locale = locale;
   res.locals.locale = locale;
