@@ -357,7 +357,17 @@ function createLocaleRoutes(basePath, handler) {
 // SSR 路由：主页
 createLocaleRoutes('/', (req, res) => {
   const data = getGameData();
-  const locale = req.locale || DEFAULT_LOCALE;
+  const rawPath = (req.originalUrl || req.url || req.path || '/').split('?')[0].toLowerCase();
+  let locale = req.locale || DEFAULT_LOCALE;
+  if (rawPath === '/zh-cn' || rawPath.startsWith('/zh-cn/')) {
+    locale = 'zh-CN';
+    req.locale = 'zh-CN';
+    res.locals.locale = 'zh-CN';
+  } else if (rawPath === '/en' || rawPath.startsWith('/en/')) {
+    locale = 'en';
+    req.locale = 'en';
+    res.locals.locale = 'en';
+  }
   
   // 调试日志
   console.log(`[Index Route] Locale: ${locale}, Path: ${req.path}, OriginalUrl: ${req.originalUrl}`);
@@ -376,6 +386,7 @@ createLocaleRoutes('/', (req, res) => {
     gameData: translatedData,
     categories: categories,
     searchQuery: '',
+    locale: locale,
     pageTitle: t(locale, 'home.title'),
     metaDescription: t(locale, 'home.description'),
     metaKeywords: t(locale, 'home.keywords')
