@@ -57,7 +57,7 @@
                     </div>
                     <div class="games-grid">
                         <% displayGames.forEach(game => { %>
-                            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/game?name=' + encodeURIComponent(game.name) + '&link=' + encodeURIComponent(game.link || '') + '&href=' + encodeURIComponent(game.href || '') + '&category=' + encodeURIComponent(categoryItem.originalCategory || categoryItem.category)) : '/game?name=' + encodeURIComponent(game.name) + '&link=' + encodeURIComponent(game.link || '') + '&href=' + encodeURIComponent(game.href || '') + '&category=' + encodeURIComponent(categoryItem.originalCategory || categoryItem.category) %>" 
+                            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/game?categoryId=' + (categoryItem.id || categoryItem.originalId || '') + '&gameId=' + (game.id || '')) : '/game?categoryId=' + (categoryItem.id || categoryItem.originalId || '') + '&gameId=' + (game.id || '') %>" 
                                class="game-card">
                                 <% if (game.icon) { %>
                                     <img src="<%= game.icon %>" alt="<%= game.name %>" class="game-card-image" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;game-card-image&quot;>🎮</div><div class=&quot;game-card-info&quot;><div class=&quot;game-card-name&quot;><%- game.name %></div></div>'">

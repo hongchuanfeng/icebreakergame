@@ -1,0 +1,11 @@
+将项目中的翻译改为腾讯云翻译接口,接口文档如下：
+https://cloud.tencent.com/document/product/551/15619
+
+参数认证文档：
+https://cloud.tencent.com/document/api/551/15615
+
+所需的参数在.env.local文件中，请参考.env.local的参数，
+
+如果缺少参数，请列出来。
+
+请实现。

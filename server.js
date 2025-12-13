@@ -1,10 +1,14 @@
+// 加载环境变量（优先加载.env.local，如果不存在则加载.env）
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env.local') });
+require('dotenv').config(); // 如果.env.local不存在，尝试加载.env
+
 const express = require('express');
 const fs = require('fs');
-const path = require('path');
 const cookieParser = require('cookie-parser');
 const { getCategoryIcon } = require('./utils/helpers');
 const { t, detectLocale, SUPPORTED_LOCALES, DEFAULT_LOCALE } = require('./utils/i18n');
-const { translateLongText } = require('./utils/translate');
+const { translateLongText, translateText } = require('./utils/translate');
 
 const app = express();
 
@@ -12,6 +16,7 @@ const app = express();
 // 这样 req.secure 才能在 HTTPS 场景下正确为 true，用于设置安全 Cookie
 app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
+const categoryTranslationCache = new Map();
 
 // 设置视图引擎为 EJS
 app.set('view engine', 'ejs');
@@ -235,6 +240,63 @@ function translateCategories(data, locale) {
   });
 }
 
+async function translateCategoriesWithApi(data, locale) {
+  if (!data || !Array.isArray(data)) {
+    return { translatedData: data || [], translatedCategories: [] };
+  }
+
+  const originalData = data.map(item => ({
+    ...item,
+    originalCategory: item.originalCategory || item.category
+  }));
+
+  const uniqueCategories = [...new Set(originalData.map(item => item.originalCategory).filter(Boolean))];
+  const translationMap = {};
+
+  if (uniqueCategories.length === 0) {
+    return { translatedData: originalData, translatedCategories: [] };
+  }
+
+  for (const category of uniqueCategories) {
+    const cacheKey = `${locale}::${category}`;
+    if (categoryTranslationCache.has(cacheKey)) {
+      translationMap[category] = categoryTranslationCache.get(cacheKey);
+      continue;
+    }
+
+    try {
+      const translated = await translateText(category, locale);
+      if (translated && translated.trim() && translated.toLowerCase() !== category.toLowerCase()) {
+        translationMap[category] = translated.trim();
+        categoryTranslationCache.set(cacheKey, translated.trim());
+      } else {
+        translationMap[category] = category;
+        categoryTranslationCache.set(cacheKey, category);
+      }
+    } catch (error) {
+      console.error(`[translateCategoriesWithApi] Failed to translate category "${category}": ${error.message}`);
+      translationMap[category] = category;
+      categoryTranslationCache.set(cacheKey, category);
+    }
+  }
+
+  const translatedData = originalData.map(item => {
+    const translatedCategory = translationMap[item.originalCategory] || item.originalCategory;
+    return {
+      ...item,
+      category: translatedCategory,
+      originalCategory: item.originalCategory
+    };
+  });
+
+  const translatedCategories = [...new Set(translatedData.map(item => item.category).filter(Boolean))];
+
+  return {
+    translatedData,
+    translatedCategories
+  };
+}
+
 // 多语言中间件：检测和设置语言
 app.use((req, res, next) => {
   // 从 URL 路径中提取语言代码（如果存在，兼容大小写，兼容 originalUrl）
@@ -355,7 +417,7 @@ function createLocaleRoutes(basePath, handler) {
 }
 
 // SSR 路由：主页
-createLocaleRoutes('/', (req, res) => {
+createLocaleRoutes('/', async (req, res) => {
   const data = getGameData();
   const rawPath = (req.originalUrl || req.url || req.path || '/').split('?')[0].toLowerCase();
   let locale = req.locale || DEFAULT_LOCALE;
@@ -372,9 +434,24 @@ createLocaleRoutes('/', (req, res) => {
   // 调试日志
   console.log(`[Index Route] Locale: ${locale}, Path: ${req.path}, OriginalUrl: ${req.originalUrl}`);
   
-  // 翻译 categories 用于显示
-  const translatedData = translateCategories(data, locale);
-  const categories = getCategories(translatedData);
+  let translatedData = [];
+  let categories = [];
+
+  if (locale === 'zh-CN') {
+    try {
+      const { translatedData: apiData, translatedCategories } = await translateCategoriesWithApi(data, locale);
+      translatedData = apiData;
+      categories = translatedCategories;
+    } catch (error) {
+      console.error(`[Index Route] translateCategoriesWithApi failed: ${error.message}`);
+      const fallbackData = translateCategories(data, locale);
+      translatedData = fallbackData;
+      categories = getCategories(fallbackData);
+    }
+  } else {
+    translatedData = translateCategories(data, locale);
+    categories = getCategories(translatedData);
+  }
   
   // 调试日志：检查前几个分类是否翻译成功
   if (locale === 'zh-CN' && categories.length > 0) {
@@ -415,7 +492,8 @@ createLocaleRoutes('/search', (req, res) => {
             searchResults.push({
               ...game,
               category: translatedCategory,
-              originalCategory: categoryItem.category
+              originalCategory: categoryItem.category,
+              categoryId: categoryItem.id // 添加分类ID用于SEO友好的URL
             });
           }
         });
@@ -433,9 +511,14 @@ createLocaleRoutes('/search', (req, res) => {
 // SSR 路由：游戏详情页面
 createLocaleRoutes('/game', async (req, res) => {
   const locale = req.locale;
+  const categoryId = req.query.categoryId;
+  const gameId = req.query.gameId;
+  
+  // 兼容旧版本：如果使用name参数，尝试查找对应的id
   const gameName = req.query.name;
-  if (!gameName) {
-    return res.status(400).send(locale === 'zh-CN' ? '游戏名称不能为空' : 'Game name cannot be empty');
+  
+  if (!gameId && !gameName) {
+    return res.status(400).send(locale === 'zh-CN' ? '游戏ID不能为空' : 'Game ID cannot be empty');
   }
   
   const data = getGameData();
@@ -443,36 +526,35 @@ createLocaleRoutes('/game', async (req, res) => {
   
   // 查找游戏
   let game = null;
-  let originalGameCategory = req.query.category || '';
+  let originalGameCategory = '';
   let gameCategory = '';
   
-  for (const categoryItem of data) {
-    if (categoryItem.games && Array.isArray(categoryItem.games)) {
-      const foundGame = categoryItem.games.find(g => g.name === gameName);
-      if (foundGame) {
-        game = foundGame;
+  // 优先使用id查找（SEO友好）
+  if (categoryId && gameId) {
+    const categoryItem = data.find(cat => cat.id === parseInt(categoryId));
+    if (categoryItem && categoryItem.games && Array.isArray(categoryItem.games)) {
+      game = categoryItem.games.find(g => g.id === parseInt(gameId));
+      if (game) {
         originalGameCategory = categoryItem.category;
         // 翻译 category 用于显示
         const translated = t(locale, `categories.${categoryItem.category}`, {});
         gameCategory = translated !== `categories.${categoryItem.category}` ? translated : categoryItem.category;
-        break;
       }
     }
   }
   
-  // 如果通过 category 参数查找不到，尝试匹配翻译后的 category
-  if (!game && originalGameCategory) {
+  // 如果通过id找不到，且提供了name参数（兼容旧链接）
+  if (!game && gameName) {
     for (const categoryItem of data) {
-      const translated = t(locale, `categories.${categoryItem.category}`, {});
-      if (translated === originalGameCategory || categoryItem.category === originalGameCategory) {
-        if (categoryItem.games && Array.isArray(categoryItem.games)) {
-          const foundGame = categoryItem.games.find(g => g.name === gameName);
-          if (foundGame) {
-            game = foundGame;
-            originalGameCategory = categoryItem.category;
-            gameCategory = translated !== `categories.${categoryItem.category}` ? translated : categoryItem.category;
-            break;
-          }
+      if (categoryItem.games && Array.isArray(categoryItem.games)) {
+        const foundGame = categoryItem.games.find(g => g.name === gameName);
+        if (foundGame) {
+          game = foundGame;
+          originalGameCategory = categoryItem.category;
+          // 翻译 category 用于显示
+          const translated = t(locale, `categories.${categoryItem.category}`, {});
+          gameCategory = translated !== `categories.${categoryItem.category}` ? translated : categoryItem.category;
+          break;
         }
       }
     }
@@ -522,32 +604,118 @@ createLocaleRoutes('/game', async (req, res) => {
   }
   
   const pageTitle = t(locale, 'game.title', { gameName: game.name });
+  // 使用id生成canonical URL（SEO友好）
+  const categoryIdForUrl = categoryId || (data.find(cat => cat.games && cat.games.some(g => g.id === game.id))?.id);
+  const gameIdForUrl = gameId || game.id;
   const canonicalUrl = locale === DEFAULT_LOCALE 
-    ? `https://www.icebreakgame.com/game?name=${encodeURIComponent(game.name)}`
-    : `https://www.icebreakgame.com/${locale}/game?name=${encodeURIComponent(game.name)}`;
+    ? `https://www.icebreakgame.com/game?categoryId=${categoryIdForUrl}&gameId=${gameIdForUrl}`
+    : `https://www.icebreakgame.com/${locale}/game?categoryId=${categoryIdForUrl}&gameId=${gameIdForUrl}`;
   
   // 翻译游戏详情（如果是中文语言环境且 detail 是英文）
   // 注意：可以通过环境变量 ENABLE_TRANSLATION=false 来禁用翻译功能
   const enableTranslation = process.env.ENABLE_TRANSLATION !== 'false';
   let finalGame = game;
+  let translationInProgress = false;
   
+  // 详细的调试日志
+  console.log(`[Translation Debug] ==========================================`);
+  console.log(`[Translation Debug] Game: ${game.name}`);
+  console.log(`[Translation Debug] Locale: ${locale}`);
+  console.log(`[Translation Debug] ENABLE_TRANSLATION env: ${process.env.ENABLE_TRANSLATION}`);
+  console.log(`[Translation Debug] enableTranslation flag: ${enableTranslation}`);
+  console.log(`[Translation Debug] game.detail exists: ${!!game.detail}`);
+  console.log(`[Translation Debug] game.detail length: ${game.detail ? game.detail.length : 0}`);
+  if (game.detail) {
+    console.log(`[Translation Debug] game.detail preview (first 200 chars): ${game.detail.substring(0, 200)}`);
+  }
+  console.log(`[Translation Debug] Condition check: enableTranslation=${enableTranslation}, locale==='zh-CN'=${locale === 'zh-CN'}, game.detail=${!!game.detail}`);
+  console.log(`[Translation Debug] Will translate: ${enableTranslation && locale === 'zh-CN' && game.detail}`);
+  
+  // 优化：不等待翻译完成，先返回页面，翻译在后台进行
+  // 客户端通过AJAX异步加载翻译后的内容
   if (enableTranslation && locale === 'zh-CN' && game.detail) {
+    // 标记翻译正在进行中
+    translationInProgress = true;
+    
+    // 在后台异步进行翻译，不阻塞页面渲染
+    (async () => {
+      console.log(`[Translation] Starting background translation for game: ${game.name}, detail length: ${game.detail.length}`);
+      const startTime = Date.now();
+      try {
+        const translatedDetail = await translateLongText(game.detail, locale);
+        const duration = Date.now() - startTime;
+        console.log(`[Translation] Background translation completed for game: ${game.name} in ${duration}ms`);
+        
+        if (translatedDetail && translatedDetail !== game.detail && translatedDetail.length > 0) {
+          console.log(`[Translation] ✓ Background translation successful, result length: ${translatedDetail.length}`);
+          // 翻译结果会缓存在 translateLongText 中，客户端可以通过API获取
+        } else {
+          console.log(`[Translation] ⚠️ Background translation returned original or empty text`);
+        }
+      } catch (err) {
+        const duration = Date.now() - startTime;
+        console.error(`[Translation] ✗ Background translation failed for game: ${game.name} after ${duration}ms`);
+        console.error(`[Translation] Error message: ${err.message}`);
+      }
+    })();
+    
+    // 不等待翻译完成，直接使用原文渲染页面
+    console.log(`[Translation] Page will render with original text, translation will be loaded asynchronously`);
+  }
+  
+  // 旧的同步翻译逻辑（已禁用，改为异步）
+  if (false && enableTranslation && locale === 'zh-CN' && game.detail) {
     console.log(`[Translation] Starting translation for game: ${game.name}, detail length: ${game.detail.length}`);
+    const startTime = Date.now();
     try {
-      // 异步翻译 detail，设置超时时间为15秒
+      // 异步翻译 detail，设置超时时间为60秒（长文本需要分段翻译，需要更长时间）
+      console.log(`[Translation] Calling translateLongText with locale: ${locale}`);
+      console.log(`[Translation] Text length: ${game.detail.length} chars, estimated time: ${Math.ceil(game.detail.length / 2000) * 0.5}s`);
       const translatedDetail = await Promise.race([
         translateLongText(game.detail, locale),
         new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Translation timeout')), 15000)
+          setTimeout(() => reject(new Error('Translation timeout after 60 seconds')), 60000)
         )
       ]);
       
-      console.log(`[Translation] Translation completed for game: ${game.name}`);
+      const duration = Date.now() - startTime;
+      console.log(`[Translation] Translation completed for game: ${game.name} in ${duration}ms`);
       console.log(`[Translation] Original length: ${game.detail.length}, Translated length: ${translatedDetail ? translatedDetail.length : 0}`);
+      console.log(`[Translation] translatedDetail type: ${typeof translatedDetail}, is null: ${translatedDetail === null}, is undefined: ${translatedDetail === undefined}`);
+      
+      if (translatedDetail) {
+        console.log(`[Translation] Translated preview (first 200 chars): ${translatedDetail.substring(0, 200)}`);
+        console.log(`[Translation] Original preview (first 200 chars): ${game.detail.substring(0, 200)}`);
+        console.log(`[Translation] Is translated different from original: ${translatedDetail !== game.detail}`);
+        console.log(`[Translation] Translated length: ${translatedDetail.length}, Original length: ${game.detail.length}`);
+        console.log(`[Translation] Translated length > 0: ${translatedDetail.length > 0}`);
+        
+        // 检查是否完全相同（可能是服务未开通返回了原文）
+        if (translatedDetail === game.detail) {
+          console.log(`[Translation] ⚠️ WARNING: Translated text is identical to original!`);
+          console.log(`[Translation] This usually means:`);
+          console.log(`[Translation]   1. Tencent Cloud translation service is not opened`);
+          console.log(`[Translation]   2. Translation API returned original text due to error`);
+          console.log(`[Translation]   3. Text is already in target language (unlikely for English to Chinese)`);
+        }
+      } else {
+        console.log(`[Translation] ⚠️ WARNING: translatedDetail is falsy!`);
+        console.log(`[Translation] translatedDetail value: ${translatedDetail}`);
+      }
+      
+      // 检查翻译结果
+      console.log(`[Translation] Checking translation result...`);
+      console.log(`[Translation]   translatedDetail exists: ${!!translatedDetail}`);
+      console.log(`[Translation]   translatedDetail !== game.detail: ${translatedDetail !== game.detail}`);
+      console.log(`[Translation]   translatedDetail.length > 0: ${translatedDetail && translatedDetail.length > 0}`);
       
       if (translatedDetail && translatedDetail !== game.detail && translatedDetail.length > 0) {
+        console.log(`[Translation] ✓ Condition check passed: translatedDetail exists, different from original, length > 0`);
+        // 翻译成功且结果不同
         finalGame = { ...game, detail: translatedDetail };
-        console.log(`[Translation] Using translated text for game: ${game.name}`);
+        console.log(`[Translation] ✓ Using translated text for game: ${game.name}`);
+        console.log(`[Translation] ✓ finalGame.detail length: ${finalGame.detail ? finalGame.detail.length : 0}`);
+        console.log(`[Translation] ✓ finalGame.detail preview: ${finalGame.detail ? finalGame.detail.substring(0, 200) : 'null'}`);
         
         // 如果 gameDescription 也是从 detail 提取的，重新生成
         const detailLines = translatedDetail.split('\n').filter(line => line.trim());
@@ -563,26 +731,96 @@ createLocaleRoutes('/game', async (req, res) => {
         if (gameDescription.length < 160 && translatedDetail.length > firstParagraph.length) {
           gameDescription += '...';
         }
+      } else if (translatedDetail === game.detail) {
+        // 翻译结果和原文相同，可能是服务未开通或其他原因
+        console.log(`[Translation] ⚠️ Translation result is same as original`);
+        console.log(`[Translation] This might indicate:`);
+        console.log(`[Translation]   1. Tencent Cloud translation service is not opened`);
+        console.log(`[Translation]   2. Translation API returned original text`);
+        console.log(`[Translation]   3. Text is already in target language`);
+        console.log(`[Translation] Using original text`);
       } else {
-        console.log(`[Translation] Translation result is same as original or empty, using original`);
+        // 翻译结果为空或无效
+        console.log(`[Translation] ✗ Translation result is empty or invalid, using original`);
+        console.log(`[Translation] Reason: translatedDetail=${!!translatedDetail}, different=${translatedDetail !== game.detail}, length>0=${translatedDetail && translatedDetail.length > 0}`);
       }
     } catch (err) {
-      console.error(`[Translation] Error for game: ${game.name} - ${err.message}`);
-      console.error(`[Translation] Stack: ${err.stack}`);
-      console.log('[Translation] Using original text instead');
+      const duration = Date.now() - startTime;
+      console.error(`[Translation] ✗ Error for game: ${game.name} after ${duration}ms`);
+      console.error(`[Translation] Error message: ${err.message}`);
+      
+      // 如果是超时错误，尝试等待一下，看看翻译是否还在进行
+      if (err.message && err.message.includes('timeout')) {
+        console.log(`[Translation] ⚠️ Translation timeout, but translateLongText might still be running...`);
+        console.log(`[Translation] Waiting 5 more seconds to see if translation completes...`);
+        
+        // 再等待5秒，看看翻译是否能完成
+        try {
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          // 尝试再次调用（如果缓存中有结果，会直接返回）
+          const retryResult = await translateLongText(game.detail, locale);
+          if (retryResult && retryResult !== game.detail && retryResult.length > 0) {
+            console.log(`[Translation] ✓ Translation completed after timeout, using translated text`);
+            finalGame = { ...game, detail: retryResult };
+            console.log(`[Translation] ✓ Using translated text for game: ${game.name}`);
+            
+            // 重新生成 gameDescription
+            const detailLines = retryResult.split('\n').filter(line => line.trim());
+            const firstParagraph = detailLines.find(line => 
+              line.length > 50 && 
+              !line.includes('Games»') && 
+              !line.includes('Developer') &&
+              !line.includes('Rating') &&
+              !line.includes('Released')
+            ) || detailLines[0] || retryResult.substring(0, 200);
+            
+            gameDescription = firstParagraph.substring(0, 160).replace(/\n/g, ' ').trim();
+            if (gameDescription.length < 160 && retryResult.length > firstParagraph.length) {
+              gameDescription += '...';
+            }
+          } else {
+            console.log(`[Translation] Retry also failed or returned original text`);
+            console.log('[Translation] Using original text instead');
+          }
+        } catch (retryErr) {
+          console.error(`[Translation] Retry also failed: ${retryErr.message}`);
+          console.log('[Translation] Using original text instead');
+        }
+      } else {
+        if (err.stack) {
+          console.error(`[Translation] Error stack: ${err.stack}`);
+        }
+        console.log('[Translation] Using original text instead');
+      }
       // 翻译失败时使用原文，不抛出错误
     }
   } else {
+    console.log(`[Translation] Translation skipped - reasons:`);
     if (!enableTranslation) {
-      console.log(`[Translation] Translation disabled by ENABLE_TRANSLATION=false`);
-    } else if (locale !== 'zh-CN') {
-      console.log(`[Translation] Translation skipped, locale is ${locale}, not zh-CN`);
-    } else if (!game.detail) {
-      console.log(`[Translation] Translation skipped, game.detail is empty`);
+      console.log(`[Translation]   - Translation disabled by ENABLE_TRANSLATION=${process.env.ENABLE_TRANSLATION}`);
+    }
+    if (locale !== 'zh-CN') {
+      console.log(`[Translation]   - Locale is ${locale}, not zh-CN`);
+    }
+    if (!game.detail) {
+      console.log(`[Translation]   - game.detail is empty or undefined`);
     }
   }
+  console.log(`[Translation Debug] Final game.detail length: ${finalGame.detail ? finalGame.detail.length : 0}`);
+  if (finalGame.detail) {
+    console.log(`[Translation Debug] Final game.detail preview (first 200 chars): ${finalGame.detail.substring(0, 200)}`);
+  }
+  if (game.detail && finalGame.detail) {
+    console.log(`[Translation Debug] Is finalGame.detail different from original? ${finalGame.detail !== game.detail}`);
+    if (finalGame.detail === game.detail) {
+      console.log(`[Translation Debug] ⚠️ WARNING: finalGame.detail is same as original game.detail!`);
+      console.log(`[Translation Debug] This means translation did not happen or returned original text.`);
+    }
+  }
+  console.log(`[Translation Debug] ==========================================`);
   
   // 渲染页面（无论是翻译后的还是原文）
+  // 注意：为了优化加载速度，页面先使用原文渲染，翻译通过客户端异步加载
   res.render('game', {
     game: finalGame,
     gameName: finalGame.name,
@@ -592,7 +830,10 @@ createLocaleRoutes('/game', async (req, res) => {
     pageTitle: pageTitle,
     gameDescription: gameDescription,
     gameKeywords: gameKeywords,
-    canonicalUrl: canonicalUrl
+    canonicalUrl: canonicalUrl,
+    categoryId: categoryIdForUrl, // 传递给模板，用于异步加载翻译
+    gameId: gameIdForUrl, // 传递给模板，用于异步加载翻译
+    locale: locale // 传递给模板，用于异步加载翻译
   });
 });
 
@@ -666,6 +907,7 @@ createLocaleRoutes('/category/:category', (req, res) => {
   res.render('category', {
     category: displayCategory,
     originalCategory: originalCategory, // 保存原始 category 用于 URL
+    categoryId: categoryData.id, // 添加分类ID用于SEO友好的URL
     games: paginatedGames,
     categories: categories,
     searchQuery: searchQuery,
@@ -767,6 +1009,67 @@ app.get('/api/games/:category', (req, res) => {
 });
 
 // API 路由：搜索游戏
+// API端点：获取游戏翻译后的介绍
+app.get('/api/game/translate', async (req, res) => {
+  const gameId = req.query.gameId;
+  const categoryId = req.query.categoryId;
+  const locale = req.query.locale || 'zh-CN';
+  
+  if (!gameId || !categoryId) {
+    return res.status(400).json({ error: 'gameId and categoryId are required' });
+  }
+  
+  const data = getGameData();
+  let game = null;
+  
+  // 查找游戏
+  if (categoryId && gameId) {
+    const categoryItem = data.find(cat => cat.id === parseInt(categoryId));
+    if (categoryItem && categoryItem.games && Array.isArray(categoryItem.games)) {
+      game = categoryItem.games.find(g => g.id === parseInt(gameId));
+    }
+  }
+  
+  if (!game || !game.detail) {
+    return res.status(404).json({ error: 'Game not found or no detail available' });
+  }
+  
+  // 检查是否需要翻译
+  const enableTranslation = process.env.ENABLE_TRANSLATION !== 'false';
+  if (!enableTranslation || locale !== 'zh-CN') {
+    return res.json({ 
+      translated: false, 
+      detail: game.detail 
+    });
+  }
+  
+  try {
+    console.log(`[API Translate] Translating game detail for gameId: ${gameId}, length: ${game.detail.length}`);
+    const translatedDetail = await translateLongText(game.detail, locale);
+    
+    if (translatedDetail && translatedDetail !== game.detail && translatedDetail.length > 0) {
+      console.log(`[API Translate] Translation successful, length: ${translatedDetail.length}`);
+      return res.json({ 
+        translated: true, 
+        detail: translatedDetail 
+      });
+    } else {
+      console.log(`[API Translate] Translation returned original or empty`);
+      return res.json({ 
+        translated: false, 
+        detail: game.detail 
+      });
+    }
+  } catch (err) {
+    console.error(`[API Translate] Translation error: ${err.message}`);
+    return res.json({ 
+      translated: false, 
+      detail: game.detail,
+      error: err.message 
+    });
+  }
+});
+
 app.get('/api/search', (req, res) => {
   const query = req.query.q || '';
   const data = getGameData();
@@ -800,7 +1103,7 @@ app.listen(PORT, () => {
   console.log(`  - GET / - 主页（服务端渲染）`);
   console.log(`  - GET /search?q=关键词 - 搜索页面（服务端渲染）`);
   console.log(`  - GET /category/:category - 分类页面（服务端渲染）`);
-  console.log(`  - GET /game?name=游戏名 - 游戏详情页面（服务端渲染）`);
+  console.log(`  - GET /game?categoryId=分类ID&gameId=游戏ID - 游戏详情页面（服务端渲染）`);
   console.log(`  - GET /about - 关于我们页面（服务端渲染）`);
   console.log(`  - GET /contact - 联系我们页面（服务端渲染）`);
   console.log(`  - GET /privacy - 隐私政策页面（服务端渲染）`);

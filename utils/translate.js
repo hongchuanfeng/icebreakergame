@@ -1,7 +1,11 @@
 // 翻译工具：用于翻译游戏详情文本
+// 加载环境变量（优先加载.env.local，如果不存在则加载.env）
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') });
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
 const https = require('https');
 const fs = require('fs');
-const path = require('path');
 const crypto = require('crypto');
 
 // 翻译缓存（内存缓存）
@@ -52,164 +56,190 @@ function getCacheKey(text, targetLang) {
   return `${hash}_${targetLang}`;
 }
 
-// 翻译 API 配置（可以通过环境变量配置）
-const TRANSLATION_API = process.env.TRANSLATION_API || 'baidu'; // 'google', 'baidu', 'youdao', 'auto'
-const BAIDU_CLIENT_ID = process.env.BAIDU_CLIENT_ID || 'vUi8ehLSHu6FwdGZxpACv7bo';
-const BAIDU_CLIENT_SECRET = process.env.BAIDU_CLIENT_SECRET || 'TlLaapNfsJ6gyNnb6USPDsPznRcKVYJk';
+// 腾讯云翻译 API 配置
+const TENCENT_SECRET_ID = process.env.TENCENT_SECRET_ID;
+const TENCENT_SECRET_KEY = process.env.TENCENT_SECRET_KEY;
+const TENCENT_REGION = process.env.TENCENT_REGION || 'ap-beijing'; // 默认北京地域
 
-// 百度 Access Token 缓存
-let baiduAccessToken = null;
-let baiduTokenExpireTime = 0;
+// 调试：检查环境变量是否加载
+if (!TENCENT_SECRET_ID || !TENCENT_SECRET_KEY) {
+  console.warn('[Translate] ⚠️ 腾讯云API配置未找到！');
+  console.warn('[Translate] 请确保在项目根目录创建 .env.local 文件，并设置以下变量：');
+  console.warn('[Translate]   TENCENT_SECRET_ID=your_secret_id');
+  console.warn('[Translate]   TENCENT_SECRET_KEY=your_secret_key');
+  console.warn('[Translate] 当前工作目录:', process.cwd());
+  console.warn('[Translate] 环境变量 TENCENT_SECRET_ID:', TENCENT_SECRET_ID ? '已设置（长度: ' + TENCENT_SECRET_ID.length + '）' : '未设置');
+  console.warn('[Translate] 环境变量 TENCENT_SECRET_KEY:', TENCENT_SECRET_KEY ? '已设置（长度: ' + TENCENT_SECRET_KEY.length + '）' : '未设置');
+} else {
+  console.log('[Translate] ✓ 腾讯云API配置已加载');
+  console.log('[Translate] TENCENT_SECRET_ID:', TENCENT_SECRET_ID.substring(0, 8) + '...');
+  console.log('[Translate] TENCENT_REGION:', TENCENT_REGION);
+}
 
-// Google 翻译 API（免费版本，不需要 API key）
-async function translateWithGoogle(text, targetLang = 'zh-CN') {
+// 腾讯云翻译 API（使用TC3-HMAC-SHA256签名）
+async function translateWithTencent(text, targetLang = 'zh-CN') {
   if (!text || text.trim().length === 0) {
     return text;
   }
 
-  // 确定源语言和目标语言代码
-  const sourceLang = targetLang === 'zh-CN' ? 'en' : 'zh';
-  const targetLangCode = targetLang === 'zh-CN' ? 'zh' : 'en';
-
-  try {
-    // 使用 Google Translate 的免费接口
-    const textToTranslate = text.substring(0, 5000); // 限制长度
-    const encodedText = encodeURIComponent(textToTranslate);
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLangCode}&dt=t&q=${encodedText}`;
-
-    console.log(`[Google Translate] Requesting translation...`);
-
-    const translated = await new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject(new Error('Google Translate timeout'));
-      }, 8000); // 8秒超时
-
-      const req = https.get(url, (res) => {
-        let data = '';
-        res.on('data', (chunk) => {
-          data += chunk;
-        });
-        res.on('end', () => {
-          clearTimeout(timeout);
-          try {
-            const result = JSON.parse(data);
-            if (result && result[0] && result[0][0]) {
-              let translatedText = '';
-              result[0].forEach(item => {
-                if (item[0]) {
-                  translatedText += item[0];
-                }
-              });
-              console.log(`[Google Translate] Success`);
-              resolve(translatedText || text);
-            } else {
-              reject(new Error('Invalid response format'));
-            }
-          } catch (e) {
-            reject(new Error(`Parse error: ${e.message}`));
-          }
-        });
-      }).on('error', (err) => {
-        clearTimeout(timeout);
-        reject(err);
-      });
-
-      req.setTimeout(8000, () => {
-        req.destroy();
-        clearTimeout(timeout);
-        reject(new Error('Request timeout'));
-      });
-    });
-
-    return translated;
-  } catch (error) {
-    throw error; // 向上抛出错误，让调用者处理
-  }
-}
-
-// 获取百度 Access Token
-async function getBaiduAccessToken() {
-  // 检查缓存的 token 是否仍然有效（提前5分钟刷新）
-  const now = Date.now();
-  if (baiduAccessToken && baiduTokenExpireTime > now + 5 * 60 * 1000) {
-    return baiduAccessToken;
-  }
-
-  if (!BAIDU_CLIENT_ID || !BAIDU_CLIENT_SECRET) {
-    throw new Error('Baidu API credentials not configured');
-  }
-
-  const querystring = require('querystring');
-  const params = {
-    grant_type: 'client_credentials',
-    client_id: BAIDU_CLIENT_ID,
-    client_secret: BAIDU_CLIENT_SECRET
-  };
-
-  const postData = querystring.stringify(params);
-  const url = `https://aip.baidubce.com/oauth/2.0/token?${postData}`;
-
-  return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      let data = '';
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-      res.on('end', () => {
-        try {
-          const result = JSON.parse(data);
-          if (result.access_token) {
-            baiduAccessToken = result.access_token;
-            // Access token 默认有效期 30 天，我们设置为 25 天以确保安全
-            baiduTokenExpireTime = now + 25 * 24 * 60 * 60 * 1000;
-            console.log('[Baidu] Access token obtained successfully');
-            resolve(baiduAccessToken);
-          } else {
-            reject(new Error(result.error_description || 'Failed to get access token'));
-          }
-        } catch (e) {
-          reject(new Error(`Parse error: ${e.message}`));
-        }
-      });
-    }).on('error', (err) => {
-      reject(err);
-    });
-  });
-}
-
-// 百度翻译 API（使用通用版 API，需要 Access Token）
-async function translateWithBaidu(text, targetLang = 'zh-CN') {
-  if (!text || text.trim().length === 0) {
-    return text;
+  if (!TENCENT_SECRET_ID || !TENCENT_SECRET_KEY) {
+    throw new Error('Tencent API credentials not configured. Please set TENCENT_SECRET_ID and TENCENT_SECRET_KEY in .env.local');
   }
 
   try {
-    // 获取 Access Token
-    const accessToken = await getBaiduAccessToken();
-    
-    // 确定目标语言代码
+    // 确定源语言和目标语言代码
+    // 腾讯云语言代码：zh-中文, en-英文
+    const sourceLang = targetLang === 'zh-CN' ? 'en' : 'zh';
     const targetLangCode = targetLang === 'zh-CN' ? 'zh' : 'en';
-    const fromLang = targetLang === 'zh-CN' ? 'en' : 'zh';
+
+    // 腾讯云API接口：文本翻译
+    const service = 'tmt';
+    const version = '2018-03-21';
+    const action = 'TextTranslate';
+    const endpoint = 'tmt.tencentcloudapi.com';
+    const host = endpoint;
+
+    // 构建请求参数
+    // 腾讯云TC3签名要求：使用UTC时间，date格式为YYYYMMDD（8位数字字符串）
+    // 严格按照腾讯云官方文档：使用UTC方法计算日期
+    const timestamp = Math.floor(Date.now() / 1000);
     
-    // 百度翻译 API 请求体
-    const requestBody = {
-      q: text,
-      from: fromLang,
-      to: targetLangCode
+    // 使用UTC方法计算日期（这是腾讯云官方推荐的方法）
+    // 确保使用UTC时间，避免时区问题
+    const utcDate = new Date(timestamp * 1000);
+    const year = utcDate.getUTCFullYear();
+    const month = String(utcDate.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(utcDate.getUTCDate()).padStart(2, '0');
+    
+    // 根据文档示例，Authorization头中的Date格式是YYYY-MM-DD（带横线）
+    // 格式：2018-05-30
+    // 注意：credentialScope在计算签名和Authorization头中必须完全一致
+    const date = `${year}-${month}-${day}`; // 格式：YYYY-MM-DD
+    
+    // 验证日期格式（必须是YYYY-MM-DD格式）
+    if (typeof date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(date) || date.length !== 10) {
+      const isoString = utcDate.toISOString();
+      throw new Error(`Invalid date format: "${date}" (type: ${typeof date}, length: ${date ? date.length : 0}), expected YYYY-MM-DD format. UTC ISO: ${isoString}, Year: ${year}, Month: ${month}, Day: ${day}`);
+    }
+    
+    // 调试日志
+    const isoString = utcDate.toISOString();
+    console.log(`[Tencent Translate] UTC Date: "${date}" (type: ${typeof date}, length: ${date.length}), Timestamp: ${timestamp}, UTC ISO: ${isoString}`);
+    console.log(`[Tencent Translate] Date components - Year: ${year}, Month: ${month}, Day: ${day}`);
+    
+    // 腾讯云API单次请求限制为2000字符
+    // 注意：translateLongText应该已经分段处理，这里不应该收到超过2000字符的文本
+    const maxLength = 2000;
+    if (text.length > maxLength) {
+      console.warn(`[Tencent Translate] ⚠️ WARNING: Text length (${text.length}) exceeds API limit (${maxLength})`);
+      console.warn(`[Tencent Translate] This should not happen if translateLongText is working correctly`);
+      console.warn(`[Tencent Translate] Text will be truncated to ${maxLength} characters`);
+      // 仍然截断，但记录警告
+    }
+    const textToTranslate = text.length > maxLength ? text.substring(0, maxLength) : text;
+    
+    const requestPayload = {
+      SourceText: textToTranslate,
+      Source: sourceLang,
+      Target: targetLangCode,
+      ProjectId: 0
     };
 
-    const postData = JSON.stringify(requestBody);
+    const payload = JSON.stringify(requestPayload);
+
+    // TC3-HMAC-SHA256 签名算法
+    const algorithm = 'TC3-HMAC-SHA256';
+    const httpRequestMethod = 'POST';
+    const canonicalUri = '/';
+    const canonicalQueryString = '';
+    // 注意：Content-Type中不能有空格，应该是 application/json;charset=utf-8
+    const canonicalHeaders = `content-type:application/json;charset=utf-8\nhost:${host}\n`;
+    const signedHeaders = 'content-type;host';
+    const hashedRequestPayload = crypto.createHash('sha256').update(payload).digest('hex');
+
+    const canonicalRequest = `${httpRequestMethod}\n${canonicalUri}\n${canonicalQueryString}\n${canonicalHeaders}\n${signedHeaders}\n${hashedRequestPayload}`;
+
+    // 构建credentialScope（用于计算签名和Authorization头）
+    // 根据文档示例，credentialScope格式：YYYY-MM-DD/service/tc3_request（带横线）
+    // 重要：credentialScope在计算签名和Authorization头中必须完全一致
+    if (typeof date !== 'string') {
+      throw new Error(`Date must be a string, got: ${typeof date}, value: ${date}`);
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      throw new Error(`Date must be YYYY-MM-DD format, got: "${date}"`);
+    }
+    
+    // credentialScope用于计算签名和Authorization头，使用YYYY-MM-DD格式（带横线）
+    const credentialScope = date + '/' + service + '/tc3_request';
+    
+    // 验证credentialScope格式
+    if (!credentialScope.match(/^\d{4}-\d{2}-\d{2}\/[^\/]+\/tc3_request$/)) {
+      throw new Error(`Invalid credentialScope format: "${credentialScope}", expected: YYYY-MM-DD/service/tc3_request`);
+    }
+    
+    const stringToSign = `${algorithm}\n${timestamp}\n${credentialScope}\n${crypto.createHash('sha256').update(canonicalRequest).digest('hex')}`;
+    
+    // 调试日志：验证credentialScope格式
+    console.log(`[Tencent Translate] ==========================================`);
+    console.log(`[Tencent Translate] Date (YYYY-MM-DD): "${date}" (type: ${typeof date}, length: ${date.length})`);
+    console.log(`[Tencent Translate] CredentialScope: "${credentialScope}"`);
+    console.log(`[Tencent Translate] CredentialScope parts - date: "${date}", service: "${service}"`);
+
+    // 计算签名（严格按照腾讯云TC3签名算法）
+    // 注意：kDate的密钥是 'TC3' + SecretKey，然后对date字符串（YYYY-MM-DD格式）进行HMAC
+    // 重要：date必须是字符串格式的YYYY-MM-DD（带横线）
+    const kDate = crypto.createHmac('sha256', Buffer.from('TC3' + TENCENT_SECRET_KEY, 'utf8')).update(Buffer.from(date, 'utf8')).digest();
+    const kService = crypto.createHmac('sha256', kDate).update(Buffer.from(service, 'utf8')).digest();
+    const kSigning = crypto.createHmac('sha256', kService).update(Buffer.from('tc3_request', 'utf8')).digest();
+    const signature = crypto.createHmac('sha256', kSigning).update(Buffer.from(stringToSign, 'utf8')).digest('hex');
+
+    // 构建Authorization头（确保格式正确）
+    // 根据文档示例，格式：TC3-HMAC-SHA256 Credential=SecretId/YYYY-MM-DD/service/tc3_request, SignedHeaders=..., Signature=...
+    // 重要：credentialScope在计算签名和Authorization头中必须完全一致（都使用YYYY-MM-DD格式）
+    const credentialPart = TENCENT_SECRET_ID + '/' + credentialScope;
+    const authorization = algorithm + ' Credential=' + credentialPart + ', SignedHeaders=' + signedHeaders + ', Signature=' + signature;
+    
+    // 调试日志：输出关键签名信息
+    console.log(`[Tencent Translate] Credential part: "${TENCENT_SECRET_ID}/${credentialScope}"`);
+    console.log(`[Tencent Translate] Full Authorization header: ${authorization}`);
+    console.log(`[Tencent Translate] ==========================================`);
+
+    // 构建请求选项
+    // 根据腾讯云文档，X-TC-Region 是可选的，但某些接口可能需要
+    const headers = {
+      'Content-Type': 'application/json;charset=utf-8',
+      'Host': host,
+      'X-TC-Action': action,
+      'X-TC-Timestamp': String(timestamp), // 确保是字符串
+      'X-TC-Version': version,
+      'Authorization': authorization
+    };
+    
+    // 如果设置了地域，添加 X-TC-Region 头
+    if (TENCENT_REGION) {
+      headers['X-TC-Region'] = TENCENT_REGION;
+    }
+    
     const options = {
-      hostname: 'aip.baidubce.com',
+      hostname: host,
       port: 443,
-      path: `/rpc/2.0/mt/texttrans/v1?access_token=${accessToken}`,
+      path: '/',
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        'Content-Length': Buffer.byteLength(postData)
-      },
+      headers: headers,
       timeout: 10000
     };
+    
+    // 调试日志：输出所有请求头（隐藏敏感信息）
+    console.log(`[Tencent Translate] Request headers:`);
+    console.log(`[Tencent Translate]   Content-Type: ${headers['Content-Type']}`);
+    console.log(`[Tencent Translate]   Host: ${headers['Host']}`);
+    console.log(`[Tencent Translate]   X-TC-Action: ${headers['X-TC-Action']}`);
+    console.log(`[Tencent Translate]   X-TC-Timestamp: ${headers['X-TC-Timestamp']}`);
+    console.log(`[Tencent Translate]   X-TC-Version: ${headers['X-TC-Version']}`);
+    if (headers['X-TC-Region']) {
+      console.log(`[Tencent Translate]   X-TC-Region: ${headers['X-TC-Region']}`);
+    }
+    console.log(`[Tencent Translate]   Authorization: ${authorization.substring(0, 100)}...`);
 
     return new Promise((resolve, reject) => {
       const req = https.request(options, (res) => {
@@ -220,22 +250,24 @@ async function translateWithBaidu(text, targetLang = 'zh-CN') {
         res.on('end', () => {
           try {
             const result = JSON.parse(data);
-            if (result.result && result.result.trans_result && result.result.trans_result.length > 0) {
-              // 合并所有翻译结果
-              const translatedText = result.result.trans_result.map(item => item.dst).join('');
-              console.log(`[Baidu Translate] Success, translated ${result.result.trans_result.length} segments`);
-              resolve(translatedText);
-            } else if (result.error_code) {
-              // 如果是 token 过期或无效，清除缓存并重试
-              if (result.error_code === 100 || result.error_code === 110 || result.error_code === 111) {
-                baiduAccessToken = null;
-                baiduTokenExpireTime = 0;
-                console.warn('[Baidu] Token expired or invalid, will retry with new token');
-                // 递归重试一次
-                translateWithBaidu(text, targetLang).then(resolve).catch(reject);
-                return;
+            if (result.Response && result.Response.TargetText) {
+              console.log(`[Tencent Translate] Success`);
+              resolve(result.Response.TargetText);
+            } else if (result.Response && result.Response.Error) {
+              const errorCode = result.Response.Error.Code;
+              const errorMessage = result.Response.Error.Message;
+              
+              // 特殊处理：服务未开通错误
+              if (errorCode === 'FailedOperation.UserNotRegistered') {
+                console.error(`[Tencent Translate] ⚠️ 腾讯云机器翻译服务未开通`);
+                console.error(`[Tencent Translate] 请在腾讯云控制台开通机器翻译服务：`);
+                console.error(`[Tencent Translate] https://console.cloud.tencent.com/tmt`);
+                console.error(`[Tencent Translate] 错误详情: ${errorCode} - ${errorMessage}`);
+                // 返回一个特殊的错误对象，让调用者知道这是服务未开通
+                reject(new Error(`SERVICE_NOT_OPENED: ${errorMessage}`));
+              } else {
+                reject(new Error(`Tencent API error: ${errorCode} - ${errorMessage}`));
               }
-              reject(new Error(result.error_msg || `Baidu API error: ${result.error_code}`));
             } else {
               reject(new Error('Invalid response format'));
             }
@@ -251,10 +283,10 @@ async function translateWithBaidu(text, targetLang = 'zh-CN') {
 
       req.on('timeout', () => {
         req.destroy();
-        reject(new Error('Baidu Translate timeout'));
+        reject(new Error('Tencent Translate timeout'));
       });
 
-      req.write(postData);
+      req.write(payload);
       req.end();
     });
   } catch (error) {
@@ -262,112 +294,77 @@ async function translateWithBaidu(text, targetLang = 'zh-CN') {
   }
 }
 
-// 使用免费的翻译服务（my memory translate，不需要 API key）
-async function translateWithMyMemory(text, targetLang = 'zh-CN') {
+// 统一的翻译函数（仅使用腾讯云翻译）
+async function translateText(text, targetLang = 'zh-CN') {
   if (!text || text.trim().length === 0) {
+    console.log(`[Translate] Empty text, returning as-is`);
     return text;
   }
 
-  const sourceLang = targetLang === 'zh-CN' ? 'en' : 'zh';
-  const targetLangCode = targetLang === 'zh-CN' ? 'zh' : 'en';
-  
-  // MyMemory 免费翻译 API（限制 100 词）
-  const textToTranslate = text.substring(0, 500); // 限制长度避免超过限制
-  const encodedText = encodeURIComponent(textToTranslate);
-  const url = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=${sourceLang}|${targetLangCode}`;
+  console.log(`[Translate] ==========================================`);
+  console.log(`[Translate] Input text length: ${text.length}`);
+  console.log(`[Translate] Target language: ${targetLang}`);
+  console.log(`[Translate] Text preview (first 100 chars): ${text.substring(0, 100)}`);
 
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      reject(new Error('MyMemory timeout'));
-    }, 8000);
-
-    https.get(url, (res) => {
-      let data = '';
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-      res.on('end', () => {
-        clearTimeout(timeout);
-        try {
-          const result = JSON.parse(data);
-          if (result.responseData && result.responseData.translatedText) {
-            console.log(`[MyMemory Translate] Success`);
-            resolve(result.responseData.translatedText);
-          } else {
-            reject(new Error('Invalid response'));
-          }
-        } catch (e) {
-          reject(new Error(`Parse error: ${e.message}`));
-        }
-      });
-    }).on('error', (err) => {
-      clearTimeout(timeout);
-      reject(err);
-    }).setTimeout(8000, () => {
-      reject(new Error('Request timeout'));
-    });
-  });
-}
-
-// 统一的翻译函数（支持多个 API 降级）
-async function translateText(text, targetLang = 'zh-CN') {
-  if (!text || text.trim().length === 0) {
-    return text;
+  // 检查腾讯云API配置
+  if (!TENCENT_SECRET_ID || !TENCENT_SECRET_KEY) {
+    console.error(`[Translate] ✗ Tencent API credentials not configured`);
+    console.error(`[Translate] Please set TENCENT_SECRET_ID and TENCENT_SECRET_KEY in .env.local`);
+    console.log(`[Translate] ==========================================`);
+    return text; // 返回原文
   }
 
   // 生成缓存键
   const cacheKey = getCacheKey(text, targetLang);
   if (translationCache.has(cacheKey)) {
-    console.log(`[Translate] Using cached translation`);
-    return translationCache.get(cacheKey);
+    console.log(`[Translate] ✓ Using cached translation (cache key: ${cacheKey})`);
+    const cached = translationCache.get(cacheKey);
+    console.log(`[Translate] Cached result length: ${cached ? cached.length : 0}`);
+    console.log(`[Translate] ==========================================`);
+    return cached;
   }
+  console.log(`[Translate] No cache found, will call Tencent translation API`);
 
-  // 根据配置选择翻译 API
-  const apiList = [];
-  
-  if (TRANSLATION_API === 'google') {
-    apiList.push({ name: 'Google', fn: translateWithGoogle });
-  } else if (TRANSLATION_API === 'baidu') {
-    apiList.push({ name: 'Baidu', fn: translateWithBaidu });
-  } else if (TRANSLATION_API === 'mymemory') {
-    apiList.push({ name: 'MyMemory', fn: translateWithMyMemory });
-  } else {
-    // 自动模式：优先使用百度翻译（如果配置了），否则尝试其他 API
-    if (BAIDU_CLIENT_ID && BAIDU_CLIENT_SECRET) {
-      apiList.push({ name: 'Baidu', fn: translateWithBaidu });
-    }
-    apiList.push(
-      { name: 'Google', fn: translateWithGoogle },
-      { name: 'MyMemory', fn: translateWithMyMemory }
-    );
-  }
-
-  let lastError = null;
-  
-  for (const api of apiList) {
-    try {
-      console.log(`[Translate] Trying ${api.name} API...`);
-      const translated = await api.fn(text, targetLang);
-      
-      // 缓存翻译结果
-      if (translationCache.size < 5000) {
-        translationCache.set(cacheKey, translated);
-        if (translationCache.size % 100 === 0) {
-          saveCache();
-        }
+  // 使用腾讯云翻译
+  const startTime = Date.now();
+  try {
+    console.log(`[Translate] Calling Tencent Translate API...`);
+    const translated = await translateWithTencent(text, targetLang);
+    const duration = Date.now() - startTime;
+    
+    console.log(`[Translate] ✓ Tencent API succeeded in ${duration}ms`);
+    console.log(`[Translate] Translated text length: ${translated ? translated.length : 0}`);
+    console.log(`[Translate] Translated preview (first 100 chars): ${translated ? translated.substring(0, 100) : 'null'}`);
+    
+    // 缓存翻译结果
+    if (translationCache.size < 5000) {
+      translationCache.set(cacheKey, translated);
+      if (translationCache.size % 100 === 0) {
+        saveCache();
       }
-      
-      return translated;
-    } catch (error) {
-      console.warn(`[Translate] ${api.name} API failed: ${error.message}`);
-      lastError = error;
-      continue; // 尝试下一个 API
+      console.log(`[Translate] Result cached (cache size: ${translationCache.size})`);
     }
+    
+    console.log(`[Translate] ==========================================`);
+    return translated;
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    console.error(`[Translate] ✗ Tencent API failed after ${duration}ms: ${error.message}`);
+    
+    // 特殊处理：服务未开通错误
+    if (error.message && error.message.startsWith('SERVICE_NOT_OPENED:')) {
+      console.error(`[Translate] ⚠️ 腾讯云机器翻译服务未开通，返回原文`);
+      console.error(`[Translate] 请在腾讯云控制台开通服务：https://console.cloud.tencent.com/tmt`);
+    } else {
+      if (error.stack) {
+        console.error(`[Translate] Error stack: ${error.stack}`);
+      }
+    }
+    
+    console.error(`[Translate] Returning original text`);
+    console.log(`[Translate] ==========================================`);
+    return text; // 返回原文
   }
-
-  // 所有 API 都失败
-  console.error(`[Translate] All translation APIs failed. Last error: ${lastError?.message}`);
-  return text; // 返回原文
 }
 
 // 翻译大段文本（分段翻译以避免长度限制）
@@ -385,8 +382,8 @@ async function translateLongText(text, targetLang = 'zh-CN') {
     return translationCache.get(fullCacheKey);
   }
 
-  // 如果文本较短（小于 4000 字符），直接翻译
-  if (text.length < 4000) {
+  // 腾讯云API单次请求限制为2000字符，如果文本较短（小于2000字符），直接翻译
+  if (text.length < 2000) {
     console.log(`[TranslateLongText] Text is short (${text.length} chars), translating directly`);
     return await translateText(text, targetLang);
   }
@@ -396,7 +393,7 @@ async function translateLongText(text, targetLang = 'zh-CN') {
   // 对于长文本，按段落分割翻译
   const paragraphs = text.split('\n');
   const translatedParagraphs = [];
-  const batchSize = 3; // 每次并行翻译3段
+  const batchSize = 2; // 每次并行翻译2段（减少并发以避免API限流）
 
   for (let i = 0; i < paragraphs.length; i += batchSize) {
     const batch = paragraphs.slice(i, i + batchSize);
@@ -406,19 +403,62 @@ async function translateLongText(text, targetLang = 'zh-CN') {
         return '';
       }
 
-      // 如果段落太长，进一步分割
-      if (trimmed.length > 3500) {
-        const sentences = trimmed.split(/[.!?]\s+/);
-        const sentenceTranslations = [];
-        for (const sentence of sentences) {
-          if (sentence.trim().length > 0) {
-            const translated = await translateText(sentence, targetLang);
-            sentenceTranslations.push(translated);
-            // 添加小延迟以避免请求过快
-            await new Promise(resolve => setTimeout(resolve, 50));
+      // 如果段落太长（超过1800字符），进一步分割成更小的块
+      // 腾讯云API限制为2000字符，我们使用1800作为安全阈值
+      if (trimmed.length > 1800) {
+        console.log(`[TranslateLongText] Paragraph too long (${trimmed.length} chars), splitting into chunks`);
+        
+        // 按句子分割，但如果句子也很长，按固定长度分割
+        const chunks = [];
+        let currentChunk = '';
+        const sentences = trimmed.split(/([.!?]\s+)/);
+        
+        for (let i = 0; i < sentences.length; i++) {
+          const sentence = sentences[i];
+          const testChunk = currentChunk + sentence;
+          
+          // 如果加上这个句子后超过1800字符，保存当前块并开始新块
+          if (testChunk.length > 1800 && currentChunk.length > 0) {
+            chunks.push(currentChunk.trim());
+            currentChunk = sentence;
+          } else {
+            currentChunk = testChunk;
           }
         }
-        return sentenceTranslations.join(' ');
+        
+        // 添加最后一个块
+        if (currentChunk.trim().length > 0) {
+          chunks.push(currentChunk.trim());
+        }
+        
+        // 如果按句子分割后仍然有块超过1800字符，按固定长度强制分割
+        const finalChunks = [];
+        for (const chunk of chunks) {
+          if (chunk.length > 1800) {
+            // 按固定长度分割（每块1500字符，留出安全余量）
+            for (let i = 0; i < chunk.length; i += 1500) {
+              finalChunks.push(chunk.substring(i, i + 1500));
+            }
+          } else {
+            finalChunks.push(chunk);
+          }
+        }
+        
+        console.log(`[TranslateLongText] Split into ${finalChunks.length} chunks`);
+        const chunkTranslations = [];
+        for (let i = 0; i < finalChunks.length; i++) {
+          const chunk = finalChunks[i];
+          if (chunk.trim().length > 0) {
+            console.log(`[TranslateLongText] Translating chunk ${i + 1}/${finalChunks.length} (${chunk.length} chars)`);
+            const translated = await translateText(chunk, targetLang);
+            chunkTranslations.push(translated);
+            // 添加延迟以避免请求过快
+            if (i < finalChunks.length - 1) {
+              await new Promise(resolve => setTimeout(resolve, 200));
+            }
+          }
+        }
+        return chunkTranslations.join('');
       } else {
         return await translateText(trimmed, targetLang);
       }
