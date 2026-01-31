@@ -52,7 +52,7 @@
                     <div class="category-header">
                         <h2 class="category-title"><%= categoryItem.category %></h2>
                         <% if (categoryItem.games.length > 12) { %>
-                            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(categoryItem.originalCategory || categoryItem.category)) : '/category/' + encodeURIComponent(categoryItem.originalCategory || categoryItem.category) %>" class="more-btn"><%= typeof t !== 'undefined' ? t('common.more') + ' →' : '更多 →' %></a>
+                            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category?categoryId=' + (categoryItem.id || '')) : '/category?categoryId=' + (categoryItem.id || '') %>" class="more-btn"><%= typeof t !== 'undefined' ? t('common.more') + ' →' : '更多 →' %></a>
                         <% } %>
                     </div>
                     <div class="games-grid">

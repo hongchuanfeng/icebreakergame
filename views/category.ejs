@@ -61,9 +61,9 @@
                 <% if (totalPages > 1) { %>
                     <div class="pagination-container">
                         <div class="pagination">
-                            <% const urlCategory = typeof originalCategory !== 'undefined' ? originalCategory : category; %>
+                            <% const urlCategoryId = typeof categoryId !== 'undefined' ? categoryId : ''; %>
                             <% if (currentPage > 1) { %>
-                                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(urlCategory) + '?page=' + (currentPage - 1) + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '')) : '/category/' + encodeURIComponent(urlCategory) + '?page=' + (currentPage - 1) + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '') %>" class="pagination-btn"><%= typeof t !== 'undefined' ? t('category.previousPage') : '上一页' %></a>
+                                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category?categoryId=' + urlCategoryId + '&page=' + (currentPage - 1) + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '')) : '/category?categoryId=' + urlCategoryId + '&page=' + (currentPage - 1) + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '') %>" class="pagination-btn"><%= typeof t !== 'undefined' ? t('category.previousPage') : '上一页' %></a>
                             <% } else { %>
                                 <span class="pagination-btn disabled"><%= typeof t !== 'undefined' ? t('category.previousPage') : '上一页' %></span>
                             <% } %>
@@ -74,7 +74,7 @@
                                 let endPage = Math.min(totalPages, currentPage + 2);
                                 
                                 if (startPage > 1) { %>
-                                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(urlCategory) + '?page=1' + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '')) : '/category/' + encodeURIComponent(urlCategory) + '?page=1' + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '') %>" class="pagination-number">1</a>
+                                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category?categoryId=' + urlCategoryId + '&page=1' + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '')) : '/category?categoryId=' + urlCategoryId + '&page=1' + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '') %>" class="pagination-number">1</a>
                                     <% if (startPage > 2) { %>
                                         <span class="pagination-ellipsis">...</span>
                                     <% } %>
@@ -84,7 +84,7 @@
                                     <% if (i === currentPage) { %>
                                         <span class="pagination-number active"><%= i %></span>
                                     <% } else { %>
-                                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(urlCategory) + '?page=' + i + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '')) : '/category/' + encodeURIComponent(urlCategory) + '?page=' + i + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '') %>" class="pagination-number"><%= i %></a>
+                                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category?categoryId=' + urlCategoryId + '&page=' + i + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '')) : '/category?categoryId=' + urlCategoryId + '&page=' + i + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '') %>" class="pagination-number"><%= i %></a>
                                     <% } %>
                                 <% }
                                 
@@ -92,11 +92,11 @@
                                     <% if (endPage < totalPages - 1) { %>
                                         <span class="pagination-ellipsis">...</span>
                                     <% } %>
-                                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(urlCategory) + '?page=' + totalPages + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '')) : '/category/' + encodeURIComponent(urlCategory) + '?page=' + totalPages + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '') %>" class="pagination-number"><%= totalPages %></a>
+                                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category?categoryId=' + urlCategoryId + '&page=' + totalPages + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '')) : '/category?categoryId=' + urlCategoryId + '&page=' + totalPages + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '') %>" class="pagination-number"><%= totalPages %></a>
                                 <% } %>
-                            
+                                
                             <% if (currentPage < totalPages) { %>
-                                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(urlCategory) + '?page=' + (currentPage + 1) + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '')) : '/category/' + encodeURIComponent(urlCategory) + '?page=' + (currentPage + 1) + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '') %>" class="pagination-btn"><%= typeof t !== 'undefined' ? t('category.nextPage') : '下一页' %></a>
+                                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category?categoryId=' + urlCategoryId + '&page=' + (currentPage + 1) + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '')) : '/category?categoryId=' + urlCategoryId + '&page=' + (currentPage + 1) + (searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '') %>" class="pagination-btn"><%= typeof t !== 'undefined' ? t('category.nextPage') : '下一页' %></a>
                             <% } else { %>
                                 <span class="pagination-btn disabled"><%= typeof t !== 'undefined' ? t('category.nextPage') : '下一页' %></span>
                             <% } %>

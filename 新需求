@@ -1,0 +1,64 @@
+1、把翻译去掉
+
+2、数据从supabase数据库获取数据，supabase配置在 .env.local 中的 NEXT_PUBLIC_SUPABASE_URL 和 NEXT_PUBLIC_SUPABASE_ANON_KEY 这两个参数.
+而不是从data.json中里面获取，改为从supabase数据库获取，分类表数据从game_categories（英文表）表、cn_game_categories（中文表）中获取，
+game_categories（英文表）结构如下：
+
+CREATE TABLE IF NOT EXISTS game_categories (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  language TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+cn_game_categories（中文表）结构如下：
+
+CREATE TABLE IF NOT EXISTS cn_game_categories (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  language TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+
+游戏表：
+
+CREATE TABLE IF NOT EXISTS games (
+    gid BIGSERIAL PRIMARY KEY,
+    id BIGINT,
+    category_id INTEGER NOT NULL REFERENCES game_categories(id),
+    name TEXT NOT NULL UNIQUE,
+    link TEXT,
+    icon TEXT,
+    href TEXT,
+    detail TEXT,
+    language TEXT,
+    metadata JSONB,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+
+游戏数据从上面的games获取数据，而不是从data.json中里面获取，
+中文版本是cn_games表，英文版本是games表，
+cn_games和games表结构如下：
+CREATE TABLE IF NOT EXISTS cn_games (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  link TEXT,
+  icon TEXT,
+  href TEXT,
+  detail TEXT,
+  language TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+请实现上面的功能。
+
+
+
+首页右边的更多的按钮，参数改为category_id，点击后跳转到category页面，category页面参数是category_id，
+
+
+在底部的版权下面加上如下：工业和信息化部 粤ICP备18041392号-6，
+这个是a标签，点击后跳转到https://beian.miit.gov.cn/ ，
+这个是工信部备案，请使用中文显示，不要使用英文显示，使用新打开窗口形式
