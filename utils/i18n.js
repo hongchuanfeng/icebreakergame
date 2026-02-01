@@ -8,19 +8,36 @@ const DEFAULT_LOCALE = 'en';
 // 缓存语言文件
 let localeCache = {};
 
-// 获取项目根目录（兼容 Lambda 等环境）
+// 获取项目根目录（兼容 Lambda、Vercel 等环境）
 function getProjectRoot() {
   // 尝试多种方式获取项目根目录
-  if (process.env.LAMBDA_TASK_ROOT) {
-    // AWS Lambda
-    return process.env.LAMBDA_TASK_ROOT;
+  const possiblePaths = [
+    process.env.LAMBDA_TASK_ROOT,      // AWS Lambda
+    process.env.VERCEL                  // Vercel
+  ];
+  
+  // 当前模块的目录
+  const moduleDir = __dirname;
+  
+  // 从模块目录向上查找
+  for (const envPath of possiblePaths) {
+    if (envPath && fs.existsSync(path.join(envPath, 'locales'))) {
+      return envPath;
+    }
   }
-  if (process.env.VERCEL) {
-    // Vercel
-    return '/var/task';
+  
+  // 尝试从当前模块目录向上查找
+  let currentDir = moduleDir;
+  for (let i = 0; i < 3; i++) {
+    const parentDir = path.dirname(currentDir);
+    if (fs.existsSync(path.join(parentDir, 'locales'))) {
+      return parentDir;
+    }
+    currentDir = parentDir;
   }
-  // 本地开发环境
-  return path.resolve(__dirname, '..');
+  
+  // 如果都找不到，返回模块目录的父目录
+  return path.dirname(__dirname);
 }
 
 /**
@@ -42,7 +59,17 @@ function loadLocale(locale) {
   try {
     const projectRoot = getProjectRoot();
     const localePath = path.join(projectRoot, 'locales', `${locale}.json`);
-    console.log(`[i18n] Loading locale from: ${localePath}`);
+    
+    // 调试日志
+    console.log(`[i18n] Module dir: ${__dirname}`);
+    console.log(`[i18n] Project root: ${projectRoot}`);
+    console.log(`[i18n] Looking for: ${localePath}`);
+    
+    // 检查文件是否存在
+    if (!fs.existsSync(localePath)) {
+      console.error(`[i18n] File not found: ${localePath}`);
+      throw new Error(`File not found: ${localePath}`);
+    }
     
     const localeData = fs.readFileSync(localePath, 'utf8');
     localeCache[locale] = JSON.parse(localeData);
