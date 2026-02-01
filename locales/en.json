@@ -249,7 +249,10 @@
     "formName": "Name",
     "formEmail": "Email",
     "formSubject": "Subject",
-    "formMessage": "Message"
+    "formMessage": "Message",
+    "sending": "Sending...",
+    "sendSuccess": "✓ Message sent successfully! We will reply soon.",
+    "sendError": "✗ Failed to send, please try again later."
   },
   "privacy": {
     "title": "Privacy Policy - Ice Breaker Games",

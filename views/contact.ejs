@@ -88,8 +88,9 @@
                         <textarea id="message" name="message" placeholder="<%= typeof t !== 'undefined' ? t('contact.messagePlaceholder') : '请详细描述您的问题或需求...' %>" required></textarea>
                     </div>
 
-                    <button type="submit" class="submit-btn"><%= typeof t !== 'undefined' ? t('contact.sendMessage') : '发送消息' %></button>
+                    <button type="submit" class="submit-btn" id="submitBtn"><%= typeof t !== 'undefined' ? t('contact.sendMessage') : '发送消息' %></button>
                 </form>
+                <div id="formMessage" class="form-message" style="display: none;"></div>
             </div>
         </div>
 
@@ -118,23 +119,54 @@
         
         const formData = new FormData(this);
         const data = Object.fromEntries(formData);
+        const submitBtn = document.getElementById('submitBtn');
+        const formMessage = document.getElementById('formMessage');
         
-        // 获取翻译后的标签文本
-        const nameLabel = '<%= typeof t !== "undefined" ? t("contact.formName") : "姓名" %>';
-        const emailLabel = '<%= typeof t !== "undefined" ? t("contact.formEmail") : "邮箱" %>';
-        const subjectLabel = '<%= typeof t !== "undefined" ? t("contact.formSubject") : "主题" %>';
-        const messageLabel = '<%= typeof t !== "undefined" ? t("contact.formMessage") : "消息内容" %>';
+        // 显示加载状态
+        submitBtn.disabled = true;
+        submitBtn.textContent = '<%= typeof t !== "undefined" && locale === "zh-CN" ? "发送中..." : "Sending..." %>';
         
-        // 创建邮件链接
-        const subject = encodeURIComponent(data.subject);
-        const body = encodeURIComponent(`${nameLabel}: ${data.name}\n${emailLabel}: ${data.email}\n${subjectLabel}: ${data.subject}\n\n${messageLabel}:\n${data.message}`);
-        const mailtoLink = `mailto:hcf@foxmail.com?subject=${subject}&body=${body}`;
-        
-        // 打开邮件客户端
-        window.location.href = mailtoLink;
-        
-        // 显示成功消息
-        alert('<%= typeof t !== "undefined" ? t("contact.emailSent") : "邮件客户端已打开，请发送邮件联系我们！" %>');
+        // 发送 AJAX 请求
+        fetch('/api/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                // 显示成功消息
+                formMessage.style.display = 'block';
+                formMessage.className = 'form-message success';
+                formMessage.innerHTML = '<%= typeof t !== "undefined" && locale === "zh-CN" ? "✓ 消息已发送成功！我们会尽快回复您。" : "✓ Message sent successfully! We will reply as soon as possible." %>';
+                
+                // 重置表单
+                document.getElementById('contactForm').reset();
+            } else {
+                // 显示错误消息
+                formMessage.style.display = 'block';
+                formMessage.className = 'form-message error';
+                formMessage.innerHTML = result.message || '<%= typeof t !== "undefined" && locale === "zh-CN" ? "发送失败，请稍后重试。" : "Failed to send. Please try again later." %>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            formMessage.style.display = 'block';
+            formMessage.className = 'form-message error';
+            formMessage.innerHTML = '<%= typeof t !== "undefined" && locale === "zh-CN" ? "发送失败，请稍后重试。" : "Failed to send. Please try again later." %>';
+        })
+        .finally(() => {
+            // 恢复按钮状态
+            submitBtn.disabled = false;
+            submitBtn.textContent = '<%= typeof t !== "undefined" && locale === "zh-CN" ? "发送消息" : "Send Message" %>';
+            
+            // 5秒后隐藏消息
+            setTimeout(() => {
+                formMessage.style.display = 'none';
+            }, 5000);
+        });
     });
 
     // 显示地图

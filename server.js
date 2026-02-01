@@ -685,7 +685,9 @@ createLocaleRoutes('/about', (req, res) => {
     metaDescription: t(locale, 'about.description'),
     metaKeywords: 'ice breaker games, 关于我们, 传道游戏, 软件开发, AI技术, 数字化解决方案',
     canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/about' : `https://www.icebreakgame.com/${locale}/about`,
-    currentPage: 'about'
+    currentPage: 'about',
+    locale: locale,
+    supportedLocales: SUPPORTED_LOCALES
   });
 });
 
@@ -697,7 +699,9 @@ createLocaleRoutes('/contact', (req, res) => {
     metaDescription: t(locale, 'contact.subtitle'),
     metaKeywords: 'ice breaker games, 联系我们, 联系方式, 官方邮箱, 深圳龙华',
     canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/contact' : `https://www.icebreakgame.com/${locale}/contact`,
-    currentPage: 'contact'
+    currentPage: 'contact',
+    locale: locale,
+    supportedLocales: SUPPORTED_LOCALES
   });
 });
 
@@ -798,6 +802,73 @@ app.get('/api/search', async (req, res) => {
   }));
   
   res.json(results);
+});
+
+// API 路由：提交联系表单
+app.post('/api/contact', async (req, res) => {
+  const { name, email, subject, message } = req.body;
+  
+  // 验证必填字段
+  if (!name || !email || !message) {
+    return res.status(400).json({ 
+      success: false, 
+      message: '请填写所有必填字段' 
+    });
+  }
+  
+  // 验证邮箱格式
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ 
+      success: false, 
+      message: '请输入有效的邮箱地址' 
+    });
+  }
+  
+  try {
+    const { supabase } = require('./utils/supabase');
+    
+    if (!supabase) {
+      console.error('[Contact API] Supabase client not initialized');
+      return res.status(500).json({ 
+        success: false, 
+        message: '服务暂时不可用，请稍后重试' 
+      });
+    }
+    
+    // 保存到 Supabase
+    const { data, error } = await supabase
+      .from('contact_messages')
+      .insert([
+        {
+          name: name.trim(),
+          email: email.trim(),
+          topic: subject || 'general',
+          message: message.trim()
+        }
+      ]);
+    
+    if (error) {
+      console.error('[Contact API] Error saving message:', error);
+      return res.status(500).json({ 
+        success: false, 
+        message: '保存消息失败，请稍后重试' 
+      });
+    }
+    
+    console.log('[Contact API] Message saved successfully:', { name, email, subject });
+    
+    res.json({ 
+      success: true, 
+      message: '消息已发送成功！我们会尽快回复您。' 
+    });
+  } catch (error) {
+    console.error('[Contact API] Error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '发送失败，请稍后重试' 
+    });
+  }
 });
 
 // 启动服务器

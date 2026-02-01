@@ -25,3 +25,35 @@ title关键词是该分类的名称+ice breaker games，描述是该分类的描
 
 
 8、对所有页面再创建中文版本，然后页面都放到cn目录下，请修改
+
+
+
+
+将关于我们页面，实现中文版本，点击顶部的中文，然后显示中文，使用多语言功能。
+
+
+
+联系我们页面里面的发送消息的主题下拉框背景色是白色，导致内容看不到，请修改文本字体颜色。
+
+
+
+
+
+把联系我们页面里面的发送消息的表单功能实现，然后把需要的表结构脚本生成出来，然后放到supabase数据库中，
+表结构如下：
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  topic TEXT NOT NULL, // 主题
+  message TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+请实现发送消息的功能。
+
+
+
+
+
+

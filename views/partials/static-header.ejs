@@ -622,6 +622,21 @@
             min-height: 120px;
         }
 
+        /* select 下拉框选项样式 */
+        .form-group select option {
+            background: #1a1f3a;
+            color: #ffffff;
+            padding: 10px;
+        }
+
+        /* Firefox 下拉框样式 */
+        @supports (-moz-appearance: none) {
+            .form-group select {
+                background-color: #1a1f3a;
+                color: #ffffff;
+            }
+        }
+
         .submit-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -638,6 +653,39 @@
         .submit-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 表单消息提示样式 */
+        .form-message {
+            margin-top: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .form-message.success {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(39, 174, 96, 0.2));
+            border: 1px solid rgba(46, 204, 113, 0.5);
+            color: #2ecc71;
+        }
+
+        .form-message.error {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(192, 57, 43, 0.2));
+            border: 1px solid rgba(231, 76, 60, 0.5);
+            color: #e74c3c;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .response-time {
