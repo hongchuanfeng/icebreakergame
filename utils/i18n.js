@@ -8,6 +8,21 @@ const DEFAULT_LOCALE = 'en';
 // 缓存语言文件
 let localeCache = {};
 
+// 获取项目根目录（兼容 Lambda 等环境）
+function getProjectRoot() {
+  // 尝试多种方式获取项目根目录
+  if (process.env.LAMBDA_TASK_ROOT) {
+    // AWS Lambda
+    return process.env.LAMBDA_TASK_ROOT;
+  }
+  if (process.env.VERCEL) {
+    // Vercel
+    return '/var/task';
+  }
+  // 本地开发环境
+  return path.resolve(__dirname, '..');
+}
+
 /**
  * 加载语言文件
  * @param {string} locale - 语言代码 (en, zh-CN)
@@ -25,12 +40,15 @@ function loadLocale(locale) {
   }
 
   try {
-    const localePath = path.join(__dirname, '..', 'locales', `${locale}.json`);
+    const projectRoot = getProjectRoot();
+    const localePath = path.join(projectRoot, 'locales', `${locale}.json`);
+    console.log(`[i18n] Loading locale from: ${localePath}`);
+    
     const localeData = fs.readFileSync(localePath, 'utf8');
     localeCache[locale] = JSON.parse(localeData);
     return localeCache[locale];
   } catch (error) {
-    console.error(`Error loading locale ${locale}:`, error);
+    console.error(`[i18n] Error loading locale ${locale}:`, error.message);
     // 如果加载失败，尝试加载默认语言
     if (locale !== DEFAULT_LOCALE) {
       return loadLocale(DEFAULT_LOCALE);
