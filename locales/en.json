@@ -13,7 +13,17 @@
     "viewAll": "View All",
     "more": "More",
     "copyright": "© 2024 Ice Breaker Games. All rights reserved.",
-    "version": "Version 1.0.0"
+    "version": "Version 1.0.0",
+    "friendshipLinks": "Friend Links",
+    "friendLinks": {
+      "mosaic": "Free Image Processing",
+      "videoWatermark": "Video Watermark Remover",
+      "pdfTool": "PDF Converter",
+      "qrcode": "QR Code Generator",
+      "barcode": "Barcode Generator",
+      "nbaFun": "NBA Fun Facts",
+      "video2txt": "Video to Text"
+    }
   },
   "categories": {
     "Top picks for you": "Top picks for you",

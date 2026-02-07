@@ -558,6 +558,52 @@ footer {
     color: rgba(255, 255, 255, 0.9);
 }
 
+/* 友情链接样式 */
+.footer-friendship-links {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.friendship-links-title {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-friendship-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.footer-friendship-links a:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.link-separator {
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0 2px;
+}
+
+@media (max-width: 768px) {
+    .footer-friendship-links {
+        font-size: 0.8rem;
+        gap: 0.25rem;
+    }
+    
+    .footer-friendship-links a {
+        padding: 3px 6px;
+    }
+}
+
 @media (max-width: 1024px) {
     .main-content {
         flex-direction: column;

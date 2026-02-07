@@ -13,7 +13,17 @@
     "viewAll": "查看全部",
     "more": "更多",
     "copyright": "© 2024 Ice Breaker Games. 保留所有权利。",
-    "version": "版本 1.0.0"
+    "version": "版本 1.0.0",
+    "friendshipLinks": "友情链接",
+    "friendLinks": {
+      "mosaic": "免费图片处理",
+      "videoWatermark": "视频去水印",
+      "pdfTool": "PDF转换工具",
+      "qrcode": "在线生成二维码",
+      "barcode": "在线生成条码",
+      "nbaFun": "NBA趣事",
+      "video2txt": "视频转文字"
+    }
   },
   "categories": {
     "Top picks for you": "为您推荐",

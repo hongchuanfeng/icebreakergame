@@ -8,6 +8,22 @@
                 <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/terms') : '/terms' %>" class="footer-link"><%= typeof t !== 'undefined' ? t('common.terms') : '服务条款' %></a>
             </div>
             <div class="footer-version"><%= typeof t !== 'undefined' ? t('common.version') : '版本 1.0.0' %></div>
+            <div class="footer-friendship-links">
+                <span class="friendship-links-title"><%= typeof t !== 'undefined' ? t('common.friendshipLinks') : '友情链接：' %></span>
+                <a href="https://mosaic.chdaoai.com/" target="_blank" rel="noopener noreferrer"><%= typeof t !== 'undefined' && t('common.friendLinks.mosaic') ? t('common.friendLinks.mosaic') : '免费图片处理' %></a>
+                <span class="link-separator">|</span>
+                <a href="https://www.removewatermarker.com/" target="_blank" rel="noopener noreferrer"><%= typeof t !== 'undefined' && t('common.friendLinks.videoWatermark') ? t('common.friendLinks.videoWatermark') : '视频去水印' %></a>
+                <span class="link-separator">|</span>
+                <a href="https://pdf.chdaoai.com/" target="_blank" rel="noopener noreferrer"><%= typeof t !== 'undefined' && t('common.friendLinks.pdfTool') ? t('common.friendLinks.pdfTool') : 'PDF转换工具' %></a>
+                <span class="link-separator">|</span>
+                <a href="https://qrcode.chdaoai.com/" target="_blank" rel="noopener noreferrer"><%= typeof t !== 'undefined' && t('common.friendLinks.qrcode') ? t('common.friendLinks.qrcode') : '在线生成二维码' %></a>
+                <span class="link-separator">|</span>
+                <a href="https://barcode.zorezoro.com/" target="_blank" rel="noopener noreferrer"><%= typeof t !== 'undefined' && t('common.friendLinks.barcode') ? t('common.friendLinks.barcode') : '在线生成条码' %></a>
+                <span class="link-separator">|</span>
+                <a href="https://www.zorezoro.com/" target="_blank" rel="noopener noreferrer"><%= typeof t !== 'undefined' && t('common.friendLinks.nbaFun') ? t('common.friendLinks.nbaFun') : 'NBA趣事' %></a>
+                <span class="link-separator">|</span>
+                <a href="https://video2txt.zorezoro.com/" target="_blank" rel="noopener noreferrer"><%= typeof t !== 'undefined' && t('common.friendLinks.video2txt') ? t('common.friendLinks.video2txt') : '视频转文字' %></a>
+            </div>
             <div class="footer-copyright"><%= typeof t !== 'undefined' ? t('common.copyright') : '© 2024 Ice Breaker Games. All rights reserved.' %></div>
             <div class="footer-beian">
                 <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">工业和信息化部 粤ICP备18041392号-6</a>

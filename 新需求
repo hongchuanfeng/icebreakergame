@@ -62,3 +62,17 @@ CREATE TABLE IF NOT EXISTS cn_games (
 在底部的版权下面加上如下：工业和信息化部 粤ICP备18041392号-6，
 这个是a标签，点击后跳转到https://beian.miit.gov.cn/ ，
 这个是工信部备案，请使用中文显示，不要使用英文显示，使用新打开窗口形式
+
+
+
+
+Version 1.0.0
+
+在首页的底部的Version 1.0.0下面加上友情链接：友情链接，
+1、免费图片处理：https://mosaic.chdaoai.com/
+2、视频去水印：https://www.removewatermarker.com/
+3、PDF转换工具：https://pdf.chdaoai.com/
+4、在线生成二维码：https://qrcode.chdaoai.com/
+5、在线生成条码：https://barcode.zorezoro.com/
+6、NBA趣事：https://www.zorezoro.com/
+7、视频转文字：https://video2txt.zorezoro.com/
