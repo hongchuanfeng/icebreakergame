@@ -17,7 +17,7 @@
                 <% if (gameCategory) { %>
                     <div class="game-detail-category-inline">
                         <span class="nav-icon"><%= getCategoryIcon(gameCategory) %></span>
-                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory)) : '/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory) %>" style="color: rgba(255, 255, 255, 0.8); text-decoration: none;">
+                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category?categoryId=' + (typeof categoryId !== 'undefined' ? categoryId : '')) : '/category?categoryId=' + (typeof categoryId !== 'undefined' ? categoryId : '') %>" style="color: rgba(255, 255, 255, 0.8); text-decoration: none;">
                             <%= gameCategory %>
                         </a>
                     </div>
@@ -25,7 +25,7 @@
             </div>
             <div class="game-control-right">
                 <% if (gameCategory) { %>
-                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory)) : '/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory) %>" class="game-control-btn">
+                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category?categoryId=' + (typeof categoryId !== 'undefined' ? categoryId : '')) : '/category?categoryId=' + (typeof categoryId !== 'undefined' ? categoryId : '') %>" class="game-control-btn">
                         ← <%= typeof t !== 'undefined' ? t('game.backToCategory') : '返回分类' %>
                     </a>
                 <% } %>
@@ -79,7 +79,7 @@
                         <% if (gameCategory) { %>
                             <div class="game-info-category">
                                 <span class="nav-icon"><%= getCategoryIcon(gameCategory) %></span>
-                                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory)) : '/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory) %>" style="color: rgba(102, 126, 234, 0.9); text-decoration: none;">
+                                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category?categoryId=' + (typeof categoryId !== 'undefined' ? categoryId : '')) : '/category?categoryId=' + (typeof categoryId !== 'undefined' ? categoryId : '') %>" style="color: rgba(102, 126, 234, 0.9); text-decoration: none;">
                                     <%= gameCategory %>
                                 </a>
                             </div>
@@ -197,7 +197,7 @@
                 <div class="game-related">
                     <h2 class="game-detail-section-title"><%= typeof t !== 'undefined' ? t('game.relatedGames') : '相关游戏推荐' %></h2>
                     <div style="text-align: center; margin-top: 1rem;">
-                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory)) : '/category/' + encodeURIComponent(typeof originalGameCategory !== 'undefined' ? originalGameCategory : gameCategory) %>" class="more-btn">
+                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category?categoryId=' + (typeof categoryId !== 'undefined' ? categoryId : '')) : '/category?categoryId=' + (typeof categoryId !== 'undefined' ? categoryId : '') %>" class="more-btn">
                             <%= typeof t !== 'undefined' ? t('game.viewAllInCategory', { category: gameCategory }) : ('查看 ' + gameCategory + ' 分类下的所有游戏 →') %>
                         </a>
                     </div>

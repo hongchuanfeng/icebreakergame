@@ -76,3 +76,10 @@ Version 1.0.0
 5、在线生成条码：https://barcode.zorezoro.com/
 6、NBA趣事：https://www.zorezoro.com/
 7、视频转文字：https://video2txt.zorezoro.com/
+
+
+
+检查下 点击游戏分类的 游戏数量，数据库里面是125，页面却显示是45，是不是加了条件，请检查下。
+
+
+game页面中的点击分类的两个按钮参数传错了，是传分类id，而不是分类名称，请修改。
