@@ -83,3 +83,19 @@ CREATE TABLE IF NOT EXISTS cn_games (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
+
+
+
+-- 创建游戏评价表
+CREATE TABLE IF NOT EXISTS game_reviews (
+  id SERIAL PRIMARY KEY,
+  game_id INTEGER NOT NULL,
+  rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT DEFAULT '',
+  user_email VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 添加索引以提高查询性能
+CREATE INDEX IF NOT EXISTS idx_game_reviews_game_id ON game_reviews(game_id);
+CREATE INDEX IF NOT EXISTS idx_game_reviews_created_at ON game_reviews(created_at DESC);

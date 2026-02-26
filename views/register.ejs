@@ -1,0 +1,92 @@
+<%- include('partials/static-header', { 
+  pageTitle: typeof t !== 'undefined' ? t('auth.registerTitle') : '注册',
+  metaDescription: typeof t !== 'undefined' ? t('auth.registerDescription') : '使用邮箱注册 Ice Breaker Games 账户',
+  metaKeywords: 'register, 注册, Ice Breaker Games',
+  canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/register') : 'https://www.icebreakgame.com/register'
+}) %>
+
+<main>
+  <div class="container">
+    <section class="content-section" style="max-width: 480px; margin: 3rem auto;">
+      <h1 class="page-title" style="font-size: 2rem; text-align: center; margin-bottom: 1.5rem;">
+        <%= typeof t !== 'undefined' ? t('auth.registerTitle') : '注册' %>
+      </h1>
+
+      <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+        <div class="form-message error" style="display:block;">
+          <%= errorMessage %>
+        </div>
+      <% } %>
+
+      <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+        <div class="form-message success" style="display:block;">
+          <%= successMessage %>
+        </div>
+      <% } %>
+
+      <form method="POST" action="/register" style="margin-top: 1.5rem;">
+        <div class="form-group">
+          <label for="email"><%= typeof t !== 'undefined' ? t('auth.email') : '邮箱' %></label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            required 
+            placeholder="<%= typeof t !== 'undefined' ? t('auth.emailPlaceholder') : '请输入邮箱' %>"
+            value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password"><%= typeof t !== 'undefined' ? t('auth.password') : '密码' %></label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            required 
+            minlength="6"
+            placeholder="<%= typeof t !== 'undefined' ? t('auth.passwordPlaceholder') : '请输入密码（至少6位）' %>"
+          />
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <%= typeof t !== 'undefined' ? t('auth.registerSubmit') : '注册账号' %>
+        </button>
+      </form>
+
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: rgba(255,255,255,0.7); text-align:center;">
+        <%= typeof t !== 'undefined' ? t('auth.registerTip') : '注册后，您可以使用该邮箱和密码进行登录。' %>
+      </p>
+
+      <p style="margin-top: 0.5rem; font-size: 0.9rem; color: rgba(255,255,255,0.7); text-align:center;">
+        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/login') : '/login' %>" style="color: #8ea5ff; text-decoration:none;">
+          <%= typeof t !== 'undefined' ? t('auth.backToLogin') : '返回登录' %>
+        </a>
+      </p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      © 2024 Ice Breaker Games. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function() {
+    const form = document.querySelector('form');
+    if (!form) return;
+    form.addEventListener('submit', function() {
+      const btn = form.querySelector('button[type="submit"]');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '<%= typeof t !== "undefined" ? t("auth.registering") : "注册中..." %>';
+      }
+    });
+  })();
+</script>
+
+

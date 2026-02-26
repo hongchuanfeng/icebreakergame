@@ -340,6 +340,12 @@ app.use((req, res, next) => {
 // 将工具函数设为全局可用
 app.use((req, res, next) => {
   res.locals.getCategoryIcon = getCategoryIcon;
+  
+  // 检查用户是否已登录
+  const userEmail = req.cookies && req.cookies.user_email;
+  res.locals.isLoggedIn = !!userEmail;
+  res.locals.userEmail = userEmail || '';
+  
   next();
 });
 
@@ -592,6 +598,32 @@ createLocaleRoutes('/game', async (req, res) => {
   // 翻译功能已移除，数据直接从 Supabase 获取对应语言版本
   
   // 渲染页面
+  // 获取游戏评价
+  let gameReviews = [];
+  let averageRating = 0;
+  try {
+    const { supabase } = require('./utils/supabase');
+    if (supabase && gameIdForUrl) {
+      const { data: reviews, error: reviewsError } = await supabase
+        .from('game_reviews')
+        .select('*')
+        .eq('game_id', parseInt(gameIdForUrl))
+        .order('created_at', { ascending: false })
+        .limit(20);
+      
+      if (!reviewsError && reviews) {
+        gameReviews = reviews;
+        // 计算平均评分
+        if (reviews.length > 0) {
+          const totalRating = reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+          averageRating = (totalRating / reviews.length).toFixed(1);
+        }
+      }
+    }
+  } catch (reviewErr) {
+    console.error('Error fetching game reviews:', reviewErr);
+  }
+  
   res.render('game', {
     game: game,
     gameName: game.name,
@@ -604,7 +636,9 @@ createLocaleRoutes('/game', async (req, res) => {
     canonicalUrl: canonicalUrl,
     categoryId: categoryIdForUrl,
     gameId: gameIdForUrl,
-    locale: locale
+    locale: locale,
+    gameReviews: gameReviews,
+    averageRating: averageRating
   });
 });
 
@@ -702,6 +736,57 @@ createLocaleRoutes('/contact', (req, res) => {
     currentPage: 'contact',
     locale: locale,
     supportedLocales: SUPPORTED_LOCALES
+  });
+});
+
+// SSR 路由：登录页面（邮箱 + 密码）
+createLocaleRoutes('/login', (req, res) => {
+  const locale = req.locale;
+  res.render('login', {
+    pageTitle: t(locale, 'auth.loginTitle'),
+    metaDescription: t(locale, 'auth.loginDescription'),
+    metaKeywords: 'login, 登录, Ice Breaker Games',
+    canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/login' : `https://www.icebreakgame.com/${locale}/login`,
+    currentPage: 'login',
+    locale: locale,
+    supportedLocales: SUPPORTED_LOCALES,
+    errorMessage: '',
+    successMessage: '',
+    formData: {}
+  });
+});
+
+// SSR 路由：注册页面
+createLocaleRoutes('/register', (req, res) => {
+  const locale = req.locale;
+  res.render('register', {
+    pageTitle: t(locale, 'auth.registerTitle'),
+    metaDescription: t(locale, 'auth.registerDescription'),
+    metaKeywords: 'register, 注册, Ice Breaker Games',
+    canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/register' : `https://www.icebreakgame.com/${locale}/register`,
+    currentPage: 'register',
+    locale: locale,
+    supportedLocales: SUPPORTED_LOCALES,
+    errorMessage: '',
+    successMessage: '',
+    formData: {}
+  });
+});
+
+// SSR 路由：忘记密码页面
+createLocaleRoutes('/forgot-password', (req, res) => {
+  const locale = req.locale;
+  res.render('forgot-password', {
+    pageTitle: t(locale, 'auth.forgotTitle'),
+    metaDescription: t(locale, 'auth.forgotDescription'),
+    metaKeywords: 'forgot password, 重置密码, Ice Breaker Games',
+    canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/forgot-password' : `https://www.icebreakgame.com/${locale}/forgot-password`,
+    currentPage: 'forgot-password',
+    locale: locale,
+    supportedLocales: SUPPORTED_LOCALES,
+    errorMessage: '',
+    successMessage: '',
+    formData: {}
   });
 });
 
@@ -871,6 +956,370 @@ app.post('/api/contact', async (req, res) => {
   }
 });
 
+// API 路由：邮箱登录（使用 Supabase Auth）
+app.post('/login', async (req, res) => {
+  const locale = req.locale || DEFAULT_LOCALE;
+  const { email, password } = req.body;
+
+  // 基本校验
+  if (!email || !password) {
+    return res.status(400).render('login', {
+      pageTitle: t(locale, 'auth.loginTitle'),
+      metaDescription: t(locale, 'auth.loginDescription'),
+      metaKeywords: 'login, 登录, Ice Breaker Games',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/login' : `https://www.icebreakgame.com/${locale}/login`,
+      currentPage: 'login',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      errorMessage: t(locale, 'auth.errorRequired'),
+      successMessage: '',
+      formData: { email }
+    });
+  }
+
+  try {
+    const { supabase } = require('./utils/supabase');
+
+    if (!supabase) {
+      console.error('[Auth] Supabase client not initialized');
+      return res.status(500).render('login', {
+        pageTitle: t(locale, 'auth.loginTitle'),
+        metaDescription: t(locale, 'auth.loginDescription'),
+        metaKeywords: 'login, 登录, Ice Breaker Games',
+        canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/login' : `https://www.icebreakgame.com/${locale}/login`,
+        currentPage: 'login',
+        locale: locale,
+        supportedLocales: SUPPORTED_LOCALES,
+        errorMessage: t(locale, 'auth.errorServer'),
+        successMessage: '',
+        formData: { email }
+      });
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password: password
+    });
+
+    // 调试日志
+    console.log('[Auth] Login attempt:', { email: email.trim() });
+    console.log('[Auth] Login response - data:', data ? '存在' : 'null');
+    console.log('[Auth] Login response - error:', error ? error.message : '无');
+
+    if (error) {
+      console.error('[Auth] Login error details:', JSON.stringify(error));
+      return res.status(401).render('login', {
+        pageTitle: t(locale, 'auth.loginTitle'),
+        metaDescription: t(locale, 'auth.loginDescription'),
+        metaKeywords: 'login, 登录, Ice Breaker Games',
+        canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/login' : `https://www.icebreakgame.com/${locale}/login`,
+        currentPage: 'login',
+        locale: locale,
+        supportedLocales: SUPPORTED_LOCALES,
+        errorMessage: t(locale, 'auth.errorInvalid'),
+        successMessage: '',
+        formData: { email }
+      });
+    }
+
+    // 简单保存登录邮箱到 Cookie，方便前端显示“已登录”
+    const isSecure = req.secure || (req.headers['x-forwarded-proto'] === 'https');
+    res.cookie('user_email', email.trim(), {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: false,
+      path: '/',
+      sameSite: 'lax',
+      secure: !!isSecure
+    });
+
+    console.log('[Auth] Login success for:', email);
+
+    // 登录成功后重定向到首页（带语言前缀）
+    const redirectPath = locale === DEFAULT_LOCALE ? '/' : `/${locale}/`;
+    return res.redirect(303, redirectPath);
+  } catch (err) {
+    console.error('[Auth] Unexpected error:', err);
+    return res.status(500).render('login', {
+      pageTitle: t(locale, 'auth.loginTitle'),
+      metaDescription: t(locale, 'auth.loginDescription'),
+      metaKeywords: 'login, 登录, Ice Breaker Games',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/login' : `https://www.icebreakgame.com/${locale}/login`,
+      currentPage: 'login',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      errorMessage: t(locale, 'auth.errorServer'),
+      successMessage: '',
+      formData: { email }
+    });
+  }
+});
+
+// 退出登录
+app.get('/logout', (req, res) => {
+  // 清除用户邮箱 cookie
+  res.clearCookie('user_email', { path: '/' });
+  
+  // 重定向到首页
+  const locale = req.locale || DEFAULT_LOCALE;
+  const redirectPath = locale === DEFAULT_LOCALE ? '/' : `/${locale}/`;
+  res.redirect(303, redirectPath);
+});
+
+// API 路由：注册（使用 Supabase Auth）
+app.post('/register', async (req, res) => {
+  const locale = req.locale || DEFAULT_LOCALE;
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).render('register', {
+      pageTitle: t(locale, 'auth.registerTitle'),
+      metaDescription: t(locale, 'auth.registerDescription'),
+      metaKeywords: 'register, 注册, Ice Breaker Games',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/register' : `https://www.icebreakgame.com/${locale}/register`,
+      currentPage: 'register',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      errorMessage: t(locale, 'auth.errorRequired'),
+      successMessage: '',
+      formData: { email }
+    });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).render('register', {
+      pageTitle: t(locale, 'auth.registerTitle'),
+      metaDescription: t(locale, 'auth.registerDescription'),
+      metaKeywords: 'register, 注册, Ice Breaker Games',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/register' : `https://www.icebreakgame.com/${locale}/register`,
+      currentPage: 'register',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      errorMessage: t(locale, 'auth.errorPasswordShort'),
+      successMessage: '',
+      formData: { email }
+    });
+  }
+
+  try {
+    const { supabase } = require('./utils/supabase');
+
+    if (!supabase) {
+      console.error('[Auth] Supabase client not initialized');
+      return res.status(500).render('register', {
+        pageTitle: t(locale, 'auth.registerTitle'),
+        metaDescription: t(locale, 'auth.registerDescription'),
+        metaKeywords: 'register, 注册, Ice Breaker Games',
+        canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/register' : `https://www.icebreakgame.com/${locale}/register`,
+        currentPage: 'register',
+        locale: locale,
+        supportedLocales: SUPPORTED_LOCALES,
+        errorMessage: t(locale, 'auth.errorServer'),
+        successMessage: '',
+        formData: { email }
+      });
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password: password,
+      options: {
+        emailRedirectTo: undefined,
+        data: {
+          // 跳过邮箱确认
+        }
+      }
+    });
+
+    // 强制跳过邮箱验证 - 如果 Supabase 设置了需要邮箱确认
+    // 检查是否需要手动确认
+    if (!error && data?.user && !data.session) {
+      console.log('[Auth] User registered but needs confirmation, attempting auto-confirm...');
+      
+      // 尝试通过 Admin API 自动确认用户（如果环境变量配置了 SERVICE_ROLE_KEY）
+      const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (serviceRoleKey) {
+        const { createClient } = require('@supabase/supabase-js');
+        const adminSupabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL,
+          serviceRoleKey,
+          { auth: { autoRefreshToken: false, persistSession: false } }
+        );
+        
+        // 使用正确的 Admin API 调用方式
+        const { error: updateError } = await adminSupabase.auth.admin.updateUserById(
+          data.user.id,
+          { email_confirm: true }
+        );
+        
+        if (updateError) {
+          console.log('[Auth] Auto-confirm failed:', updateError.message);
+        } else {
+          console.log('[Auth] User auto-confirmed successfully!');
+          
+          // 重新尝试登录以获取 session
+          const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+            email: email.trim(),
+            password: password
+          });
+          
+          if (!loginError && loginData.session) {
+            console.log('[Auth] Auto-login after confirm successful!');
+            // 登录成功，保存 cookie 并重定向
+            const isSecure = req.secure || (req.headers['x-forwarded-proto'] === 'https');
+            res.cookie('user_email', email.trim(), {
+              maxAge: 7 * 24 * 60 * 60 * 1000,
+              httpOnly: false,
+              path: '/',
+              sameSite: 'lax',
+              secure: !!isSecure
+            });
+            
+            console.log('[Auth] Login success for:', email);
+            const redirectPath = locale === DEFAULT_LOCALE ? '/' : `/${locale}/`;
+            return res.redirect(303, redirectPath);
+          }
+        }
+      }
+    }
+
+    // 调试日志
+    console.log('[Auth] Register attempt:', { email: email.trim() });
+    console.log('[Auth] Register response - data:', data ? JSON.stringify({ user: data.user ? 'exists' : null, session: !!data.session }) : 'null');
+    console.log('[Auth] Register response - error:', error ? error.message : '无');
+
+    if (error) {
+      console.error('[Auth] Register error details:', JSON.stringify(error));
+      return res.status(400).render('register', {
+        pageTitle: t(locale, 'auth.registerTitle'),
+        metaDescription: t(locale, 'auth.registerDescription'),
+        metaKeywords: 'register, 注册, Ice Breaker Games',
+        canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/register' : `https://www.icebreakgame.com/${locale}/register`,
+        currentPage: 'register',
+        locale: locale,
+        supportedLocales: SUPPORTED_LOCALES,
+        errorMessage: t(locale, 'auth.errorRegister') + (error.message ? ` (${error.message})` : ''),
+        successMessage: '',
+        formData: { email }
+      });
+    }
+
+    return res.status(200).render('register', {
+      pageTitle: t(locale, 'auth.registerTitle'),
+      metaDescription: t(locale, 'auth.registerDescription'),
+      metaKeywords: 'register, 注册, Ice Breaker Games',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/register' : `https://www.icebreakgame.com/${locale}/register`,
+      currentPage: 'register',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      errorMessage: '',
+      successMessage: t(locale, 'auth.registerSuccess'),
+      formData: { email: '' }
+    });
+  } catch (err) {
+    console.error('[Auth] Unexpected register error:', err);
+    return res.status(500).render('register', {
+      pageTitle: t(locale, 'auth.registerTitle'),
+      metaDescription: t(locale, 'auth.registerDescription'),
+      metaKeywords: 'register, 注册, Ice Breaker Games',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/register' : `https://www.icebreakgame.com/${locale}/register`,
+      currentPage: 'register',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      errorMessage: t(locale, 'auth.errorServer'),
+      successMessage: '',
+      formData: { email }
+    });
+  }
+});
+
+// API 路由：忘记密码（发送重置邮件）
+app.post('/forgot-password', async (req, res) => {
+  const locale = req.locale || DEFAULT_LOCALE;
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).render('forgot-password', {
+      pageTitle: t(locale, 'auth.forgotTitle'),
+      metaDescription: t(locale, 'auth.forgotDescription'),
+      metaKeywords: 'forgot password, 重置密码, Ice Breaker Games',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/forgot-password' : `https://www.icebreakgame.com/${locale}/forgot-password`,
+      currentPage: 'forgot-password',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      errorMessage: t(locale, 'auth.errorRequired'),
+      successMessage: '',
+      formData: { email }
+    });
+  }
+
+  try {
+    const { supabase } = require('./utils/supabase');
+
+    if (!supabase) {
+      console.error('[Auth] Supabase client not initialized');
+      return res.status(500).render('forgot-password', {
+        pageTitle: t(locale, 'auth.forgotTitle'),
+        metaDescription: t(locale, 'auth.forgotDescription'),
+        metaKeywords: 'forgot password, 重置密码, Ice Breaker Games',
+        canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/forgot-password' : `https://www.icebreakgame.com/${locale}/forgot-password`,
+        currentPage: 'forgot-password',
+        locale: locale,
+        supportedLocales: SUPPORTED_LOCALES,
+        errorMessage: t(locale, 'auth.errorServer'),
+        successMessage: '',
+        formData: { email }
+      });
+    }
+
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: process.env.RESET_PASSWORD_REDIRECT_URL || 'https://www.icebreakgame.com'
+    });
+
+    if (error) {
+      console.error('[Auth] Forgot password error:', error);
+      return res.status(400).render('forgot-password', {
+        pageTitle: t(locale, 'auth.forgotTitle'),
+        metaDescription: t(locale, 'auth.forgotDescription'),
+        metaKeywords: 'forgot password, 重置密码, Ice Breaker Games',
+        canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/forgot-password' : `https://www.icebreakgame.com/${locale}/forgot-password`,
+        currentPage: 'forgot-password',
+        locale: locale,
+        supportedLocales: SUPPORTED_LOCALES,
+        errorMessage: t(locale, 'auth.errorForgot') + (error.message ? ` (${error.message})` : ''),
+        successMessage: '',
+        formData: { email }
+      });
+    }
+
+    return res.status(200).render('forgot-password', {
+      pageTitle: t(locale, 'auth.forgotTitle'),
+      metaDescription: t(locale, 'auth.forgotDescription'),
+      metaKeywords: 'forgot password, 重置密码, Ice Breaker Games',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/forgot-password' : `https://www.icebreakgame.com/${locale}/forgot-password`,
+      currentPage: 'forgot-password',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      errorMessage: '',
+      successMessage: t(locale, 'auth.forgotSuccess'),
+      formData: { email: '' }
+    });
+  } catch (err) {
+    console.error('[Auth] Unexpected forgot-password error:', err);
+    return res.status(500).render('forgot-password', {
+      pageTitle: t(locale, 'auth.forgotTitle'),
+      metaDescription: t(locale, 'auth.forgotDescription'),
+      metaKeywords: 'forgot password, 重置密码, Ice Breaker Games',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/forgot-password' : `https://www.icebreakgame.com/${locale}/forgot-password`,
+      currentPage: 'forgot-password',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      errorMessage: t(locale, 'auth.errorServer'),
+      successMessage: '',
+      formData: { email }
+    });
+  }
+});
+
 // 启动服务器
 app.listen(PORT, () => {
   console.log(`🚀 服务器运行在 http://localhost:${PORT}`);
@@ -892,4 +1341,90 @@ app.listen(PORT, () => {
   console.log(`  - GET /robots.txt - 搜索引擎爬虫规则文件`);
   console.log(`  - GET /sitemap.xml - 网站地图文件（SEO）`);
   console.log(`  - GET /ads.txt - 广告联盟验证文件`);
+});
+
+// API 路由：获取游戏评价
+app.get('/api/game-reviews', async (req, res) => {
+  const gameId = req.query.gameId;
+  
+  if (!gameId) {
+    return res.status(400).json({ error: 'Game ID is required' });
+  }
+  
+  try {
+    const { supabase } = require('./utils/supabase');
+    if (!supabase) {
+      return res.status(500).json({ error: 'Database not configured' });
+    }
+    
+    const { data: reviews, error } = await supabase
+      .from('game_reviews')
+      .select('*')
+      .eq('game_id', parseInt(gameId))
+      .order('created_at', { ascending: false })
+      .limit(20);
+    
+    if (error) {
+      console.error('Error fetching reviews:', error);
+      return res.status(500).json({ error: error.message });
+    }
+    
+    // 计算平均评分
+    let averageRating = 0;
+    if (reviews && reviews.length > 0) {
+      const totalRating = reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+      averageRating = (totalRating / reviews.length).toFixed(1);
+    }
+    
+    res.json({ reviews: reviews || [], averageRating });
+  } catch (err) {
+    console.error('Error in /api/game-reviews:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// API 路由：提交游戏评价
+app.post('/api/game-reviews', async (req, res) => {
+  const { gameId, rating, comment, userEmail } = req.body;
+  
+  if (!gameId || !rating) {
+    return res.status(400).json({ error: 'Game ID and rating are required' });
+  }
+  
+  if (rating < 1 || rating > 5) {
+    return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+  }
+  
+  if (!userEmail) {
+    return res.status(401).json({ error: 'Please login to submit a review' });
+  }
+  
+  try {
+    const { supabase } = require('./utils/supabase');
+    if (!supabase) {
+      return res.status(500).json({ error: 'Database not configured' });
+    }
+    
+    const { data, error } = await supabase
+      .from('game_reviews')
+      .insert([
+        {
+          game_id: parseInt(gameId),
+          rating: parseInt(rating),
+          comment: comment || '',
+          user_email: userEmail,
+          created_at: new Date().toISOString()
+        }
+      ]);
+    
+    if (error) {
+      console.error('Error submitting review:', error);
+      return res.status(500).json({ error: error.message });
+    }
+    
+    res.json({ success: true, message: 'Review submitted successfully' });
+  } catch (err) {
+    console.error('Error in /api/game-reviews (POST):', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });

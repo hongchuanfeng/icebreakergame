@@ -203,9 +203,222 @@
                     </div>
                 </div>
             <% } %>
+
+            <!-- 游戏评价 -->
+            <div class="game-reviews" style="margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 16px;">
+                <h2 class="game-detail-section-title">
+                    <%= typeof t !== 'undefined' ? t('game.reviews') : '游戏评价' %>
+                    <% if (typeof averageRating !== 'undefined' && averageRating > 0) { %>
+                        <span style="font-size: 1rem; color: #ffd700; margin-left: 0.5rem;">
+                            ★ <%= averageRating %>
+                        </span>
+                    <% } %>
+                </h2>
+                
+                <!-- 评价表单（仅已登录用户可见） -->
+                <% if (typeof isLoggedIn !== 'undefined' && isLoggedIn && typeof userEmail !== 'undefined' && userEmail) { %>
+                    <div class="review-form" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.08); border-radius: 12px;">
+                        <h3 style="color: rgba(255,255,255,0.9); margin-bottom: 1rem;"><%= typeof t !== 'undefined' ? t('game.writeReview') : '发表评价' %></h3>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem;"><%= typeof t !== 'undefined' ? t('game.rating') : '评分' %>:</label>
+                            <div class="rating-stars" id="ratingStars" style="display: flex; gap: 0.5rem;">
+                                <% for (let i = 1; i <= 5; i++) { %>
+                                    <span class="star" data-rating="<%= i %>" style="font-size: 1.5rem; cursor: pointer; color: #666;">★</span>
+                                <% } %>
+                            </div>
+                            <input type="hidden" id="selectedRating" name="rating" value="0">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: rgba(255,255,255,0.8); display: block; margin-bottom: 0.5rem;"><%= typeof t !== 'undefined' ? t('game.comment') : '评论' %>:</label>
+                            <textarea id="reviewComment" rows="3" style="width: 100%; padding: 0.75rem; border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; background: rgba(255,255,255,0.1); color: #fff; font-size: 0.95rem; resize: vertical;" placeholder="<%= typeof t !== 'undefined' ? t('game.commentPlaceholder') : '写下你的评价...' %>"></textarea>
+                        </div>
+                        <button id="submitReviewBtn" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: transform 0.2s;">
+                            <%= typeof t !== 'undefined' ? t('game.submitReview') : '提交评价' %>
+                        </button>
+                        <div id="reviewMessage" style="margin-top: 0.5rem; font-size: 0.9rem;"></div>
+                    </div>
+                <% } else { %>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">
+                        <%= typeof t !== 'undefined' ? t('game.loginToReview') : '登录后可发表评价' %>
+                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/login') : '/login' %>" style="color: #667eea;"><%= typeof t !== 'undefined' ? t('auth.loginButton') : '登录' %></a>
+                    </p>
+                <% } %>
+                
+                <!-- 评价列表 -->
+                <div id="reviewsList" class="reviews-list">
+                    <% if (typeof gameReviews !== 'undefined' && gameReviews.length > 0) { %>
+                        <% gameReviews.forEach(function(review) { %>
+                            <div class="review-item" style="padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <span style="color: #ffd700; font-size: 1rem;">
+                                        <% for (let i = 1; i <= 5; i++) { %>
+                                            <%= i <= review.rating ? '★' : '☆' %>
+                                        <% } %>
+                                    </span>
+                                    <span style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">
+                                        <%= new Date(review.created_at).toLocaleDateString() %>
+                                    </span>
+                                </div>
+                                <% if (review.comment) { %>
+                                    <p style="color: rgba(255,255,255,0.85); margin: 0.5rem 0;"><%= review.comment %></p>
+                                <% } %>
+                                <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">
+                                    <%= review.user_email %>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p id="noReviews" style="color: rgba(255,255,255,0.6); text-align: center; padding: 1rem;">
+                            <%= typeof t !== 'undefined' ? t('game.noReviews') : '暂无评价，快来发表第一个评价吧！' %>
+                        </p>
+                    <% } %>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .star:hover,
+    .star.active {
+        color: #ffd700 !important;
+    }
+</style>
+
+<script>
+    // 评价相关功能
+    const gameId = '<%= typeof gameId !== "undefined" ? gameId : "" %>';
+    const userEmail = '<%= typeof userEmail !== "undefined" ? userEmail : "" %>';
+    const isLoggedIn = <%= typeof isLoggedIn !== "undefined" && isLoggedIn %>;
+    
+    // 评分星星交互
+    const stars = document.querySelectorAll('.star');
+    const selectedRatingInput = document.getElementById('selectedRating');
+    
+    if (stars.length > 0) {
+        stars.forEach(star => {
+            star.addEventListener('mouseenter', function() {
+                const rating = parseInt(this.dataset.rating);
+                updateStars(rating);
+            });
+            
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.dataset.rating);
+                selectedRatingInput.value = rating;
+                updateStars(rating);
+            });
+        });
+        
+        document.getElementById('ratingStars').addEventListener('mouseleave', function() {
+            const currentRating = parseInt(selectedRatingInput.value) || 0;
+            updateStars(currentRating);
+        });
+        
+        function updateStars(rating) {
+            stars.forEach((star, index) => {
+                star.style.color = index < rating ? '#ffd700' : '#666';
+            });
+        }
+    }
+    
+    // 提交评价
+    const submitBtn = document.getElementById('submitReviewBtn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', async function() {
+            const rating = parseInt(document.getElementById('selectedRating').value);
+            const comment = document.getElementById('reviewComment').value.trim();
+            const messageEl = document.getElementById('reviewMessage');
+            
+            if (!rating || rating < 1 || rating > 5) {
+                messageEl.innerHTML = '<span style="color: #e74c3c;"><%= typeof t !== "undefined" ? t("game.ratingRequired") : "请选择评分" %></span>';
+                return;
+            }
+            
+            if (!userEmail) {
+                messageEl.innerHTML = '<span style="color: #e74c3c;"><%= typeof t !== "undefined" ? t("game.loginRequired") : "请先登录" %></span>';
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = '<%= typeof t !== "undefined" ? t("game.submitting") : "提交中..." %>';
+            
+            try {
+                const response = await fetch('/api/game-reviews', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        gameId: gameId,
+                        rating: rating,
+                        comment: comment,
+                        userEmail: userEmail
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    messageEl.innerHTML = '<span style="color: #2ecc71;"><%= typeof t !== "undefined" ? t("game.reviewSuccess") : "评价提交成功！" %></span>';
+                    document.getElementById('selectedRating').value = 0;
+                    document.getElementById('reviewComment').value = '';
+                    updateStars(0);
+                    
+                    // 刷新评价列表
+                    loadReviews();
+                } else {
+                    messageEl.innerHTML = '<span style="color: #e74c3c;">' + (result.error || '<%= typeof t !== "undefined" ? t("game.reviewError") : "提交失败，请重试" %>') + '</span>';
+                }
+            } catch (err) {
+                messageEl.innerHTML = '<span style="color: #e74c3c;"><%= typeof t !== "undefined" ? t("game.reviewError") : "提交失败，请重试" %></span>';
+            }
+            
+            submitBtn.disabled = false;
+            submitBtn.textContent = '<%= typeof t !== "undefined" ? t("game.submitReview") : "提交评价" %>';
+        });
+    }
+    
+    // 加载评价列表
+    async function loadReviews() {
+        try {
+            const response = await fetch('/api/game-reviews?gameId=' + gameId);
+            const result = await response.json();
+            
+            if (result.reviews && result.reviews.length > 0) {
+                const reviewsList = document.getElementById('reviewsList');
+                const noReviews = document.getElementById('noReviews');
+                if (noReviews) noReviews.remove();
+                
+                let html = '';
+                result.reviews.forEach(review => {
+                    let stars = '';
+                    for (let i = 1; i <= 5; i++) {
+                        stars += i <= review.rating ? '★' : '☆';
+                    }
+                    
+                    html += '<div class="review-item" style="padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 1rem;">';
+                    html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">';
+                    html += '<span style="color: #ffd700; font-size: 1rem;">' + stars + '</span>';
+                    html += '<span style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">' + new Date(review.created_at).toLocaleDateString() + '</span>';
+                    html += '</div>';
+                    if (review.comment) {
+                        html += '<p style="color: rgba(255,255,255,0.85); margin: 0.5rem 0;">' + review.comment + '</p>';
+                    }
+                    html += '<div style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">' + review.user_email + '</div>';
+                    html += '</div>';
+                });
+                
+                reviewsList.innerHTML = html;
+                
+                // 更新平均评分
+                const ratingEl = document.querySelector('.game-reviews .game-detail-section-title span');
+                if (ratingEl && result.averageRating) {
+                    ratingEl.textContent = '★ ' + result.averageRating;
+                }
+            }
+        } catch (err) {
+            console.error('Error loading reviews:', err);
+        }
+    }
+</script>
 
 <script>
     // 全屏功能

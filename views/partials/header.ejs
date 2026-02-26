@@ -39,21 +39,38 @@
                     <input type="text" name="q" id="searchInput" class="search-input" placeholder="<%= typeof t !== 'undefined' ? t('common.searchPlaceholder') : '搜索游戏...' %>" value="<%= searchQuery || '' %>">
                 </form>
             </div>
-            <!-- 语言切换器 -->
-            <div class="language-switcher">
-                <% if (typeof supportedLocales !== 'undefined' && supportedLocales) { %>
-                    <% supportedLocales.forEach(loc => { %>
-                        <a href="/set-locale/<%= loc %>" 
-                           class="lang-btn <%= (typeof locale !== 'undefined' && locale === loc) ? 'active' : '' %>"
-                           data-locale="<%= loc %>">
-                            <%= loc === 'zh-CN' ? '中文' : loc.toUpperCase() %>
+                <!-- 语言切换器 + 登录按钮 -->
+                <div class="language-switcher">
+                    <% if (typeof supportedLocales !== 'undefined' && supportedLocales) { %>
+                        <% supportedLocales.forEach(loc => { %>
+                            <a href="/set-locale/<%= loc %>" 
+                               class="lang-btn <%= (typeof locale !== 'undefined' && locale === loc) ? 'active' : '' %>"
+                               data-locale="<%= loc %>">
+                                <%= loc === 'zh-CN' ? '中文' : loc.toUpperCase() %>
+                            </a>
+                        <% }); %>
+                    <% } else { %>
+                        <!-- 默认显示中英文切换 -->
+                        <a href="/set-locale/en" class="lang-btn">EN</a>
+                        <a href="/set-locale/zh-CN" class="lang-btn">中文</a>
+                    <% } %>
+
+                    <% if (typeof isLoggedIn !== 'undefined' && isLoggedIn && typeof userEmail !== 'undefined' && userEmail) { %>
+                        <!-- 已登录：显示邮箱和退出按钮 -->
+                        <span style="margin-left: 0.5rem; color: rgba(255,255,255,0.8); font-size: 0.85rem; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="<%= userEmail %>">
+                            <%= userEmail %>
+                        </span>
+                        <a href="/logout" class="lang-btn" style="margin-left: 0.5rem; background: rgba(231, 76, 60, 0.8);">
+                            <%= typeof t !== 'undefined' ? t('auth.logout') : '退出' %>
                         </a>
-                    <% }); %>
-                <% } else { %>
-                    <!-- 默认显示中英文切换 -->
-                    <a href="/set-locale/en" class="lang-btn">EN</a>
-                    <a href="/set-locale/zh-CN" class="lang-btn">中文</a>
-                <% } %>
-            </div>
+                    <% } else { %>
+                        <!-- 未登录：显示登录按钮 -->
+                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/login') : '/login' %>" 
+                           class="lang-btn"
+                           style="margin-left: 0.5rem;">
+                            <%= typeof t !== 'undefined' ? t('auth.loginButton') : '登录' %>
+                        </a>
+                    <% } %>
+                </div>
         </div>
     </div>
