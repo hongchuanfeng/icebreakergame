@@ -14,7 +14,8 @@ const {
   getGameById,
   getGamesByCategoryId,
   searchGames,
-  transformDataToOldFormat
+  transformDataToOldFormat,
+  getGamesPlayCount
 } = require('./utils/supabase');
 
 const app = express();
@@ -232,7 +233,11 @@ async function getCategoriesList(locale = 'en') {
     console.log('[Server Debug] Categories count:', categories.length);
     const categoryNames = categories.map(cat => cat.name);
     console.log('[Server Debug] Category names:', categoryNames.slice(0, 5));
-    return categoryNames;
+    
+    // 获取完整分类数据（包含游戏）
+    const data = await getGameData(locale);
+    console.log('[Server Debug] Full categories data count:', data.length);
+    return data;
   } catch (error) {
     console.error(`[Server Debug] Error fetching categories for ${dbLanguage}:`, error);
     return [];
@@ -384,9 +389,13 @@ createLocaleRoutes('/', async (req, res) => {
   const data = await getGameData(locale);
   const categories = await getCategoriesList(locale);
   
+  // 获取游戏播放次数
+  const playCounts = await getGamesPlayCount();
+  
   res.render('index', {
     gameData: data,
     categories: categories,
+    playCounts: playCounts,
     searchQuery: '',
     locale: locale,
     pageTitle: t(locale, 'home.title'),
@@ -404,6 +413,9 @@ createLocaleRoutes('/search', async (req, res) => {
   // 从 Supabase 获取数据
   const data = await getGameData(locale);
   const categories = await getCategoriesList(locale);
+  
+  // 获取游戏播放次数
+  const playCounts = await getGamesPlayCount();
   
   let searchResults = [];
   
@@ -431,6 +443,7 @@ createLocaleRoutes('/search', async (req, res) => {
   res.render('search', {
     searchQuery: query,
     searchResults: searchResults,
+    playCounts: playCounts,
     categories: categories
   });
 });
@@ -601,9 +614,18 @@ createLocaleRoutes('/game', async (req, res) => {
   // 获取游戏评价
   let gameReviews = [];
   let averageRating = 0;
+  let isFavorited = false;
+  
+  // 获取用户邮箱（从 cookie 中获取，因为登录状态存储在 cookie 中）
+  const userEmailForFav = req.cookies && req.cookies.user_email;
+  
+  console.log('[Game Page] userEmailForFav:', userEmailForFav);
+  console.log('[Game Page] gameIdForUrl:', gameIdForUrl);
+  
   try {
     const { supabase } = require('./utils/supabase');
     if (supabase && gameIdForUrl) {
+      // 获取评价
       const { data: reviews, error: reviewsError } = await supabase
         .from('game_reviews')
         .select('*')
@@ -619,6 +641,74 @@ createLocaleRoutes('/game', async (req, res) => {
           averageRating = (totalRating / reviews.length).toFixed(1);
         }
       }
+      
+      // 检查当前用户是否已收藏
+      if (userEmailForFav && gameIdForUrl) {
+        console.log('[Game Page] Checking favorite status for:', userEmailForFav, 'gameId:', gameIdForUrl);
+        const { data: favoriteData, error: favError } = await supabase
+          .from('user_favorites')
+          .select('id')
+          .eq('user_email', userEmailForFav)
+          .eq('game_id', parseInt(gameIdForUrl))
+          .single();
+        
+        console.log('[Game Page] Favorite query result:', favoriteData, 'error:', favError);
+        isFavorited = !!favoriteData;
+      } else {
+        console.log('[Game Page] Skipping favorite check - userEmailForFav:', userEmailForFav, 'gameIdForUrl:', gameIdForUrl);
+      }
+      
+      // 记录游戏播放统计 - 每次加载页面都插入一条新记录
+      if (gameIdForUrl) {
+        const userEmail = userEmailForFav || null;
+        
+        console.log('[Game Play Stats] Processing - gameId:', gameIdForUrl, 'userEmail:', userEmail);
+        
+        // 检查是否已存在该游戏的统计记录
+        const { data: existingStat } = await supabase
+          .from('game_play_stats')
+          .select('id, play_count')
+          .eq('game_id', parseInt(gameIdForUrl))
+          .single();
+        
+        if (existingStat) {
+          // 已存在，更新 play_count + 1
+          const { error: updateError } = await supabase
+            .from('game_play_stats')
+            .update({
+              play_count: existingStat.play_count + 1,
+              last_played_at: new Date().toISOString()
+            })
+            .eq('id', existingStat.id);
+          
+          if (updateError) {
+            console.error('[Game Play Stats] Update error:', updateError);
+          } else {
+            console.log('[Game Play Stats] Updated play_count to', existingStat.play_count + 1);
+          }
+        } else {
+          // 不存在，插入新记录
+          const { data: insertData, error: insertError } = await supabase
+            .from('game_play_stats')
+            .insert([{
+              game_id: parseInt(gameIdForUrl),
+              user_email: userEmail,
+              play_count: 1,
+              last_played_at: new Date().toISOString()
+            }]);
+          
+          if (insertError) {
+            console.error('[Game Play Stats] Insert error:', insertError);
+          } else {
+            console.log('[Game Play Stats] Inserted new record');
+          }
+        }
+      }
+    } else {
+      console.log('[Game Play Stats] Skipped - supabase or gameIdForUrl not available:', { 
+        supabase: !!supabase, 
+        gameIdForUrl: gameIdForUrl 
+      });
     }
   } catch (reviewErr) {
     console.error('Error fetching game reviews:', reviewErr);
@@ -638,7 +728,10 @@ createLocaleRoutes('/game', async (req, res) => {
     gameId: gameIdForUrl,
     locale: locale,
     gameReviews: gameReviews,
-    averageRating: averageRating
+    averageRating: averageRating,
+    isFavorited: isFavorited,
+    isLoggedIn: !!userEmailForFav,
+    userEmail: userEmailForFav || ''
   });
 });
 
@@ -661,12 +754,25 @@ createLocaleRoutes('/category', async (req, res) => {
   const data = await getGameData(locale);
   const categories = await getCategoriesList(locale);
   
+  // 获取游戏播放次数
+  const allPlayCounts = await getGamesPlayCount();
+  
+  console.log('[Category] allPlayCounts 所有key:', Object.keys(allPlayCounts));
+  
   // 根据分类ID查找分类数据
   let categoryData = data.find(item => item.id === parseInt(categoryId));
   
   if (!categoryData || !categoryData.games || categoryData.games.length === 0) {
     return res.status(404).send(locale === 'zh-CN' ? '分类不存在' : 'Category not found');
   }
+  
+  console.log('[Category] allPlayCounts:', JSON.stringify(allPlayCounts));
+  console.log('[Category] 游戏ID和播放次数:');
+  categoryData.games.forEach(game => {
+    const key1 = game.id;
+    const key2 = String(game.id);
+    console.log(`  game.id: ${key1} (type: ${typeof key1}), keyStr: "${key2}", playCount: ${allPlayCounts[key1] ?? 'undefined'}, playCount2: ${allPlayCounts[key2] ?? 'undefined'}`);
+  });
   
   // 获取翻译后的 category 名称用于显示
   const originalCategory = categoryData.category;
@@ -700,6 +806,7 @@ createLocaleRoutes('/category', async (req, res) => {
     originalCategory: originalCategory, // 保存原始 category 用于 URL
     categoryId: categoryData.id, // 添加分类ID用于SEO友好的URL
     games: paginatedGames,
+    playCounts: allPlayCounts,
     categories: categories,
     searchQuery: searchQuery,
     currentPage: currentPage,
@@ -742,6 +849,7 @@ createLocaleRoutes('/contact', (req, res) => {
 // SSR 路由：登录页面（邮箱 + 密码）
 createLocaleRoutes('/login', (req, res) => {
   const locale = req.locale;
+  const resetSuccess = req.query.reset === 'success';
   res.render('login', {
     pageTitle: t(locale, 'auth.loginTitle'),
     metaDescription: t(locale, 'auth.loginDescription'),
@@ -751,7 +859,7 @@ createLocaleRoutes('/login', (req, res) => {
     locale: locale,
     supportedLocales: SUPPORTED_LOCALES,
     errorMessage: '',
-    successMessage: '',
+    successMessage: resetSuccess ? (locale === 'zh-CN' ? '密码修改成功，请使用新密码登录' : 'Password reset successfully. Please login with your new password.') : '',
     formData: {}
   });
 });
@@ -771,6 +879,73 @@ createLocaleRoutes('/register', (req, res) => {
     successMessage: '',
     formData: {}
   });
+});
+
+// SSR 路由：用户个人页面
+createLocaleRoutes('/profile', async (req, res) => {
+  const locale = req.locale;
+  const userEmail = req.cookies && req.cookies.user_email;
+
+  if (!userEmail) {
+    // 未登录，重定向到登录页
+    const redirectPath = locale === DEFAULT_LOCALE ? '/login' : `/${locale}/login`;
+    return res.redirect(303, redirectPath);
+  }
+
+  try {
+    const { supabase } = require('./utils/supabase');
+    const data = await getGameData(locale);
+    const categories = await getCategoriesList(locale);
+
+    // 获取用户收藏的游戏
+    const { data: favorites, error: favError } = await supabase
+      .from('user_favorites')
+      .select('game_id, created_at')
+      .eq('user_email', userEmail);
+
+    let favoriteGames = [];
+    if (!favError && favorites && favorites.length > 0) {
+      const gameIds = favorites.map(f => f.game_id);
+      
+      // 从所有游戏中筛选出收藏的游戏
+      data.forEach(category => {
+        category.games.forEach(game => {
+          if (gameIds.includes(game.id)) {
+            const favInfo = favorites.find(f => f.game_id === game.id);
+            favoriteGames.push({
+              ...game,
+              favoritedAt: favInfo ? favInfo.created_at : null
+            });
+          }
+        });
+      });
+    }
+
+    // 获取用户统计信息
+    const { data: playStats } = await supabase
+      .from('game_play_stats')
+      .select('game_id, play_count')
+      .eq('user_email', userEmail);
+
+    const totalPlayCount = playStats ? playStats.reduce((sum, stat) => sum + stat.play_count, 0) : 0;
+
+    res.render('profile', {
+      pageTitle: t(locale, 'profile.title'),
+      metaDescription: t(locale, 'profile.description'),
+      metaKeywords: 'profile, my games, favorites, 个人中心, 我的收藏',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/profile' : `https://www.icebreakgame.com/${locale}/profile`,
+      currentPage: 'profile',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      userEmail: userEmail,
+      favoriteGames: favoriteGames,
+      totalPlayCount: totalPlayCount,
+      categories: categories
+    });
+  } catch (err) {
+    console.error('[Profile] Error:', err);
+    res.redirect(303, locale === DEFAULT_LOCALE ? '/' : `/${locale}/`);
+  }
 });
 
 // SSR 路由：忘记密码页面
@@ -979,6 +1154,7 @@ app.post('/login', async (req, res) => {
 
   try {
     const { supabase } = require('./utils/supabase');
+    const bcrypt = require('bcrypt');
 
     if (!supabase) {
       console.error('[Auth] Supabase client not initialized');
@@ -996,18 +1172,35 @@ app.post('/login', async (req, res) => {
       });
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password: password
-    });
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('id, email, password_hash')
+      .eq('email', email.trim().toLowerCase())
+      .single();
 
-    // 调试日志
     console.log('[Auth] Login attempt:', { email: email.trim() });
-    console.log('[Auth] Login response - data:', data ? '存在' : 'null');
-    console.log('[Auth] Login response - error:', error ? error.message : '无');
 
-    if (error) {
-      console.error('[Auth] Login error details:', JSON.stringify(error));
+    if (userError || !user) {
+      console.error('[Auth] User not found:', email.trim());
+      return res.status(401).render('login', {
+        pageTitle: t(locale, 'auth.loginTitle'),
+        metaDescription: t(locale, 'auth.loginDescription'),
+        metaKeywords: 'login, 登录, Ice Breaker Games',
+        canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/login' : `https://www.icebreakgame.com/${locale}/login`,
+        currentPage: 'login',
+        locale: locale,
+        supportedLocales: SUPPORTED_LOCALES,
+        errorMessage: t(locale, 'auth.errorInvalid'),
+        successMessage: '',
+        formData: { email }
+      });
+    }
+
+    // 验证密码
+    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+
+    if (!passwordMatch) {
+      console.error('[Auth] Invalid password for:', email.trim());
       return res.status(401).render('login', {
         pageTitle: t(locale, 'auth.loginTitle'),
         metaDescription: t(locale, 'auth.loginDescription'),
@@ -1024,7 +1217,7 @@ app.post('/login', async (req, res) => {
 
     // 简单保存登录邮箱到 Cookie，方便前端显示“已登录”
     const isSecure = req.secure || (req.headers['x-forwarded-proto'] === 'https');
-    res.cookie('user_email', email.trim(), {
+    res.cookie('user_email', user.email, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: false,
       path: '/',
@@ -1032,7 +1225,7 @@ app.post('/login', async (req, res) => {
       secure: !!isSecure
     });
 
-    console.log('[Auth] Login success for:', email);
+    console.log('[Auth] Login success for:', user.email);
 
     // 登录成功后重定向到首页（带语言前缀）
     const redirectPath = locale === DEFAULT_LOCALE ? '/' : `/${locale}/`;
@@ -1065,7 +1258,7 @@ app.get('/logout', (req, res) => {
   res.redirect(303, redirectPath);
 });
 
-// API 路由：注册（使用 Supabase Auth）
+// API 路由：注册（使用自定义用户表）
 app.post('/register', async (req, res) => {
   const locale = req.locale || DEFAULT_LOCALE;
   const { email, password } = req.body;
@@ -1102,6 +1295,7 @@ app.post('/register', async (req, res) => {
 
   try {
     const { supabase } = require('./utils/supabase');
+    const bcrypt = require('bcrypt');
 
     if (!supabase) {
       console.error('[Auth] Supabase client not initialized');
@@ -1119,76 +1313,17 @@ app.post('/register', async (req, res) => {
       });
     }
 
-    const { data, error } = await supabase.auth.signUp({
-      email: email.trim(),
-      password: password,
-      options: {
-        emailRedirectTo: undefined,
-        data: {
-          // 跳过邮箱确认
-        }
-      }
-    });
-
-    // 强制跳过邮箱验证 - 如果 Supabase 设置了需要邮箱确认
-    // 检查是否需要手动确认
-    if (!error && data?.user && !data.session) {
-      console.log('[Auth] User registered but needs confirmation, attempting auto-confirm...');
-      
-      // 尝试通过 Admin API 自动确认用户（如果环境变量配置了 SERVICE_ROLE_KEY）
-      const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-      if (serviceRoleKey) {
-        const { createClient } = require('@supabase/supabase-js');
-        const adminSupabase = createClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL,
-          serviceRoleKey,
-          { auth: { autoRefreshToken: false, persistSession: false } }
-        );
-        
-        // 使用正确的 Admin API 调用方式
-        const { error: updateError } = await adminSupabase.auth.admin.updateUserById(
-          data.user.id,
-          { email_confirm: true }
-        );
-        
-        if (updateError) {
-          console.log('[Auth] Auto-confirm failed:', updateError.message);
-        } else {
-          console.log('[Auth] User auto-confirmed successfully!');
-          
-          // 重新尝试登录以获取 session
-          const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
-            email: email.trim(),
-            password: password
-          });
-          
-          if (!loginError && loginData.session) {
-            console.log('[Auth] Auto-login after confirm successful!');
-            // 登录成功，保存 cookie 并重定向
-            const isSecure = req.secure || (req.headers['x-forwarded-proto'] === 'https');
-            res.cookie('user_email', email.trim(), {
-              maxAge: 7 * 24 * 60 * 60 * 1000,
-              httpOnly: false,
-              path: '/',
-              sameSite: 'lax',
-              secure: !!isSecure
-            });
-            
-            console.log('[Auth] Login success for:', email);
-            const redirectPath = locale === DEFAULT_LOCALE ? '/' : `/${locale}/`;
-            return res.redirect(303, redirectPath);
-          }
-        }
-      }
-    }
-
-    // 调试日志
     console.log('[Auth] Register attempt:', { email: email.trim() });
-    console.log('[Auth] Register response - data:', data ? JSON.stringify({ user: data.user ? 'exists' : null, session: !!data.session }) : 'null');
-    console.log('[Auth] Register response - error:', error ? error.message : '无');
 
-    if (error) {
-      console.error('[Auth] Register error details:', JSON.stringify(error));
+    // 检查邮箱是否已存在
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email.trim().toLowerCase())
+      .single();
+
+    if (existingUser) {
+      console.error('[Auth] Email already exists:', email.trim());
       return res.status(400).render('register', {
         pageTitle: t(locale, 'auth.registerTitle'),
         metaDescription: t(locale, 'auth.registerDescription'),
@@ -1197,24 +1332,56 @@ app.post('/register', async (req, res) => {
         currentPage: 'register',
         locale: locale,
         supportedLocales: SUPPORTED_LOCALES,
-        errorMessage: t(locale, 'auth.errorRegister') + (error.message ? ` (${error.message})` : ''),
+        errorMessage: t(locale, 'auth.errorEmailExists'),
         successMessage: '',
         formData: { email }
       });
     }
 
-    return res.status(200).render('register', {
-      pageTitle: t(locale, 'auth.registerTitle'),
-      metaDescription: t(locale, 'auth.registerDescription'),
-      metaKeywords: 'register, 注册, Ice Breaker Games',
-      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/register' : `https://www.icebreakgame.com/${locale}/register`,
-      currentPage: 'register',
-      locale: locale,
-      supportedLocales: SUPPORTED_LOCALES,
-      errorMessage: '',
-      successMessage: t(locale, 'auth.registerSuccess'),
-      formData: { email: '' }
+    // 密码哈希
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    // 插入新用户
+    const { data: newUser, error: insertError } = await supabase
+      .from('users')
+      .insert([{
+        email: email.trim().toLowerCase(),
+        password_hash: passwordHash
+      }])
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error('[Auth] Insert user error:', insertError);
+      return res.status(500).render('register', {
+        pageTitle: t(locale, 'auth.registerTitle'),
+        metaDescription: t(locale, 'auth.registerDescription'),
+        metaKeywords: 'register, 注册, Ice Breaker Games',
+        canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/register' : `https://www.icebreakgame.com/${locale}/register`,
+        currentPage: 'register',
+        locale: locale,
+        supportedLocales: SUPPORTED_LOCALES,
+        errorMessage: t(locale, 'auth.errorServer'),
+        successMessage: '',
+        formData: { email }
+      });
+    }
+
+    console.log('[Auth] User registered successfully:', email.trim());
+
+    // 自动登录
+    const isSecure = req.secure || (req.headers['x-forwarded-proto'] === 'https');
+    res.cookie('user_email', newUser.email, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: false,
+      path: '/',
+      sameSite: 'lax',
+      secure: !!isSecure
     });
+
+    console.log('[Auth] Auto login success for:', newUser.email);
+    const redirectPath = locale === DEFAULT_LOCALE ? '/' : `/${locale}/`;
+    return res.redirect(303, redirectPath);
   } catch (err) {
     console.error('[Auth] Unexpected register error:', err);
     return res.status(500).render('register', {
@@ -1232,12 +1399,13 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// API 路由：忘记密码（发送重置邮件）
+// API 路由：忘记密码（直接修改密码）
 app.post('/forgot-password', async (req, res) => {
   const locale = req.locale || DEFAULT_LOCALE;
-  const { email } = req.body;
+  const { email, password, confirmPassword } = req.body;
 
-  if (!email) {
+  // 验证必填字段
+  if (!email || !password || !confirmPassword) {
     return res.status(400).render('forgot-password', {
       pageTitle: t(locale, 'auth.forgotTitle'),
       metaDescription: t(locale, 'auth.forgotDescription'),
@@ -1247,6 +1415,38 @@ app.post('/forgot-password', async (req, res) => {
       locale: locale,
       supportedLocales: SUPPORTED_LOCALES,
       errorMessage: t(locale, 'auth.errorRequired'),
+      successMessage: '',
+      formData: { email }
+    });
+  }
+
+  // 验证密码匹配
+  if (password !== confirmPassword) {
+    return res.status(400).render('forgot-password', {
+      pageTitle: t(locale, 'auth.forgotTitle'),
+      metaDescription: t(locale, 'auth.forgotDescription'),
+      metaKeywords: 'forgot password, 重置密码, Ice Breaker Games',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/forgot-password' : `https://www.icebreakgame.com/${locale}/forgot-password`,
+      currentPage: 'forgot-password',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      errorMessage: locale === 'zh-CN' ? '两次输入的密码不一致' : 'Passwords do not match',
+      successMessage: '',
+      formData: { email }
+    });
+  }
+
+  // 验证密码长度
+  if (password.length < 6) {
+    return res.status(400).render('forgot-password', {
+      pageTitle: t(locale, 'auth.forgotTitle'),
+      metaDescription: t(locale, 'auth.forgotDescription'),
+      metaKeywords: 'forgot password, 重置密码, Ice Breaker Games',
+      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/forgot-password' : `https://www.icebreakgame.com/${locale}/forgot-password`,
+      currentPage: 'forgot-password',
+      locale: locale,
+      supportedLocales: SUPPORTED_LOCALES,
+      errorMessage: locale === 'zh-CN' ? '密码长度至少6位' : 'Password must be at least 6 characters',
       successMessage: '',
       formData: { email }
     });
@@ -1271,12 +1471,15 @@ app.post('/forgot-password', async (req, res) => {
       });
     }
 
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: process.env.RESET_PASSWORD_REDIRECT_URL || 'https://www.icebreakgame.com'
-    });
+    // 检查用户是否存在
+    const { data: existingUser, error: checkError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email.trim().toLowerCase())
+      .single();
 
-    if (error) {
-      console.error('[Auth] Forgot password error:', error);
+    if (checkError || !existingUser) {
+      console.error('[Auth] User not found for password reset:', email);
       return res.status(400).render('forgot-password', {
         pageTitle: t(locale, 'auth.forgotTitle'),
         metaDescription: t(locale, 'auth.forgotDescription'),
@@ -1285,24 +1488,43 @@ app.post('/forgot-password', async (req, res) => {
         currentPage: 'forgot-password',
         locale: locale,
         supportedLocales: SUPPORTED_LOCALES,
-        errorMessage: t(locale, 'auth.errorForgot') + (error.message ? ` (${error.message})` : ''),
+        errorMessage: locale === 'zh-CN' ? '该邮箱未注册' : 'This email is not registered',
         successMessage: '',
         formData: { email }
       });
     }
 
-    return res.status(200).render('forgot-password', {
-      pageTitle: t(locale, 'auth.forgotTitle'),
-      metaDescription: t(locale, 'auth.forgotDescription'),
-      metaKeywords: 'forgot password, 重置密码, Ice Breaker Games',
-      canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/forgot-password' : `https://www.icebreakgame.com/${locale}/forgot-password`,
-      currentPage: 'forgot-password',
-      locale: locale,
-      supportedLocales: SUPPORTED_LOCALES,
-      errorMessage: '',
-      successMessage: t(locale, 'auth.forgotSuccess'),
-      formData: { email: '' }
-    });
+    // 使用 bcrypt 加密密码
+    const bcrypt = require('bcrypt');
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 更新密码
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({ password_hash: hashedPassword, updated_at: new Date().toISOString() })
+      .eq('email', email.trim().toLowerCase());
+
+    if (updateError) {
+      console.error('[Auth] Password reset error:', updateError);
+      return res.status(500).render('forgot-password', {
+        pageTitle: t(locale, 'auth.forgotTitle'),
+        metaDescription: t(locale, 'auth.forgotDescription'),
+        metaKeywords: 'forgot password, 重置密码, Ice Breaker Games',
+        canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/forgot-password' : `https://www.icebreakgame.com/${locale}/forgot-password`,
+        currentPage: 'forgot-password',
+        locale: locale,
+        supportedLocales: SUPPORTED_LOCALES,
+        errorMessage: t(locale, 'auth.errorServer'),
+        successMessage: '',
+        formData: { email }
+      });
+    }
+
+    console.log('[Auth] Password reset success for:', email);
+
+    // 跳转到登录页并显示成功消息
+    const loginUrl = locale === DEFAULT_LOCALE ? '/login' : `/${locale}/login`;
+    return res.redirect(303, `${loginUrl}?reset=success`);
   } catch (err) {
     console.error('[Auth] Unexpected forgot-password error:', err);
     return res.status(500).render('forgot-password', {
@@ -1425,6 +1647,144 @@ app.post('/api/game-reviews', async (req, res) => {
     res.json({ success: true, message: 'Review submitted successfully' });
   } catch (err) {
     console.error('Error in /api/game-reviews (POST):', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// API 路由：获取用户收藏列表
+app.get('/api/favorites', async (req, res) => {
+  if (!req.session || !req.session.user || !req.session.user.email) {
+    return res.status(401).json({ error: 'Please login first' });
+  }
+  
+  const userEmail = req.session.user.email;
+  
+  try {
+    const { supabase } = require('./utils/supabase');
+    if (!supabase) {
+      return res.status(500).json({ error: 'Database not configured' });
+    }
+    
+    const { data: favorites, error } = await supabase
+      .from('user_favorites')
+      .select('*, games(name, icon, link, href)')
+      .eq('user_email', userEmail)
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching favorites:', error);
+      return res.status(500).json({ error: error.message });
+    }
+    
+    res.json({ favorites: favorites || [] });
+  } catch (err) {
+    console.error('Error in /api/favorites:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// API 路由：添加收藏
+app.post('/api/favorites', async (req, res) => {
+  console.log('[API Favorite POST] Request received');
+  console.log('[API Favorite POST] Cookies:', req.cookies);
+  console.log('[API Favorite POST] user_email cookie:', req.cookies?.user_email);
+  
+  const userEmail = req.cookies?.user_email;
+  if (!userEmail) {
+    console.log('[API Favorite POST] Not logged in - no user_email cookie');
+    return res.status(401).json({ error: 'Please login first' });
+  }
+  
+  const { gameId } = req.body;
+  
+  if (!gameId) {
+    return res.status(400).json({ error: 'Game ID is required' });
+  }
+
+  try {
+    const { supabase } = require('./utils/supabase');
+    if (!supabase) {
+      return res.status(500).json({ error: 'Database not configured' });
+    }
+    
+    console.log('[API Favorite POST] Adding favorite for:', userEmail, 'gameId:', gameId);
+    
+    // 检查是否已收藏
+    const { data: existing } = await supabase
+      .from('user_favorites')
+      .select('id')
+      .eq('user_email', userEmail)
+      .eq('game_id', parseInt(gameId))
+      .single();
+    
+    if (existing) {
+      console.log('[API Favorite POST] Already favorited');
+      return res.json({ success: true, message: 'Already favorited', isFavorited: true });
+    }
+    
+    const { data, error } = await supabase
+      .from('user_favorites')
+      .insert([
+        {
+          user_email: userEmail,
+          game_id: parseInt(gameId),
+          created_at: new Date().toISOString()
+        }
+      ]);
+    
+    if (error) {
+      console.error('[API Favorite POST] Error:', error);
+      return res.status(500).json({ error: error.message });
+    }
+    
+    console.log('[API Favorite POST] Success');
+    res.json({ success: true, message: 'Added to favorites', isFavorited: true });
+  } catch (err) {
+    console.error('[API Favorite POST] Catch error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// API 路由：删除收藏
+app.delete('/api/favorites', async (req, res) => {
+  console.log('[API Favorite DELETE] Request received');
+  console.log('[API Favorite DELETE] user_email cookie:', req.cookies?.user_email);
+  
+  const userEmail = req.cookies?.user_email;
+  if (!userEmail) {
+    console.log('[API Favorite DELETE] Not logged in - no user_email cookie');
+    return res.status(401).json({ error: 'Please login first' });
+  }
+  
+  const { gameId } = req.body;
+  
+  if (!gameId) {
+    return res.status(400).json({ error: 'Game ID is required' });
+  }
+
+  try {
+    const { supabase } = require('./utils/supabase');
+    if (!supabase) {
+      return res.status(500).json({ error: 'Database not configured' });
+    }
+    
+    console.log('[API Favorite DELETE] Removing favorite for:', userEmail, 'gameId:', gameId);
+    
+    const { error } = await supabase
+      .from('user_favorites')
+      .delete()
+      .eq('user_email', userEmail)
+      .eq('game_id', parseInt(gameId));
+    
+    if (error) {
+      console.error('[API Favorite DELETE] Error:', error);
+      return res.status(500).json({ error: error.message });
+    }
+    
+    console.log('[API Favorite DELETE] Success');
+    res.json({ success: true, message: 'Removed from favorites', isFavorited: false });
+  } catch (err) {
+    console.error('[API Favorite DELETE] Catch error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

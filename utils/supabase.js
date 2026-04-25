@@ -320,6 +320,45 @@ async function transformDataToOldFormat(categories, games, language = 'en_US') {
   return result;
 }
 
+// 获取游戏播放次数统计
+async function getGamesPlayCount() {
+  if (!supabase) {
+    console.error('Supabase client not initialized');
+    return {};
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('game_play_stats')
+      .select('game_id, play_count');
+
+    if (error) {
+      console.error('Error fetching play stats:', error);
+      return {};
+    }
+
+    console.log('[getGamesPlayCount] Raw data count:', data?.length);
+    console.log('[getGamesPlayCount] Raw data:', JSON.stringify(data));
+
+    // 按 game_id 汇总播放次数，使用字符串作为 key
+    const playCounts = {};
+    (data || []).forEach(stat => {
+      const key = String(stat.game_id);
+      if (!playCounts[key]) {
+        playCounts[key] = 0;
+      }
+      playCounts[key] += stat.play_count || 0;
+    });
+
+    console.log('[getGamesPlayCount] Final playCounts:', JSON.stringify(playCounts));
+
+    return playCounts;
+  } catch (error) {
+    console.error('Error in getGamesPlayCount:', error);
+    return {};
+  }
+}
+
 module.exports = {
   supabase,
   getCategories,
@@ -327,6 +366,7 @@ module.exports = {
   getGamesByCategoryId,
   getGameById,
   searchGames,
-  transformDataToOldFormat
+  transformDataToOldFormat,
+  getGamesPlayCount
 };
 

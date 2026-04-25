@@ -8,6 +8,21 @@
     <meta name="robots" content="index, follow">
     <title><%= pageTitle || 'Ice Breaker Games - 免费在线HTML5游戏平台' %></title>
     <link rel="canonical" href="<%= canonicalUrl || 'https://www.icebreakgame.com/' %>">
+    
+    <!-- Open Graph (Facebook & X) -->
+    <meta property="og:title" content="<%= pageTitle || 'Ice Breaker Games' %>">
+    <meta property="og:description" content="<%= metaDescription || '免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩。' %>">
+    <meta property="og:image" content="<%= ogImage || 'https://www.icebreakgame.com/og-image.png' %>">
+    <meta property="og:url" content="<%= canonicalUrl || 'https://www.icebreakgame.com/' %>">
+    <meta property="og:type" content="<%= ogType || 'website' %>">
+    <meta property="og:site_name" content="Ice Breaker Games">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= pageTitle || 'Ice Breaker Games' %>">
+    <meta name="twitter:description" content="<%= metaDescription || '免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩。' %>">
+    <meta name="twitter:image" content="<%= ogImage || 'https://www.icebreakgame.com/og-image.png' %>">
+    
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
     
     <%- include('styles') %>
@@ -57,9 +72,11 @@
 
                     <% if (typeof isLoggedIn !== 'undefined' && isLoggedIn && typeof userEmail !== 'undefined' && userEmail) { %>
                         <!-- 已登录：显示邮箱和退出按钮 -->
-                        <span style="margin-left: 0.5rem; color: rgba(255,255,255,0.8); font-size: 0.85rem; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="<%= userEmail %>">
+                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/profile') : '/profile' %>" 
+                           style="margin-left: 0.5rem; color: rgba(255,255,255,0.9); font-size: 0.85rem; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; padding: 4px 8px; border-radius: 4px; transition: background 0.2s;"
+                           title="<%= userEmail %>">
                             <%= userEmail %>
-                        </span>
+                        </a>
                         <a href="/logout" class="lang-btn" style="margin-left: 0.5rem; background: rgba(231, 76, 60, 0.8);">
                             <%= typeof t !== 'undefined' ? t('auth.logout') : '退出' %>
                         </a>

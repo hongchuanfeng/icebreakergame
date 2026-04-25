@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="<%= locale || 'en' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<%= metaDescription || 'My Profile - Ice Breaker Games' %>">
+    <meta name="keywords" content="<%= metaKeywords || 'profile, my games, favorites' %>">
+    <meta name="robots" content="index, follow">
+    <title><%= pageTitle || 'My Profile - Ice Breaker Games' %></title>
+    <link rel="canonical" href="<%= canonicalUrl || 'https://www.icebreakgame.com/profile' %>">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    
+    <%- include('partials/styles') %>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HT40C8VPYX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HT40C8VPYX');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7274710287377352"
+         crossorigin="anonymous"></script>
+</head>
+<body>
+    <%- include('partials/header', { 
+        pageTitle: pageTitle,
+        metaDescription: metaDescription,
+        metaKeywords: metaKeywords,
+        canonicalUrl: canonicalUrl,
+        searchQuery: ''
+    }) %>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <div class="content-area" style="width: 100%; max-width: 1200px; margin: 0 auto;">
+            
+            <!-- 用户信息卡片 -->
+            <div class="profile-header" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);">
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+                        👤
+                    </div>
+                    <div style="flex: 1;">
+                        <h1 style="margin: 0 0 0.5rem 0; font-size: 1.8rem; color: white;">
+                            <%= typeof t !== 'undefined' ? t('profile.welcome') : 'Welcome' %>, <%= userEmail %>
+                        </h1>
+                        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                            <div style="color: rgba(255, 255, 255, 0.9);">
+                                <span style="font-size: 1.5rem; font-weight: bold;"><%= favoriteGames.length %></span>
+                                <span style="margin-left: 0.3rem;"><%= typeof t !== 'undefined' ? t('profile.favoriteGames') : 'Favorite Games' %></span>
+                            </div>
+                            <div style="color: rgba(255, 255, 255, 0.9);">
+                                <span style="font-size: 1.5rem; font-weight: bold;"><%= totalPlayCount %></span>
+                                <span style="margin-left: 0.3rem;"><%= typeof t !== 'undefined' ? t('profile.totalPlays') : 'Total Plays' %></span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/logout" class="lang-btn" style="background: rgba(231, 76, 60, 0.9); color: white; padding: 0.75rem 1.5rem; border-radius: 10px; text-decoration: none; font-weight: 600;">
+                        <%= typeof t !== 'undefined' ? t('auth.logout') : 'Logout' %>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 收藏游戏 -->
+            <div class="category-section">
+                <div class="category-header">
+                    <div style="flex: 1;">
+                        <h2 class="category-title">
+                            <span style="margin-right: 0.5rem;">❤️</span>
+                            <%= typeof t !== 'undefined' ? t('profile.myFavorites') : 'My Favorite Games' %>
+                        </h2>
+                        <div style="margin-top: 0.5rem; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
+                            <%= typeof t !== 'undefined' ? t('profile.favoritesCount', { count: favoriteGames.length }) : ('共 ' + favoriteGames.length + ' 款收藏游戏') %>
+                        </div>
+                    </div>
+                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/') : '/' %>" class="more-btn">
+                        <%= typeof t !== 'undefined' ? t('profile.browseMore') : 'Browse More Games' %>
+                    </a>
+                </div>
+                
+                <% if (favoriteGames.length > 0) { %>
+                    <div class="games-grid">
+                        <% favoriteGames.forEach(game => { %>
+                            <% 
+                                // 找到游戏所属的分类
+                                let gameCategoryId = '';
+                                for (let i = 0; i < (categories || []).length; i++) {
+                                    if (categories[i].games) {
+                                        for (let j = 0; j < categories[i].games.length; j++) {
+                                            if (categories[i].games[j].id === game.id) {
+                                                gameCategoryId = categories[i].id;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (gameCategoryId) break;
+                                }
+                            %>
+                            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/game?categoryId=' + gameCategoryId + '&gameId=' + (game.id || '')) : '/game?categoryId=' + gameCategoryId + '&gameId=' + (game.id || '') %>" 
+                               class="game-card">
+                                <% if (game.icon) { %>
+                                    <img src="<%= game.icon %>" alt="<%= game.name %>" class="game-card-image" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;game-card-image&quot;>🎮</div><div class=&quot;game-card-info&quot;><div class=&quot;game-card-name&quot;><%- game.name %></div></div>'">
+                                <% } else { %>
+                                    <div class="game-card-image">🎮</div>
+                                <% } %>
+                                <div class="game-card-info">
+                                    <div class="game-card-name"><%- game.name %></div>
+                                </div>
+                            </a>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div style="text-align: center; padding: 4rem 2rem; color: rgba(255, 255, 255, 0.7);">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🎮</div>
+                        <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                            <%= typeof t !== 'undefined' ? t('profile.noFavorites') : 'You haven\'t added any favorite games yet' %>
+                        </p>
+                        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/') : '/' %>" class="more-btn">
+                            <%= typeof t !== 'undefined' ? t('profile.startExploring') : 'Start Exploring' %>
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+            
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+    
+    <style>
+        .profile-header {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .category-section {
+            animation: fadeIn 0.5s ease 0.2s both;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header > div {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-header > div:last-child {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</body>
+</html>

@@ -35,6 +35,11 @@
                 <button id="fullscreenBtn" class="game-control-btn fullscreen-btn">
                     ⛶ <%= typeof t !== 'undefined' ? t('game.fullscreen') : '全屏' %>
                 </button>
+                <% if (isLoggedIn) { %>
+                    <button id="favoriteBtn" class="game-control-btn favorite-btn <%= isFavorited ? 'favorited' : '' %>" data-game-id="<%= gameId %>">
+                        <%= isFavorited ? '❤️' : '🤍' %> <%= isFavorited ? '已收藏' : '收藏' %>
+                    </button>
+                <% } %>
             </div>
         </div>
 
@@ -192,6 +197,23 @@
                 </ul>
             </div>
 
+            <!-- 收藏游戏 -->
+            <div class="game-favorite-section" style="margin-top: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 12px; text-align: center;">
+                <% if (isLoggedIn) { %>
+                    <button id="favoriteBtnLarge" class="favorite-btn-large <%= isFavorited ? 'favorited' : '' %>" data-game-id="<%= gameId %>" style="background: <%= isFavorited ? 'linear-gradient(135deg, #ff6b6b, #ff4757)' : 'linear-gradient(135deg, #667eea, #764ba2)' %>; color: white; border: none; padding: 0.8rem 2rem; border-radius: 25px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.2rem;"><%= isFavorited ? '❤️' : '🤍' %></span>
+                        <span id="favoriteText"><%= isFavorited ? '已收藏' : '收藏这个游戏' %></span>
+                    </button>
+                <% } else { %>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">
+                        <%= typeof t !== 'undefined' ? t('game.loginToFavorite') : '登录后可收藏游戏' %>
+                    </p>
+                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/login') : '/login' %>" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 0.6rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: 600; display: inline-block;">
+                        <%= typeof t !== 'undefined' ? t('auth.loginButton') : '登录' %>
+                    </a>
+                <% } %>
+            </div>
+
             <!-- 相关游戏推荐 -->
             <% if (gameCategory) { %>
                 <div class="game-related">
@@ -283,6 +305,18 @@
     .star.active {
         color: #ffd700 !important;
     }
+    .favorite-btn {
+        background: rgba(255, 255, 255, 0.1) !important;
+        transition: all 0.3s ease;
+    }
+    .favorite-btn:hover {
+        background: rgba(255, 100, 100, 0.2) !important;
+        transform: scale(1.05);
+    }
+    .favorite-btn.favorited {
+        background: rgba(255, 100, 100, 0.3) !important;
+        color: #ff6b6b;
+    }
 </style>
 
 <script>
@@ -290,6 +324,77 @@
     const gameId = '<%= typeof gameId !== "undefined" ? gameId : "" %>';
     const userEmail = '<%= typeof userEmail !== "undefined" ? userEmail : "" %>';
     const isLoggedIn = <%= typeof isLoggedIn !== "undefined" && isLoggedIn %>;
+    
+    // 收藏功能 - 同时处理控制栏和详情区的收藏按钮
+    const favoriteBtn = document.getElementById('favoriteBtn');
+    const favoriteBtnLarge = document.getElementById('favoriteBtnLarge');
+    let isFavorited = <%= typeof isFavorited !== "undefined" && isFavorited %>;
+    
+    function updateFavoriteButtons(favorited) {
+        // 更新控制栏按钮
+        if (favoriteBtn) {
+            if (favorited) {
+                favoriteBtn.innerHTML = '❤️ <%= typeof t !== "undefined" ? t("game.favorited") : "已收藏" %>';
+                favoriteBtn.classList.add('favorited');
+            } else {
+                favoriteBtn.innerHTML = '🤍 <%= typeof t !== "undefined" ? t("game.favorite") : "收藏" %>';
+                favoriteBtn.classList.remove('favorited');
+            }
+        }
+        // 更新详情区按钮
+        if (favoriteBtnLarge) {
+            const favoriteText = document.getElementById('favoriteText');
+            if (favoriteText) {
+                favoriteText.textContent = favorited ? '<%= typeof t !== "undefined" ? t("game.favorited") : "已收藏" %>' : '<%= typeof t !== "undefined" ? t("game.addToFavorite") : "收藏这个游戏" %>';
+            }
+            favoriteBtnLarge.querySelector('span:first-child').textContent = favorited ? '❤️' : '🤍';
+            favoriteBtnLarge.classList.toggle('favorited', favorited);
+            favoriteBtnLarge.style.background = favorited ? 'linear-gradient(135deg, #ff6b6b, #ff4757)' : 'linear-gradient(135deg, #667eea, #764ba2)';
+        }
+    }
+    
+    async function toggleFavorite(btn) {
+        if (!isLoggedIn) {
+            alert('<%= typeof t !== "undefined" ? t("game.loginToFavorite") : "请先登录" %>');
+            return;
+        }
+        
+        const originalContent = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '⏳';
+        
+        try {
+            const method = isFavorited ? 'DELETE' : 'POST';
+            const response = await fetch('/api/favorites', {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ gameId: gameId })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                isFavorited = result.isFavorited;
+                updateFavoriteButtons(isFavorited);
+            } else {
+                alert(result.error || '<%= typeof t !== "undefined" ? t("game.favoriteError") : "操作失败，请重试" %>');
+                btn.innerHTML = originalContent;
+            }
+        } catch (err) {
+            alert('<%= typeof t !== "undefined" ? t("game.favoriteError") : "操作失败，请重试" %>');
+            btn.innerHTML = originalContent;
+        }
+        
+        btn.disabled = false;
+    }
+    
+    if (favoriteBtn) {
+        favoriteBtn.addEventListener('click', function() { toggleFavorite(favoriteBtn); });
+    }
+    
+    if (favoriteBtnLarge) {
+        favoriteBtnLarge.addEventListener('click', function() { toggleFavorite(favoriteBtnLarge); });
+    }
     
     // 评分星星交互
     const stars = document.querySelectorAll('.star');
@@ -417,6 +522,11 @@
         } catch (err) {
             console.error('Error loading reviews:', err);
         }
+    }
+    
+    // 页面加载时自动加载评论
+    if (gameId) {
+        loadReviews();
     }
 </script>
 
