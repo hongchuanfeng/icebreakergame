@@ -14,6 +14,12 @@
         <div class="game-control-bar">
             <div class="game-control-left">
                 <h1 class="game-detail-title-inline"><%- game.name %></h1>
+                <% const gamePlayCount = playCounts && playCounts[String(game.id)] ? playCounts[String(game.id)] : 0; %>
+                <% if (gamePlayCount > 0) { %>
+                    <span class="play-count-badge" style="margin-left: 0.75rem; vertical-align: middle;">
+                        <span class="play-icon">▶</span><%= gamePlayCount %>
+                    </span>
+                <% } %>
                 <% if (gameCategory) { %>
                     <div class="game-detail-category-inline">
                         <span class="nav-icon"><%= getCategoryIcon(gameCategory) %></span>

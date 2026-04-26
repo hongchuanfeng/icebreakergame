@@ -328,29 +328,37 @@ async function getGamesPlayCount() {
   }
 
   try {
-    const { data, error } = await supabase
+    // Supabase 默认限制 1000 条，需要使用 range() 获取所有数据
+    const { count } = await supabase
       .from('game_play_stats')
-      .select('game_id, play_count');
-
-    if (error) {
-      console.error('Error fetching play stats:', error);
-      return {};
+      .select('*', { count: 'exact', head: true });
+    
+    let allData = [];
+    const pageSize = 1000;
+    for (let page = 0; page * pageSize < count; page++) {
+      const { data, error } = await supabase
+        .from('game_play_stats')
+        .select('game_id, play_count')
+        .range(page * pageSize, (page + 1) * pageSize - 1);
+      
+      if (error) {
+        console.error('Error fetching play stats page', page, ':', error);
+        break;
+      }
+      if (data) {
+        allData = allData.concat(data);
+      }
     }
-
-    console.log('[getGamesPlayCount] Raw data count:', data?.length);
-    console.log('[getGamesPlayCount] Raw data:', JSON.stringify(data));
 
     // 按 game_id 汇总播放次数，使用字符串作为 key
     const playCounts = {};
-    (data || []).forEach(stat => {
+    allData.forEach(stat => {
       const key = String(stat.game_id);
       if (!playCounts[key]) {
         playCounts[key] = 0;
       }
       playCounts[key] += stat.play_count || 0;
     });
-
-    console.log('[getGamesPlayCount] Final playCounts:', JSON.stringify(playCounts));
 
     return playCounts;
   } catch (error) {

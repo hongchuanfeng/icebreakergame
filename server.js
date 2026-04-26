@@ -466,6 +466,9 @@ createLocaleRoutes('/game', async (req, res) => {
   const data = await getGameData(locale);
   const categories = await getCategoriesList(locale);
   
+  // 获取游戏播放次数
+  const playCounts = await getGamesPlayCount();
+  
   // 查找游戏
   let game = null;
   let originalGameCategory = '';
@@ -731,7 +734,8 @@ createLocaleRoutes('/game', async (req, res) => {
     averageRating: averageRating,
     isFavorited: isFavorited,
     isLoggedIn: !!userEmailForFav,
-    userEmail: userEmailForFav || ''
+    userEmail: userEmailForFav || '',
+    playCounts: playCounts
   });
 });
 
@@ -757,22 +761,12 @@ createLocaleRoutes('/category', async (req, res) => {
   // 获取游戏播放次数
   const allPlayCounts = await getGamesPlayCount();
   
-  console.log('[Category] allPlayCounts 所有key:', Object.keys(allPlayCounts));
-  
   // 根据分类ID查找分类数据
   let categoryData = data.find(item => item.id === parseInt(categoryId));
   
   if (!categoryData || !categoryData.games || categoryData.games.length === 0) {
     return res.status(404).send(locale === 'zh-CN' ? '分类不存在' : 'Category not found');
   }
-  
-  console.log('[Category] allPlayCounts:', JSON.stringify(allPlayCounts));
-  console.log('[Category] 游戏ID和播放次数:');
-  categoryData.games.forEach(game => {
-    const key1 = game.id;
-    const key2 = String(game.id);
-    console.log(`  game.id: ${key1} (type: ${typeof key1}), keyStr: "${key2}", playCount: ${allPlayCounts[key1] ?? 'undefined'}, playCount2: ${allPlayCounts[key2] ?? 'undefined'}`);
-  });
   
   // 获取翻译后的 category 名称用于显示
   const originalCategory = categoryData.category;
