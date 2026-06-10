@@ -9,14 +9,14 @@ const cookieParser = require('cookie-parser');
 const { getCategoryIcon } = require('./utils/helpers');
 const { t, detectLocale, SUPPORTED_LOCALES, DEFAULT_LOCALE } = require('./utils/i18n');
 const { 
-  getCategories: getSupabaseCategories, 
+  getCategories: getMysqlCategories, 
   getGames, 
   getGameById,
   getGamesByCategoryId,
   searchGames,
   transformDataToOldFormat,
   getGamesPlayCount
-} = require('./utils/supabase');
+} = require('./utils/mysql');
 
 const app = express();
 
@@ -184,7 +184,7 @@ app.get('/set-locale/:locale', (req, res) => {
   }
 });
 
-// 从 Supabase 获取游戏数据（带缓存）
+// 从 MySQL 获取游戏数据（带缓存）
 let cachedGameData = {};
 let dataCacheTime = {};
 const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
@@ -205,8 +205,8 @@ async function getGameData(locale = 'en') {
   }
   
   try {
-    // 从 Supabase 获取分类和游戏数据
-    const categories = await getSupabaseCategories(dbLanguage);
+    // 从 MySQL 获取分类和游戏数据
+    const categories = await getMysqlCategories(dbLanguage);
     const games = await getGames(dbLanguage);
     
     // 转换为旧格式（兼容现有代码）
@@ -217,7 +217,7 @@ async function getGameData(locale = 'en') {
     
     return data;
   } catch (error) {
-    console.error(`Error fetching game data from Supabase for ${dbLanguage}:`, error);
+    console.error(`Error fetching game data from MySQL for ${dbLanguage}:`, error);
     return [];
   }
 }
@@ -229,7 +229,7 @@ async function getCategoriesList(locale = 'en') {
   console.log('[Server Debug] dbLanguage:', dbLanguage);
   
   try {
-    const categories = await getSupabaseCategories(dbLanguage);
+    const categories = await getMysqlCategories(dbLanguage);
     console.log('[Server Debug] Categories count:', categories.length);
     const categoryNames = categories.map(cat => cat.name);
     console.log('[Server Debug] Category names:', categoryNames.slice(0, 5));
@@ -244,7 +244,7 @@ async function getCategoriesList(locale = 'en') {
   }
 }
 
-// 翻译相关函数已移除，数据直接从 Supabase 获取对应语言版本
+// 翻译相关函数已移除，数据直接从 MySQL 获取对应语言版本
 
 // 多语言中间件：检测和设置语言
 app.use((req, res, next) => {
@@ -385,7 +385,7 @@ createLocaleRoutes('/', async (req, res) => {
     res.locals.locale = 'en';
   }
   
-  // 从 Supabase 获取数据（根据语言自动获取对应版本）
+  // 从 MySQL 获取数据（根据语言自动获取对应版本）
   const data = await getGameData(locale);
   const categories = await getCategoriesList(locale);
   
@@ -410,7 +410,7 @@ createLocaleRoutes('/search', async (req, res) => {
   const query = req.query.q || '';
   const dbLanguage = getDbLanguage(locale);
   
-  // 从 Supabase 获取数据
+  // 从 MySQL 获取数据
   const data = await getGameData(locale);
   const categories = await getCategoriesList(locale);
   
@@ -420,10 +420,10 @@ createLocaleRoutes('/search', async (req, res) => {
   let searchResults = [];
   
   if (query) {
-    // 使用 Supabase 搜索
+    // 使用 MySQL 搜索
     const games = await searchGames(query, dbLanguage);
     const categoriesMap = {};
-    const categoriesList = await getSupabaseCategories(dbLanguage);
+    const categoriesList = await getMysqlCategories(dbLanguage);
     categoriesList.forEach(cat => {
       categoriesMap[cat.id] = cat.name;
     });
@@ -462,7 +462,7 @@ createLocaleRoutes('/game', async (req, res) => {
     return res.status(400).send(locale === 'zh-CN' ? '游戏ID不能为空' : 'Game ID cannot be empty');
   }
   
-  // 从 Supabase 获取数据
+  // 从 MySQL 获取数据
   const data = await getGameData(locale);
   const categories = await getCategoriesList(locale);
   
@@ -500,19 +500,19 @@ createLocaleRoutes('/game', async (req, res) => {
     }
   }
   
-  // 如果通过 categoryId 和 gameId 找不到，尝试仅通过 gameId 查找（适用于中文版本没有 category_id 的情况）
+  // 如果通过 categoryId 和 gameId 找不到，尝试仅通过 gameId 查找
   if (!game && gameId) {
     const tableName = dbLanguage === 'zh-CN' ? 'cn_games' : 'games';
-    const { supabase } = require('./utils/supabase');
-    if (supabase) {
+    const { query } = require('./utils/mysql');
+    if (query) {
       try {
-        const { data: gameData, error } = await supabase
-          .from(tableName)
-          .select('*')
-          .eq('id', parseInt(gameId))
-          .single();
+        const games = await query(
+          `SELECT * FROM ${tableName} WHERE id = ? LIMIT 1`,
+          [parseInt(gameId)]
+        );
         
-        if (!error && gameData) {
+        if (games && games.length > 0) {
+          const gameData = games[0];
           game = {
             id: gameData.id,
             name: gameData.name,
@@ -611,7 +611,7 @@ createLocaleRoutes('/game', async (req, res) => {
     ? `https://www.icebreakgame.com/game?categoryId=${categoryIdForUrl}&gameId=${gameIdForUrl}`
     : `https://www.icebreakgame.com/${locale}/game?categoryId=${categoryIdForUrl}&gameId=${gameIdForUrl}`;
   
-  // 翻译功能已移除，数据直接从 Supabase 获取对应语言版本
+  // 翻译功能已移除，数据直接从 MySQL 获取对应语言版本
   
   // 渲染页面
   // 获取游戏评价
@@ -626,90 +626,36 @@ createLocaleRoutes('/game', async (req, res) => {
   console.log('[Game Page] gameIdForUrl:', gameIdForUrl);
   
   try {
-    const { supabase } = require('./utils/supabase');
-    if (supabase && gameIdForUrl) {
+    const mysql = require('./utils/mysql');
+    if (mysql && gameIdForUrl) {
       // 获取评价
-      const { data: reviews, error: reviewsError } = await supabase
-        .from('game_reviews')
-        .select('*')
-        .eq('game_id', parseInt(gameIdForUrl))
-        .order('created_at', { ascending: false })
-        .limit(20);
+      const reviews = await mysql.getGameReviews(parseInt(gameIdForUrl));
       
-      if (!reviewsError && reviews) {
+      if (reviews && reviews.length > 0) {
         gameReviews = reviews;
-        // 计算平均评分
-        if (reviews.length > 0) {
-          const totalRating = reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
-          averageRating = (totalRating / reviews.length).toFixed(1);
-        }
+        const totalRating = reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+        averageRating = (totalRating / reviews.length).toFixed(1);
       }
       
       // 检查当前用户是否已收藏
       if (userEmailForFav && gameIdForUrl) {
         console.log('[Game Page] Checking favorite status for:', userEmailForFav, 'gameId:', gameIdForUrl);
-        const { data: favoriteData, error: favError } = await supabase
-          .from('user_favorites')
-          .select('id')
-          .eq('user_email', userEmailForFav)
-          .eq('game_id', parseInt(gameIdForUrl))
-          .single();
-        
-        console.log('[Game Page] Favorite query result:', favoriteData, 'error:', favError);
-        isFavorited = !!favoriteData;
+        isFavorited = await mysql.isFavorited(userEmailForFav, parseInt(gameIdForUrl));
+        console.log('[Game Page] Favorite status:', isFavorited);
       } else {
         console.log('[Game Page] Skipping favorite check - userEmailForFav:', userEmailForFav, 'gameIdForUrl:', gameIdForUrl);
       }
       
-      // 记录游戏播放统计 - 每次加载页面都插入一条新记录
+      // 记录游戏播放统计
       if (gameIdForUrl) {
         const userEmail = userEmailForFav || null;
-        
         console.log('[Game Play Stats] Processing - gameId:', gameIdForUrl, 'userEmail:', userEmail);
-        
-        // 检查是否已存在该游戏的统计记录
-        const { data: existingStat } = await supabase
-          .from('game_play_stats')
-          .select('id, play_count')
-          .eq('game_id', parseInt(gameIdForUrl))
-          .single();
-        
-        if (existingStat) {
-          // 已存在，更新 play_count + 1
-          const { error: updateError } = await supabase
-            .from('game_play_stats')
-            .update({
-              play_count: existingStat.play_count + 1,
-              last_played_at: new Date().toISOString()
-            })
-            .eq('id', existingStat.id);
-          
-          if (updateError) {
-            console.error('[Game Play Stats] Update error:', updateError);
-          } else {
-            console.log('[Game Play Stats] Updated play_count to', existingStat.play_count + 1);
-          }
-        } else {
-          // 不存在，插入新记录
-          const { data: insertData, error: insertError } = await supabase
-            .from('game_play_stats')
-            .insert([{
-              game_id: parseInt(gameIdForUrl),
-              user_email: userEmail,
-              play_count: 1,
-              last_played_at: new Date().toISOString()
-            }]);
-          
-          if (insertError) {
-            console.error('[Game Play Stats] Insert error:', insertError);
-          } else {
-            console.log('[Game Play Stats] Inserted new record');
-          }
-        }
+        await mysql.recordGamePlay(parseInt(gameIdForUrl), userEmail);
+        console.log('[Game Play Stats] Recorded successfully');
       }
     } else {
-      console.log('[Game Play Stats] Skipped - supabase or gameIdForUrl not available:', { 
-        supabase: !!supabase, 
+      console.log('[Game Play Stats] Skipped - mysql or gameIdForUrl not available:', { 
+        mysql: !!mysql, 
         gameIdForUrl: gameIdForUrl 
       });
     }
@@ -754,7 +700,7 @@ createLocaleRoutes('/category', async (req, res) => {
     return res.status(400).send(locale === 'zh-CN' ? '分类ID不能为空' : 'Category ID is required');
   }
   
-  // 从 Supabase 获取数据
+  // 从 MySQL 获取数据
   const data = await getGameData(locale);
   const categories = await getCategoriesList(locale);
   
@@ -887,18 +833,15 @@ createLocaleRoutes('/profile', async (req, res) => {
   }
 
   try {
-    const { supabase } = require('./utils/supabase');
+    const mysql = require('./utils/mysql');
     const data = await getGameData(locale);
     const categories = await getCategoriesList(locale);
 
     // 获取用户收藏的游戏
-    const { data: favorites, error: favError } = await supabase
-      .from('user_favorites')
-      .select('game_id, created_at')
-      .eq('user_email', userEmail);
+    const favorites = await mysql.getUserFavorites(userEmail);
 
     let favoriteGames = [];
-    if (!favError && favorites && favorites.length > 0) {
+    if (favorites && favorites.length > 0) {
       const gameIds = favorites.map(f => f.game_id);
       
       // 从所有游戏中筛选出收藏的游戏
@@ -916,10 +859,7 @@ createLocaleRoutes('/profile', async (req, res) => {
     }
 
     // 获取用户统计信息
-    const { data: playStats } = await supabase
-      .from('game_play_stats')
-      .select('game_id, play_count')
-      .eq('user_email', userEmail);
+    const playStats = await mysql.getUserPlayStats(userEmail);
 
     const totalPlayCount = playStats ? playStats.reduce((sum, stat) => sum + stat.play_count, 0) : 0;
 
@@ -1080,30 +1020,21 @@ app.post('/api/contact', async (req, res) => {
   }
   
   try {
-    const { supabase } = require('./utils/supabase');
+    const mysql = require('./utils/mysql');
     
-    if (!supabase) {
-      console.error('[Contact API] Supabase client not initialized');
+    if (!mysql) {
+      console.error('[Contact API] MySQL client not initialized');
       return res.status(500).json({ 
         success: false, 
         message: '服务暂时不可用，请稍后重试' 
       });
     }
     
-    // 保存到 Supabase
-    const { data, error } = await supabase
-      .from('contact_messages')
-      .insert([
-        {
-          name: name.trim(),
-          email: email.trim(),
-          topic: subject || 'general',
-          message: message.trim()
-        }
-      ]);
+    // 保存到 MySQL
+    const success = await mysql.saveContactMessage(name.trim(), email.trim(), subject || 'general', message.trim());
     
-    if (error) {
-      console.error('[Contact API] Error saving message:', error);
+    if (!success) {
+      console.error('[Contact API] Failed to save message');
       return res.status(500).json({ 
         success: false, 
         message: '保存消息失败，请稍后重试' 
@@ -1125,7 +1056,7 @@ app.post('/api/contact', async (req, res) => {
   }
 });
 
-// API 路由：邮箱登录（使用 Supabase Auth）
+// API 路由：邮箱登录（使用 MySQL）
 app.post('/login', async (req, res) => {
   const locale = req.locale || DEFAULT_LOCALE;
   const { email, password } = req.body;
@@ -1147,11 +1078,11 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    const { supabase } = require('./utils/supabase');
-    const bcrypt = require('bcrypt');
+    const mysql = require('./utils/mysql');
+    const bcrypt = require('bcryptjs');
 
-    if (!supabase) {
-      console.error('[Auth] Supabase client not initialized');
+    if (!mysql) {
+      console.error('[Auth] MySQL client not initialized');
       return res.status(500).render('login', {
         pageTitle: t(locale, 'auth.loginTitle'),
         metaDescription: t(locale, 'auth.loginDescription'),
@@ -1166,15 +1097,11 @@ app.post('/login', async (req, res) => {
       });
     }
 
-    const { data: user, error: userError } = await supabase
-      .from('users')
-      .select('id, email, password_hash')
-      .eq('email', email.trim().toLowerCase())
-      .single();
+    const user = await mysql.getUserByEmail(email.trim().toLowerCase());
 
     console.log('[Auth] Login attempt:', { email: email.trim() });
 
-    if (userError || !user) {
+    if (!user) {
       console.error('[Auth] User not found:', email.trim());
       return res.status(401).render('login', {
         pageTitle: t(locale, 'auth.loginTitle'),
@@ -1288,11 +1215,11 @@ app.post('/register', async (req, res) => {
   }
 
   try {
-    const { supabase } = require('./utils/supabase');
-    const bcrypt = require('bcrypt');
+    const mysql = require('./utils/mysql');
+    const bcrypt = require('bcryptjs');
 
-    if (!supabase) {
-      console.error('[Auth] Supabase client not initialized');
+    if (!mysql) {
+      console.error('[Auth] MySQL client not initialized');
       return res.status(500).render('register', {
         pageTitle: t(locale, 'auth.registerTitle'),
         metaDescription: t(locale, 'auth.registerDescription'),
@@ -1310,13 +1237,9 @@ app.post('/register', async (req, res) => {
     console.log('[Auth] Register attempt:', { email: email.trim() });
 
     // 检查邮箱是否已存在
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', email.trim().toLowerCase())
-      .single();
+    const emailExists = await mysql.emailExists(email.trim().toLowerCase());
 
-    if (existingUser) {
+    if (emailExists) {
       console.error('[Auth] Email already exists:', email.trim());
       return res.status(400).render('register', {
         pageTitle: t(locale, 'auth.registerTitle'),
@@ -1336,30 +1259,7 @@ app.post('/register', async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 10);
 
     // 插入新用户
-    const { data: newUser, error: insertError } = await supabase
-      .from('users')
-      .insert([{
-        email: email.trim().toLowerCase(),
-        password_hash: passwordHash
-      }])
-      .select()
-      .single();
-
-    if (insertError) {
-      console.error('[Auth] Insert user error:', insertError);
-      return res.status(500).render('register', {
-        pageTitle: t(locale, 'auth.registerTitle'),
-        metaDescription: t(locale, 'auth.registerDescription'),
-        metaKeywords: 'register, 注册, Ice Breaker Games',
-        canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/register' : `https://www.icebreakgame.com/${locale}/register`,
-        currentPage: 'register',
-        locale: locale,
-        supportedLocales: SUPPORTED_LOCALES,
-        errorMessage: t(locale, 'auth.errorServer'),
-        successMessage: '',
-        formData: { email }
-      });
-    }
+    const newUser = await mysql.createUser(email.trim().toLowerCase(), passwordHash);
 
     console.log('[Auth] User registered successfully:', email.trim());
 
@@ -1447,10 +1347,10 @@ app.post('/forgot-password', async (req, res) => {
   }
 
   try {
-    const { supabase } = require('./utils/supabase');
+    const mysql = require('./utils/mysql');
 
-    if (!supabase) {
-      console.error('[Auth] Supabase client not initialized');
+    if (!mysql) {
+      console.error('[Auth] MySQL client not initialized');
       return res.status(500).render('forgot-password', {
         pageTitle: t(locale, 'auth.forgotTitle'),
         metaDescription: t(locale, 'auth.forgotDescription'),
@@ -1466,13 +1366,9 @@ app.post('/forgot-password', async (req, res) => {
     }
 
     // 检查用户是否存在
-    const { data: existingUser, error: checkError } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', email.trim().toLowerCase())
-      .single();
+    const user = await mysql.getUserByEmail(email.trim().toLowerCase());
 
-    if (checkError || !existingUser) {
+    if (!user) {
       console.error('[Auth] User not found for password reset:', email);
       return res.status(400).render('forgot-password', {
         pageTitle: t(locale, 'auth.forgotTitle'),
@@ -1489,17 +1385,14 @@ app.post('/forgot-password', async (req, res) => {
     }
 
     // 使用 bcrypt 加密密码
-    const bcrypt = require('bcrypt');
+    const bcrypt = require('bcryptjs');
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // 更新密码
-    const { error: updateError } = await supabase
-      .from('users')
-      .update({ password_hash: hashedPassword, updated_at: new Date().toISOString() })
-      .eq('email', email.trim().toLowerCase());
+    const success = await mysql.updateUserPassword(email.trim().toLowerCase(), hashedPassword);
 
-    if (updateError) {
-      console.error('[Auth] Password reset error:', updateError);
+    if (!success) {
+      console.error('[Auth] Password reset error');
       return res.status(500).render('forgot-password', {
         pageTitle: t(locale, 'auth.forgotTitle'),
         metaDescription: t(locale, 'auth.forgotDescription'),
@@ -1568,22 +1461,12 @@ app.get('/api/game-reviews', async (req, res) => {
   }
   
   try {
-    const { supabase } = require('./utils/supabase');
-    if (!supabase) {
+    const mysql = require('./utils/mysql');
+    if (!mysql) {
       return res.status(500).json({ error: 'Database not configured' });
     }
     
-    const { data: reviews, error } = await supabase
-      .from('game_reviews')
-      .select('*')
-      .eq('game_id', parseInt(gameId))
-      .order('created_at', { ascending: false })
-      .limit(20);
-    
-    if (error) {
-      console.error('Error fetching reviews:', error);
-      return res.status(500).json({ error: error.message });
-    }
+    const reviews = await mysql.getGameReviews(parseInt(gameId));
     
     // 计算平均评分
     let averageRating = 0;
@@ -1616,26 +1499,16 @@ app.post('/api/game-reviews', async (req, res) => {
   }
   
   try {
-    const { supabase } = require('./utils/supabase');
-    if (!supabase) {
+    const mysql = require('./utils/mysql');
+    if (!mysql) {
       return res.status(500).json({ error: 'Database not configured' });
     }
     
-    const { data, error } = await supabase
-      .from('game_reviews')
-      .insert([
-        {
-          game_id: parseInt(gameId),
-          rating: parseInt(rating),
-          comment: comment || '',
-          user_email: userEmail,
-          created_at: new Date().toISOString()
-        }
-      ]);
+    const success = await mysql.addGameReview(parseInt(gameId), parseInt(rating), comment || '', userEmail);
     
-    if (error) {
-      console.error('Error submitting review:', error);
-      return res.status(500).json({ error: error.message });
+    if (!success) {
+      console.error('Error submitting review');
+      return res.status(500).json({ error: 'Failed to submit review' });
     }
     
     res.json({ success: true, message: 'Review submitted successfully' });
@@ -1647,29 +1520,18 @@ app.post('/api/game-reviews', async (req, res) => {
 
 // API 路由：获取用户收藏列表
 app.get('/api/favorites', async (req, res) => {
-  if (!req.session || !req.session.user || !req.session.user.email) {
+  const userEmail = req.cookies?.user_email;
+  if (!userEmail) {
     return res.status(401).json({ error: 'Please login first' });
   }
   
-  const userEmail = req.session.user.email;
-  
   try {
-    const { supabase } = require('./utils/supabase');
-    if (!supabase) {
+    const mysql = require('./utils/mysql');
+    if (!mysql) {
       return res.status(500).json({ error: 'Database not configured' });
     }
     
-    const { data: favorites, error } = await supabase
-      .from('user_favorites')
-      .select('*, games(name, icon, link, href)')
-      .eq('user_email', userEmail)
-      .order('created_at', { ascending: false });
-    
-    if (error) {
-      console.error('Error fetching favorites:', error);
-      return res.status(500).json({ error: error.message });
-    }
-    
+    const favorites = await mysql.getUserFavorites(userEmail);
     res.json({ favorites: favorites || [] });
   } catch (err) {
     console.error('Error in /api/favorites:', err);
@@ -1696,39 +1558,26 @@ app.post('/api/favorites', async (req, res) => {
   }
 
   try {
-    const { supabase } = require('./utils/supabase');
-    if (!supabase) {
+    const mysql = require('./utils/mysql');
+    if (!mysql) {
       return res.status(500).json({ error: 'Database not configured' });
     }
     
     console.log('[API Favorite POST] Adding favorite for:', userEmail, 'gameId:', gameId);
     
     // 检查是否已收藏
-    const { data: existing } = await supabase
-      .from('user_favorites')
-      .select('id')
-      .eq('user_email', userEmail)
-      .eq('game_id', parseInt(gameId))
-      .single();
+    const isFavorited = await mysql.isFavorited(userEmail, parseInt(gameId));
     
-    if (existing) {
+    if (isFavorited) {
       console.log('[API Favorite POST] Already favorited');
       return res.json({ success: true, message: 'Already favorited', isFavorited: true });
     }
     
-    const { data, error } = await supabase
-      .from('user_favorites')
-      .insert([
-        {
-          user_email: userEmail,
-          game_id: parseInt(gameId),
-          created_at: new Date().toISOString()
-        }
-      ]);
+    const success = await mysql.addFavorite(userEmail, parseInt(gameId));
     
-    if (error) {
-      console.error('[API Favorite POST] Error:', error);
-      return res.status(500).json({ error: error.message });
+    if (!success) {
+      console.error('[API Favorite POST] Error');
+      return res.status(500).json({ error: 'Failed to add favorite' });
     }
     
     console.log('[API Favorite POST] Success');
@@ -1757,22 +1606,18 @@ app.delete('/api/favorites', async (req, res) => {
   }
 
   try {
-    const { supabase } = require('./utils/supabase');
-    if (!supabase) {
+    const mysql = require('./utils/mysql');
+    if (!mysql) {
       return res.status(500).json({ error: 'Database not configured' });
     }
     
     console.log('[API Favorite DELETE] Removing favorite for:', userEmail, 'gameId:', gameId);
     
-    const { error } = await supabase
-      .from('user_favorites')
-      .delete()
-      .eq('user_email', userEmail)
-      .eq('game_id', parseInt(gameId));
+    const success = await mysql.removeFavorite(userEmail, parseInt(gameId));
     
-    if (error) {
-      console.error('[API Favorite DELETE] Error:', error);
-      return res.status(500).json({ error: error.message });
+    if (!success) {
+      console.error('[API Favorite DELETE] Error');
+      return res.status(500).json({ error: 'Failed to remove favorite' });
     }
     
     console.log('[API Favorite DELETE] Success');
