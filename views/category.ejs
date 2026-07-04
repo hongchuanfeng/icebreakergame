@@ -1,10 +1,28 @@
-<%- include('partials/header', { 
+<%- include('partials/header', {
     pageTitle: typeof t !== 'undefined' ? t('category.title', { categoryName: category }) : (category + ' - Ice Breaker Games'),
     metaDescription: typeof t !== 'undefined' ? t('category.description', { categoryName: category, totalGames: totalGames }) : ('浏览 ' + category + ' 分类下的所有游戏，免费在线HTML5游戏平台'),
     metaKeywords: categoryKeywords || (category + ', ice breaker games'),
     canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/category/' + encodeURIComponent(category) + (searchQuery ? '?q=' + encodeURIComponent(searchQuery) : '')) : ('https://www.icebreakgame.com/category/' + encodeURIComponent(category) + (searchQuery ? '?q=' + encodeURIComponent(searchQuery) : '')),
-    searchQuery: searchQuery || ''
+    searchQuery: searchQuery || '',
+    structuredData: typeof structuredData !== 'undefined' ? structuredData : ''
 }) %>
+
+<!-- 面包屑导航 -->
+<nav class="breadcrumb-nav" aria-label="breadcrumb">
+    <div class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/') : '/' %>">
+                    <%= typeof t !== 'undefined' ? t('common.home') : '首页' %>
+                </a>
+            </li>
+            <li class="breadcrumb-separator">/</li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <%= category %>
+            </li>
+        </ol>
+    </div>
+</nav>
 
 <!-- 主内容区 -->
 <div class="main-content">

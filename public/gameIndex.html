@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ice Breaker Games - 免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩，随时随地享受游戏乐趣。">
+    <meta name="keywords" content="HTML5 games, 免费游戏, 在线游戏, 摸鱼游戏">
+    <meta name="robots" content="index, follow">
+    <title>Ice Breaker Games - 免费在线HTML5游戏平台</title>
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Ice Breaker Games - 免费在线HTML5游戏平台">
+    <meta property="og:description" content="免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩。">
+    <meta property="og:type" content="website">
+    
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HT40C8VPYX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HT40C8VPYX');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7274710287377352"
+         crossorigin="anonymous"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            background-image: 
+                radial-gradient(at 20% 50%, rgba(120, 119, 198, 0.3) 0px, transparent 50%),
+                radial-gradient(at 80% 80%, rgba(255, 255, 255, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 0%, rgba(120, 119, 198, 0.4) 0px, transparent 50%),
+                linear-gradient(135deg, #1a1f3a 0%, #0f1419 50%, #1a1f3a 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 0 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: rgba(102, 126, 234, 0.8);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .search-icon {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            color: #fff;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-game-link {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-game-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+        }
+
+        .platform-features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .platform-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 1.2rem;
+        }
+
+        .feature-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Game Container */
+        .game-container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .game-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+
+        /* Game Frame */
+        .game-frame-container {
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 500px;
+        }
+
+        .game-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .game-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .game-placeholder-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .game-placeholder h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Game List */
+        .game-list-section {
+            margin-top: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .total-count {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .game-card-image {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .game-card-info {
+            padding: 1rem;
+        }
+
+        .game-card-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 0.5rem;
+        }
+
+        .game-card-desc {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.4;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: #fff;
+        }
+
+        .footer-copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .platform-features {
+                gap: 1rem;
+            }
+            
+            .game-frame-container {
+                height: 50vh;
+                min-height: 400px;
+            }
+            
+            .games-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .game-controls {
+                justify-content: center;
+            }
+        }
+
+        /* Ad Container */
+        .ad-container {
+            margin: 1.5rem 0;
+            text-align: center;
+            min-height: 90px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <span class="logo-icon">🎮</span>
+                <span>Ice Breaker Games</span>
+            </a>
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索游戏..." onkeyup="handleSearch(event)">
+            </div>
+            <a href="/gameIndex.html" class="nav-game-link">🐟 摸鱼游戏</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>🎮 Ice Breaker Games - 免费在线HTML5游戏平台</h1>
+            <p>欢迎来到 Ice Breaker Games！这里是您探索精彩在线游戏的理想之地。我们精选各类优质HTML5游戏，无需下载安装，打开浏览器即可畅玩。支持PC和移动设备，随时随地享受游戏乐趣。平台每日更新，持续引入新鲜有趣的游戏内容，让您永远发现新的惊喜。</p>
+            <div class="platform-features">
+                <div class="platform-feature-item">
+                    <span class="feature-icon">⚡</span>
+                    <span class="feature-text">即开即玩</span>
+                </div>
+                <div class="platform-feature-item">
+                    <span class="feature-icon">📱</span>
+                    <span class="feature-text">多端适配</span>
+                </div>
+                <div class="platform-feature-item">
+                    <span class="feature-icon">💰</span>
+                    <span class="feature-text">完全免费</span>
+                </div>
+                <div class="platform-feature-item">
+                    <span class="feature-icon">🆕</span>
+                    <span class="feature-text">每日更新</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Game Container -->
+        <section class="game-container" id="gameSection">
+            <div class="game-header">
+                <h2 class="game-title" id="gameTitle">🎮 选择一款游戏开始</h2>
+                <div class="game-controls">
+                    <a href="/" class="control-btn">← 返回首页</a>
+                    <button class="control-btn primary" onclick="toggleFullscreen()">⛶ 全屏</button>
+                </div>
+            </div>
+            
+            <div class="game-frame-container" id="gameContainer">
+                <div class="game-placeholder">
+                    <div class="game-placeholder-icon">🎮</div>
+                    <h2>选择一个游戏开始玩吧</h2>
+                    <p>点击下方游戏卡片即可开始游戏</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ad Container -->
+        <div class="ad-container">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-7274710287377352"
+                 data-ad-slot="YOUR_AD_SLOT_ID"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+        </div>
+
+        <!-- All Games -->
+        <section class="game-list-section">
+            <div class="section-header">
+                <h2 class="section-title">🔥 全部游戏 <span class="total-count" id="totalCount">0</span></h2>
+            </div>
+            <div class="games-grid" id="gamesGrid">
+                <!-- Games will be loaded dynamically -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about" class="footer-link">关于我们</a>
+            <a href="/contact" class="footer-link">联系我们</a>
+            <a href="/privacy" class="footer-link">隐私政策</a>
+            <a href="/terms" class="footer-link">服务条款</a>
+        </div>
+        <p class="footer-copyright">© 2024 Ice Breaker Games. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 游戏数据 - 只包含实际存在的游戏目录
+        const games = [
+            { name: "飞翔的小鸟", path: "flappybird/", desc: "像素小鸟飞行挑战" },
+            { name: "三人小鸟", path: "flappybird3/", desc: "flappy bird三人版" },
+            { name: "跳一跳", path: "jumpone/", desc: "跳一跳微信同款" },
+            { name: "俄罗斯方块", path: "russianblock/", desc: "经典俄罗斯方块" },
+            { name: "迷宫", path: "maze/", desc: "迷宫探险游戏" },
+            { name: "迷宫RPG", path: "mota/", desc: "迷宫RPG经典游戏" },
+            { name: "拼图", path: "puzzle/", desc: "拼图益智游戏" },
+            { name: "打地鼠", path: "susliks/", desc: "打地鼠游戏" },
+            { name: "飞刀", path: "knifehit3/", desc: "旋转飞刀投掷游戏" },
+            { name: "赛车", path: "run/", desc: "城市跑酷闯关游戏" },
+            { name: "坦克对战", path: "tank/", desc: "坦克对战游戏" },
+            { name: "擦玻璃", path: "wipeglass/", desc: "擦玻璃休闲游戏" },
+            { name: "微断网", path: "weiduan/", desc: "微断网小游戏" },
+            { name: "难忘的一天", path: "unforgetday/", desc: "难忘的一天剧情游戏" },
+            { name: "双人对战", path: "twowar/", desc: "双人对战游戏" },
+            { name: "伐木猪", path: "timberpig/", desc: "伐木猪塔防游戏" },
+            { name: "刀剑艺术", path: "swordart/", desc: "刀剑艺术对战游戏" },
+            { name: "默契考验", path: "tacit/", desc: "默契考验双人对战" },
+            { name: "记忆翻牌", path: "memory/", desc: "记忆翻牌配对游戏" },
+            { name: "星星狗", path: "stardog/", desc: "星空下的狗狗游戏" },
+            { name: "星际飞船", path: "starship/", desc: "星际飞船驾驶游戏" },
+            { name: "快速拍照", path: "snap/", desc: "快速拍照反应游戏" },
+            { name: "骷髅守卫", path: "skeletonguard/", desc: "骷髅守卫塔防游戏" },
+            { name: "国际象棋", path: "simplechess/", desc: "简易国际象棋" },
+            { name: "射击练习", path: "shoot/", desc: "射击瞄准练习游戏" },
+            { name: "神经过敏", path: "shenjingmao/", desc: "神经敏感反应测试" },
+            { name: "秒杀", path: "seckill/", desc: "秒杀购物游戏" },
+            { name: "煮鱼", path: "scaldfish/", desc: "煮鱼模拟游戏" },
+            { name: "机器人跑酷", path: "runrobot/", desc: "机器人跑酷游戏" },
+            { name: "RPG演示", path: "rpgdemo/", desc: "RPG角色扮演Demo" },
+            { name: "火箭发射", path: "rocket/", desc: "火箭发射模拟游戏" },
+            { name: "节奏大师", path: "rhythm/", desc: "音乐节奏游戏" },
+            { name: "随机地下城", path: "randomdungeon/", desc: "随机地下城探索" },
+            { name: "戒烟", path: "quitsmoke/", desc: "戒烟模拟游戏" },
+            { name: "快速冲刺", path: "quickrush3/", desc: "快速冲刺游戏" },
+            { name: "转盘抽奖", path: "prize/", desc: "转盘抽奖游戏" },
+            { name: "飞机大战", path: "planewar/", desc: "飞机空战射击游戏" },
+            { name: "飞机飞行", path: "plane/", desc: "飞机飞行躲避游戏" },
+            { name: "像素星星", path: "pixelstar/", desc: "像素星星收集游戏" },
+            { name: "宠物派对", path: "petparty/", desc: "宠物派对养成游戏" },
+            { name: "吃豆人", path: "pacman/", desc: "吃豆人经典游戏" },
+            { name: "弹球对战", path: "p2ball/", desc: "双人弹球对战" },
+            { name: "钉子", path: "nail/", desc: "钉子模拟游戏" },
+            { name: "小小矿工", path: "minorminer/", desc: "矿工挖掘冒险游戏" },
+            { name: "马拉松", path: "marathon/", desc: "马拉松跑酷游戏" },
+            { name: "塔防守护", path: "manna/", desc: "塔防守护游戏" },
+            { name: "魔法平原", path: "magicplain/", desc: "魔法平原RPG游戏" },
+            { name: "抽奖", path: "lottery/", desc: "模拟抽奖游戏" },
+            { name: "狼的传说", path: "legendofwolf/", desc: "狼人题材冒险游戏" },
+            { name: "答题学习", path: "learn3/", desc: "答题学习游戏" },
+            { name: "酷跑", path: "kupao/", desc: "酷跑闯关游戏" },
+            { name: "风筝", path: "kite/", desc: "放风筝休闲游戏" },
+            { name: "跳跃", path: "jump/", desc: "跳跃障碍闯关游戏" },
+            { name: "整蛊你", path: "jokingyou/", desc: "整蛊朋友趣味游戏" },
+            { name: "打灰太狼", path: "hitgraywolf3/", desc: "打灰太狼射击游戏" },
+            { name: "击球", path: "hitball/", desc: "击球练习游戏" },
+            { name: "炉石传说", path: "hearthstone/", desc: "炉石传说卡牌对战" },
+            { name: "为你摘星", path: "getthestarforyou/", desc: "为你摘星剧情游戏" },
+            { name: "聚会游戏", path: "getogether/", desc: "多人聚会小游戏合集" },
+            { name: "接金币", path: "getcoins3/", desc: "接金币跑酷游戏" },
+            { name: "收集鸡冠", path: "getcockscomb/", desc: "收集鸡冠小游戏" },
+            { name: "像素冒险", path: "fubag/", desc: "像素风格的冒险游戏" },
+            { name: "水果大战", path: "fruitwar/", desc: "水果对战塔防游戏" },
+            { name: "切水果", path: "fruit/", desc: "水果忍者切割游戏" },
+            { name: "寻路", path: "findpath/", desc: "寻找路径益智游戏" },
+            { name: "五十秒", path: "fifty/", desc: "50秒生存挑战游戏" },
+            { name: "Just Shoot", path: "justshoot/dist/", desc: "射击游戏" }
+        ];
+
+        let currentGame = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            displayGames(games);
+            checkUrlParams();
+            setupEscKeyHandler();
+        });
+
+        // 显示游戏列表
+        function displayGames(gamesList) {
+            const grid = document.getElementById('gamesGrid');
+            const totalCount = document.getElementById('totalCount');
+            totalCount.textContent = gamesList.length;
+            
+            let html = '';
+            
+            if (gamesList.length === 0) {
+                grid.innerHTML = '<p style="color: rgba(255,255,255,0.7); text-align: center; grid-column: 1/-1;">未找到匹配的游戏</p>';
+                return;
+            }
+
+            gamesList.forEach(game => {
+                html += createGameCard(game);
+            });
+
+            grid.innerHTML = html;
+        }
+
+        // 创建游戏卡片
+        function createGameCard(game) {
+            return `
+                <div class="game-card" onclick="loadGame('${game.path}')">
+                    <div class="game-card-image">🎮</div>
+                    <div class="game-card-info">
+                        <div class="game-card-name">${game.name}</div>
+                        <div class="game-card-desc">${game.desc}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 加载游戏
+        function loadGame(gamePath) {
+            const container = document.getElementById('gameContainer');
+            const title = document.getElementById('gameTitle');
+            
+            title.textContent = '🎮 正在加载游戏...';
+            currentGame = gamePath;
+
+            container.innerHTML = `<iframe src="${gamePath}index.html" class="game-frame" allowfullscreen></iframe>`;
+            
+            // 滚动到游戏区域
+            document.getElementById('gameSection').scrollIntoView({ behavior: 'smooth' });
+
+            // 设置 iframe ESC 键监听
+            setupIframeListener();
+
+            // 更新URL
+            const url = new URL(window.location);
+            url.searchParams.set('game', gamePath.replace('/', ''));
+            window.history.pushState({}, '', url);
+        }
+
+        // 搜索功能
+        function handleSearch(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (query) {
+                const filtered = games.filter(game => 
+                    game.name.toLowerCase().includes(query) || 
+                    game.desc.toLowerCase().includes(query)
+                );
+                displayGames(filtered);
+            } else {
+                displayGames(games);
+            }
+        }
+
+        // 全屏切换 - 对游戏容器全屏
+        function toggleFullscreen() {
+            const container = document.getElementById('gameContainer');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => {
+                    alert('全屏模式不可用');
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // ESC 键退出全屏
+        function setupEscKeyHandler() {
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && document.fullscreenElement) {
+                    e.preventDefault();
+                    document.exitFullscreen();
+                }
+            });
+        }
+
+        // 为 iframe 注入 ESC 键处理脚本
+        function injectEscHandler() {
+            const iframe = document.querySelector('.game-frame');
+            if (iframe && iframe.contentDocument) {
+                const script = iframe.contentDocument.createElement('script');
+                script.textContent = `
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape') {
+                            if (window.parent.document.fullscreenElement) {
+                                e.preventDefault();
+                                window.parent.document.exitFullscreen();
+                            }
+                        }
+                    }, true);
+                `;
+                iframe.contentDocument.head.appendChild(script);
+            }
+        }
+
+        // 监听 iframe 加载完成
+        function setupIframeListener() {
+            const iframe = document.querySelector('.game-frame');
+            if (iframe) {
+                iframe.addEventListener('load', function() {
+                    injectEscHandler();
+                });
+                // 如果已经加载完成，立即注入
+                if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+                    injectEscHandler();
+                }
+            }
+        }
+
+        // 检查URL参数
+        function checkUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const game = params.get('game');
+            if (game) {
+                const gamePath = game + '/';
+                const found = games.find(g => g.path === gamePath);
+                if (found) {
+                    loadGame(gamePath);
+                }
+            }
+        }
+
+        // 加载广告
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</body>
+</html>

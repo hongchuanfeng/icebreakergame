@@ -3,8 +3,34 @@
     metaDescription: typeof t !== 'undefined' ? t('game.description', { gameName: gameName, categoryName: gameCategory || '' }) : (gameDescription || ('玩 ' + gameName + ' - 免费在线HTML5游戏')),
     metaKeywords: gameKeywords || (gameName + ', ice breaker games'),
     canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/game?name=' + encodeURIComponent(gameName)) : (canonicalUrl || ('https://www.icebreakgame.com/game?name=' + encodeURIComponent(gameName))),
-    searchQuery: ''
+    searchQuery: '',
+    structuredData: typeof structuredData !== 'undefined' ? structuredData : ''
 }) %>
+
+<!-- 面包屑导航 -->
+<nav class="breadcrumb-nav" aria-label="breadcrumb">
+    <div class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/') : '/' %>">
+                    <%= typeof t !== 'undefined' ? t('common.home') : '首页' %>
+                </a>
+            </li>
+            <% if (typeof gameCategory !== 'undefined' && gameCategory) { %>
+            <li class="breadcrumb-separator">/</li>
+            <li class="breadcrumb-item">
+                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/category?categoryId=' + (typeof categoryId !== 'undefined' ? categoryId : '')) : '/category?categoryId=' + (typeof categoryId !== 'undefined' ? categoryId : '') %>">
+                    <%= gameCategory %>
+                </a>
+            </li>
+            <% } %>
+            <li class="breadcrumb-separator">/</li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <%- gameName %>
+            </li>
+        </ol>
+    </div>
+</nav>
 
 <!-- 主内容区 -->
 <div class="main-content">

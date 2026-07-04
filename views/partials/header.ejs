@@ -39,6 +39,8 @@
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7274710287377352"
          crossorigin="anonymous"></script>
+    
+    <%- typeof structuredData !== 'undefined' ? structuredData : '' %>
 </head>
 <body>
     <!-- 顶部搜索栏（带logo） -->
@@ -54,6 +56,7 @@
                     <input type="text" name="q" id="searchInput" class="search-input" placeholder="<%= typeof t !== 'undefined' ? t('common.searchPlaceholder') : '搜索游戏...' %>" value="<%= searchQuery || '' %>">
                 </form>
             </div>
+            <a href="/gameIndex.html" class="nav-game-link">🐟 摸鱼游戏</a>
                 <!-- 语言切换器 + 登录按钮 -->
                 <div class="language-switcher">
                     <% if (typeof supportedLocales !== 'undefined' && supportedLocales) { %>

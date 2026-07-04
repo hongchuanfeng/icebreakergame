@@ -392,6 +392,36 @@ createLocaleRoutes('/', async (req, res) => {
   // 获取游戏播放次数
   const playCounts = await getGamesPlayCount();
   
+  // 生成首页 Schema.org 结构化数据
+  const totalGames = data.reduce((sum, cat) => sum + (cat.games?.length || 0), 0);
+  const homepageStructuredData = `<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Ice Breaker Games",
+    "description": ${JSON.stringify(t(locale, 'home.description'))},
+    "url": "https://www.icebreakgame.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.icebreakgame.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Ice Breaker Games - Free Online HTML5 Games",
+    "description": ${JSON.stringify(t(locale, 'home.description'))},
+    "url": "https://www.icebreakgame.com/",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Ice Breaker Games"
+    }
+  }
+  </script>`;
+  
   res.render('index', {
     gameData: data,
     categories: categories,
@@ -400,7 +430,8 @@ createLocaleRoutes('/', async (req, res) => {
     locale: locale,
     pageTitle: t(locale, 'home.title'),
     metaDescription: t(locale, 'home.description'),
-    metaKeywords: t(locale, 'home.keywords')
+    metaKeywords: t(locale, 'home.keywords'),
+    structuredData: homepageStructuredData
   });
 });
 
@@ -663,6 +694,56 @@ createLocaleRoutes('/game', async (req, res) => {
     console.error('Error fetching game reviews:', reviewErr);
   }
   
+  // 生成 Schema.org 结构化数据
+  const structuredData = `<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": ${JSON.stringify(game.name)},
+    "description": ${JSON.stringify(gameDescription)},
+    "genre": ${JSON.stringify(gameCategory || 'Games')},
+    "gamePlatform": "HTML5",
+    "applicationCategory": "Game",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": ${averageRating ? `{
+      "@type": "AggregateRating",
+      "ratingValue": "${averageRating}",
+      "ratingCount": "${gameReviews.length}"
+    }` : 'null'},
+    "url": ${JSON.stringify(canonicalUrl)}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://www.icebreakgame.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": ${JSON.stringify(gameCategory || 'Games')},
+        "item": "https://www.icebreakgame.com/category?categoryId=" + (categoryIdForUrl || '')
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": ${JSON.stringify(game.name)}
+      }
+    ]
+  }
+  </script>`;
+
   res.render('game', {
     game: game,
     gameName: game.name,
@@ -681,7 +762,8 @@ createLocaleRoutes('/game', async (req, res) => {
     isFavorited: isFavorited,
     isLoggedIn: !!userEmailForFav,
     userEmail: userEmailForFav || '',
-    playCounts: playCounts
+    playCounts: playCounts,
+    structuredData: structuredData
   });
 });
 
@@ -741,6 +823,37 @@ createLocaleRoutes('/category', async (req, res) => {
   const categoryDescription = t(locale, 'category.description', { categoryName: displayCategory, totalGames: totalGames });
   const categoryKeywords = `${displayCategory}, ${displayCategory} games, ice breaker games, HTML5 games${locale === 'zh-CN' ? ', 在线游戏, 免费游戏' : ''}`;
   
+  // 生成 Schema.org 结构化数据
+  const categoryStructuredData = `<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": ${JSON.stringify(displayCategory + ' - Ice Breaker Games')},
+    "description": ${JSON.stringify(categoryDescription)},
+    "genre": ${JSON.stringify(displayCategory)},
+    "url": "https://www.icebreakgame.com/category?categoryId=${categoryData.id}"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://www.icebreakgame.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": ${JSON.stringify(displayCategory)}
+      }
+    ]
+  }
+  </script>`;
+  
   res.render('category', {
     category: displayCategory,
     originalCategory: originalCategory, // 保存原始 category 用于 URL
@@ -754,7 +867,8 @@ createLocaleRoutes('/category', async (req, res) => {
     totalGames: totalGames,
     pageSize: pageSize,
     categoryDescription: categoryDescription,
-    categoryKeywords: categoryKeywords
+    categoryKeywords: categoryKeywords,
+    structuredData: categoryStructuredData
   });
 });
 

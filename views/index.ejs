@@ -2,7 +2,8 @@
     pageTitle: typeof t !== 'undefined' ? t('home.title') : 'Ice Breaker Games - 免费在线HTML5游戏平台',
     metaDescription: typeof t !== 'undefined' ? t('home.description') : 'Ice Breaker Games - 免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩，随时随地享受游戏乐趣。',
     metaKeywords: typeof t !== 'undefined' ? t('home.keywords') : 'ice breaker games, multiplayer games, online games, fun games, party games, HTML5 games',
-    canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/') : 'https://www.icebreakgame.com/'
+    canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/') : 'https://www.icebreakgame.com/',
+    structuredData: typeof structuredData !== 'undefined' ? structuredData : ''
 }) %>
 
 <!-- 主内容区 -->
@@ -45,6 +46,34 @@
 
     <!-- 右侧内容区 -->
     <div class="content-area">
+        <!-- 平台介绍区域 - 高价值原创内容 -->
+        <section class="platform-intro">
+            <div class="platform-intro-content">
+                <h1 class="platform-intro-title">🎮 Ice Breaker Games - 免费在线HTML5游戏平台</h1>
+                <p class="platform-intro-desc">
+                    欢迎来到 Ice Breaker Games！这里是您探索精彩在线游戏的理想之地。我们精选各类优质HTML5游戏，无需下载安装，打开浏览器即可畅玩。支持PC和移动设备，随时随地享受游戏乐趣。平台每日更新，持续引入新鲜有趣的游戏内容，让您永远发现新的惊喜。
+                </p>
+                <div class="platform-features">
+                    <div class="platform-feature-item">
+                        <span class="feature-icon">⚡</span>
+                        <span class="feature-text">即开即玩</span>
+                    </div>
+                    <div class="platform-feature-item">
+                        <span class="feature-icon">📱</span>
+                        <span class="feature-text">多端适配</span>
+                    </div>
+                    <div class="platform-feature-item">
+                        <span class="feature-icon">💰</span>
+                        <span class="feature-text">完全免费</span>
+                    </div>
+                    <div class="platform-feature-item">
+                        <span class="feature-icon">🆕</span>
+                        <span class="feature-text">每日更新</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <% gameData.forEach(categoryItem => { %>
             <% if (categoryItem.category && categoryItem.games && categoryItem.games.length > 0) { %>
                 <% const displayGames = categoryItem.games.slice(0, 12); %>

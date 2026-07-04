@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Play free online HTML5 games at Ice Breaker Games. No download required, instant play on any device.">
+    <meta name="keywords" content="HTML5 games, free games, online games, ice breaker games, play games">
+    <meta name="robots" content="index, follow">
+    <title>Ice Breaker Games - Free Online HTML5 Games</title>
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Ice Breaker Games">
+    <meta property="og:description" content="Play free online HTML5 games. No download required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.icebreakgame.com/game.html">
+    
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HT40C8VPYX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HT40C8VPYX');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7274710287377352"
+         crossorigin="anonymous"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            background-image: 
+                radial-gradient(at 20% 50%, rgba(120, 119, 198, 0.3) 0px, transparent 50%),
+                radial-gradient(at 80% 80%, rgba(255, 255, 255, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 0%, rgba(120, 119, 198, 0.4) 0px, transparent 50%),
+                linear-gradient(135deg, #1a1f3a 0%, #0f1419 50%, #1a1f3a 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+        }
+
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-input:focus {
+            border-color: rgba(102, 126, 234, 0.8);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .search-btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Game Container */
+        .game-container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .game-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+
+        /* Game Frame */
+        .game-frame-container {
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 500px;
+        }
+
+        .game-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .game-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .game-placeholder-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .game-placeholder h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Game List */
+        .game-list-section {
+            margin-top: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .game-card-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .game-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-card-info {
+            padding: 1rem;
+        }
+
+        .game-card-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .play-count {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: #fff;
+        }
+
+        .footer-copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                width: 100%;
+            }
+            
+            .game-frame-container {
+                height: 50vh;
+                min-height: 400px;
+            }
+            
+            .games-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .game-controls {
+                justify-content: center;
+            }
+        }
+
+        /* Ad Container */
+        .ad-container {
+            margin: 1.5rem 0;
+            text-align: center;
+            min-height: 90px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/game.html" class="logo">
+                <span class="logo-icon">🎮</span>
+                <span>Ice Breaker Games</span>
+            </a>
+            <nav class="nav-links">
+                <a href="/game.html" class="nav-link active">🎮 Games</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>🎮 Free Online HTML5 Games</h1>
+            <p>Discover and play thousands of free HTML5 games. No download required - just open your browser and start playing instantly on any device!</p>
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search games..." onkeypress="handleSearch(event)">
+                <button class="search-btn" onclick="performSearch()">🔍 Search</button>
+            </div>
+        </section>
+
+        <!-- Game Container -->
+        <section class="game-container" id="gameSection">
+            <div class="game-header">
+                <h2 class="game-title" id="gameTitle">Select a Game</h2>
+                <div class="game-controls">
+                    <a href="/" class="control-btn">← Back to Home</a>
+                    <button class="control-btn primary" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+                </div>
+            </div>
+            
+            <div class="game-frame-container" id="gameContainer">
+                <div class="game-placeholder">
+                    <div class="game-placeholder-icon">🎮</div>
+                    <h2>Welcome to Ice Breaker Games</h2>
+                    <p>Select a game from the list below to start playing!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ad Container -->
+        <div class="ad-container">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-7274710287377352"
+                 data-ad-slot="YOUR_AD_SLOT_ID"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+        </div>
+
+        <!-- Popular Games -->
+        <section class="game-list-section">
+            <h2 class="section-title">🔥 Popular Games</h2>
+            <div class="games-grid" id="gamesGrid">
+                <!-- Games will be loaded dynamically -->
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    Loading games...
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about" class="footer-link">About Us</a>
+            <a href="/contact" class="footer-link">Contact</a>
+            <a href="/privacy" class="footer-link">Privacy Policy</a>
+            <a href="/terms" class="footer-link">Terms of Service</a>
+        </div>
+        <p class="footer-copyright">© 2024 Ice Breaker Games. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Game data - fetched from API
+        let games = [];
+        let currentGame = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGames();
+            checkUrlParams();
+        });
+
+        // Load games from API
+        async function loadGames() {
+            try {
+                const response = await fetch('/api/games');
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    games = data;
+                    displayGames(data);
+                } else {
+                    // Fallback to sample games if API fails
+                    displaySampleGames();
+                }
+            } catch (error) {
+                console.error('Error loading games:', error);
+                displaySampleGames();
+            }
+        }
+
+        // Display games in grid
+        function displayGames(data) {
+            const grid = document.getElementById('gamesGrid');
+            let html = '';
+
+            data.forEach(category => {
+                if (category.games && category.games.length > 0) {
+                    category.games.slice(0, 8).forEach(game => {
+                        html += createGameCard(game, category.id);
+                    });
+                }
+            });
+
+            if (!html) {
+                html = '<p style="color: rgba(255,255,255,0.7); text-align: center; grid-column: 1/-1;">No games available at the moment.</p>';
+            }
+
+            grid.innerHTML = html;
+        }
+
+        // Create game card HTML
+        function createGameCard(game, categoryId) {
+            const iconHtml = game.icon 
+                ? `<img src="${game.icon}" alt="${game.name}" onerror="this.parentElement.innerHTML='🎮'">`
+                : '🎮';
+            
+            const playCount = game.playCount || Math.floor(Math.random() * 1000) + 100;
+            
+            return `
+                <a href="javascript:void(0)" class="game-card" onclick="loadGame('${game.id}', '${categoryId}', '${game.name}', '${game.link || ''}')">
+                    <div class="game-card-image">${iconHtml}</div>
+                    <div class="game-card-info">
+                        <div class="game-card-name">${game.name}</div>
+                        <div class="play-count">▶ ${playCount} plays</div>
+                    </div>
+                </a>
+            `;
+        }
+
+        // Display sample games (fallback)
+        function displaySampleGames() {
+            const sampleGames = [
+                { id: '1', name: 'Classic Puzzle', icon: '🧩' },
+                { id: '2', name: 'Action Runner', icon: '🏃' },
+                { id: '3', name: 'Memory Match', icon: '🃏' },
+                { id: '4', name: 'Arcade Shooter', icon: '🚀' },
+                { id: '5', name: 'Sports Challenge', icon: '⚽' },
+                { id: '6', name: 'Strategy Game', icon: '♟️' },
+                { id: '7', name: 'Racing Fun', icon: '🏎️' },
+                { id: '8', name: 'Adventure Quest', icon: '⚔️' }
+            ];
+
+            const grid = document.getElementById('gamesGrid');
+            let html = '';
+
+            sampleGames.forEach(game => {
+                html += `
+                    <a href="javascript:void(0)" class="game-card" onclick="showComingSoon('${game.name}')">
+                        <div class="game-card-image">${game.icon}</div>
+                        <div class="game-card-info">
+                            <div class="game-card-name">${game.name}</div>
+                            <div class="play-count">▶ ${Math.floor(Math.random() * 500) + 100} plays</div>
+                        </div>
+                    </a>
+                `;
+            });
+
+            grid.innerHTML = html;
+        }
+
+        // Load game into frame
+        function loadGame(gameId, categoryId, gameName, gameLink) {
+            const container = document.getElementById('gameContainer');
+            const title = document.getElementById('gameTitle');
+            
+            title.textContent = gameName;
+            currentGame = { id: gameId, name: gameName, link: gameLink };
+
+            if (gameLink) {
+                container.innerHTML = `<iframe src="${gameLink}" class="game-frame" allowfullscreen></iframe>`;
+                
+                // Record play (if logged in)
+                fetch(`/api/game-play?gameId=${gameId}`, { method: 'POST' }).catch(() => {});
+            } else {
+                container.innerHTML = `
+                    <div class="game-placeholder">
+                        <div class="game-placeholder-icon">🔗</div>
+                        <h2>Game Not Available</h2>
+                        <p>The game link is not available. Please try another game.</p>
+                    </div>
+                `;
+            }
+
+            // Scroll to game
+            document.getElementById('gameSection').scrollIntoView({ behavior: 'smooth' });
+
+            // Update URL without reload
+            const url = new URL(window.location);
+            url.searchParams.set('id', gameId);
+            url.searchParams.set('cat', categoryId);
+            window.history.pushState({}, '', url);
+        }
+
+        // Show coming soon message
+        function showComingSoon(gameName) {
+            alert(`${gameName} - Coming Soon!\n\nThis game will be available shortly.`);
+        }
+
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            const container = document.getElementById('gameContainer');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => {
+                    alert('Fullscreen not available');
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Search functionality
+        function handleSearch(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                window.location.href = `/search?q=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // Check URL parameters for game ID
+        function checkUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const gameId = params.get('id');
+            const categoryId = params.get('cat');
+            const name = params.get('name');
+            const link = params.get('link');
+
+            if (gameId && categoryId && name) {
+                loadGame(gameId, categoryId, name, link || '');
+            }
+        }
+
+        // Load ads
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</body>
+</html>
