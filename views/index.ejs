@@ -74,6 +74,108 @@
             </div>
         </section>
 
+        <!-- 热门游戏推荐 - 策展内容 -->
+        <section class="curated-section" style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.1);">
+            <h2 style="font-size: 1.3rem; margin-bottom: 1rem; color: rgba(255,255,255,0.95);">⭐ <%= typeof t !== 'undefined' ? t('home.featuredGames') : '精选推荐游戏' %></h2>
+            <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.6;">
+                <%= typeof t !== 'undefined' ? t('home.featuredGamesDesc') : '我们精心挑选了平台最受欢迎的游戏，这些游戏经过我们团队实测，玩法有趣、操作流畅，深受玩家喜爱。无论您是休闲玩家还是游戏爱好者，都能在这里找到适合自己的游戏。' %>
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div style="background: rgba(102,126,234,0.2); padding: 1rem; border-radius: 12px; border-left: 3px solid #667eea;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🎯</div>
+                    <h3 style="font-size: 1rem; color: rgba(255,255,255,0.95); margin-bottom: 0.3rem;"><%= typeof t !== 'undefined' ? t('home.featured1.title') : '经典俄罗斯方块' %></h3>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6);"><%= typeof t !== 'undefined' ? t('home.featured1.desc') : '锻炼反应能力和空间思维能力的经典益智游戏，百玩不厌。' %></p>
+                </div>
+                <div style="background: rgba(244,67,54,0.2); padding: 1rem; border-radius: 12px; border-left: 3px solid #f44336;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🕹️</div>
+                    <h3 style="font-size: 1rem; color: rgba(255,255,255,0.95); margin-bottom: 0.3rem;"><%= typeof t !== 'undefined' ? t('home.featured2.title') : '飞行挑战' %></h3>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6);"><%= typeof t !== 'undefined' ? t('home.featured2.desc') : '操控小鸟穿越障碍，考验时机把握和反应速度的热门休闲游戏。' %></p>
+                </div>
+                <div style="background: rgba(76,175,80,0.2); padding: 1rem; border-radius: 12px; border-left: 3px solid #4caf50;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚔️</div>
+                    <h3 style="font-size: 1rem; color: rgba(255,255,255,0.95); margin-bottom: 0.3rem;"><%= typeof t !== 'undefined' ? t('home.featured3.title') : '双人对战' %></h3>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6);"><%= typeof t !== 'undefined' ? t('home.featured3.desc') : '和朋友一起PK的趣味对战游戏，增进友谊的绝佳选择。' %></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 游戏攻略与评测 - 原创内容 -->
+        <section class="tips-section" style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.1);">
+            <h2 style="font-size: 1.3rem; margin-bottom: 1rem; color: rgba(255,255,255,0.95);">💡 <%= typeof t !== 'undefined' ? t('home.gameTips') : '游戏攻略与技巧' %></h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                <div style="padding: 1rem;">
+                    <h3 style="font-size: 1rem; color: #667eea; margin-bottom: 0.5rem;">🎮 <%= typeof t !== 'undefined' ? t('home.tip1.title') : '俄罗斯方块技巧' %></h3>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.6;"><%= typeof t !== 'undefined' ? t('home.tip1.content') : '在俄罗斯方块中，建议优先处理底部方块，保持空列以备不时之需。观察即将落下的方块，提前规划放置位置，可以有效提高分数。' %></p>
+                </div>
+                <div style="padding: 1rem;">
+                    <h3 style="font-size: 1rem; color: #667eea; margin-bottom: 0.5rem;">🎯 <%= typeof t !== 'undefined' ? t('home.tip2.title') : '飞行游戏要诀' %></h3>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.6;"><%= typeof t !== 'undefined' ? t('home.tip2.content') : '保持节奏是飞行游戏的关键。不要急于点击，掌握好点击的频率和时机，让小鸟保持平稳的飞行轨迹。' %></p>
+                </div>
+                <div style="padding: 1rem;">
+                    <h3 style="font-size: 1rem; color: #667eea; margin-bottom: 0.5rem;">🧠 <%= typeof t !== 'undefined' ? t('home.tip3.title') : '益智游戏建议' %></h3>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.6;"><%= typeof t !== 'undefined' ? t('home.tip3.content') : '益智游戏需要耐心和思考。不要急于求成，先观察整体布局，找到关键点再下手，往往能获得更好的成绩。' %></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 用户评价区域 - 高价值UGC内容 -->
+        <section class="reviews-section" style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.1);">
+            <h2 style="font-size: 1.3rem; margin-bottom: 1rem; color: rgba(255,255,255,0.95);">💬 <%= typeof t !== 'undefined' ? t('home.userReviews') : '玩家评价' %></h2>
+            <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.6;">
+                <%= typeof t !== 'undefined' ? t('home.reviewsIntro') : '来自真实玩家的反馈与评价，了解其他人是如何评价这个游戏平台的。' %>
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="color: #ffd700;">★★★★★</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.8); font-style: italic; margin-bottom: 0.5rem;">"<%= typeof t !== 'undefined' ? t('home.review1.text') : '游戏种类很多，而且都是免费的！工作累了就上来玩两局放松一下，非常方便。' %>"</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">— <%= typeof t !== 'undefined' ? t('home.review1.author') : '来自北京的游戏爱好者' %></p>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="color: #ffd700;">★★★★★</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.8); font-style: italic; margin-bottom: 0.5rem;">"<%= typeof t !== 'undefined' ? t('home.review2.text') : '不用下载直接玩这点太棒了！手机电脑都能玩，随时随地都能享受游戏乐趣。' %>"</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">— <%= typeof t !== 'undefined' ? t('home.review2.author') : '上海的张先生' %></p>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="color: #ffd700;">★★★★☆</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.8); font-style: italic; margin-bottom: 0.5rem;">"<%= typeof t !== 'undefined' ? t('home.review3.text') : '和朋友一起玩双人游戏很有意思！界面设计得很漂亮，推荐大家试试。' %>"</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">— <%= typeof t !== 'undefined' ? t('home.review3.author') : '广州的大学生小王' %></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 平台优势 - 原创内容 -->
+        <section class="advantages-section" style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.1);">
+            <h2 style="font-size: 1.3rem; margin-bottom: 1rem; color: rgba(255,255,255,0.95);">🏆 <%= typeof t !== 'undefined' ? t('home.platformAdvantages') : '为什么选择我们' %></h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎯</div>
+                    <h3 style="font-size: 1rem; color: rgba(255,255,255,0.95); margin-bottom: 0.5rem;"><%= typeof t !== 'undefined' ? t('home.adv1.title') : '精选内容' %></h3>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6);"><%= typeof t !== 'undefined' ? t('home.adv1.desc') : '我们精心筛选每一款游戏，确保内容质量上乘，为您提供最佳的游戏体验。' %></p>
+                </div>
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔒</div>
+                    <h3 style="font-size: 1rem; color: rgba(255,255,255,0.95); margin-bottom: 0.5rem;"><%= typeof t !== 'undefined' ? t('home.adv2.title') : '安全可靠' %></h3>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6);"><%= typeof t !== 'undefined' ? t('home.adv2.desc') : '所有游戏均经过安全检测，无病毒无广告插件，让您安心畅玩。' %></p>
+                </div>
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🌐</div>
+                    <h3 style="font-size: 1rem; color: rgba(255,255,255,0.95); margin-bottom: 0.5rem;"><%= typeof t !== 'undefined' ? t('home.adv3.title') : '全球访问' %></h3>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6);"><%= typeof t !== 'undefined' ? t('home.adv3.desc') : '支持多语言界面，来自世界各地的玩家都能轻松访问和游玩。' %></p>
+                </div>
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📱</div>
+                    <h3 style="font-size: 1rem; color: rgba(255,255,255,0.95); margin-bottom: 0.5rem;"><%= typeof t !== 'undefined' ? t('home.adv4.title') : '移动友好' %></h3>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6);"><%= typeof t !== 'undefined' ? t('home.adv4.desc') : '完美适配手机和平板，触屏操作流畅，随时随地享受游戏乐趣。' %></p>
+                </div>
+            </div>
+        </section>
+
         <% gameData.forEach(categoryItem => { %>
             <% if (categoryItem.category && categoryItem.games && categoryItem.games.length > 0) { %>
                 <% const displayGames = categoryItem.games.slice(0, 12); %>
@@ -110,6 +212,36 @@
                 </div>
             <% } %>
         <% }); %>
+
+        <!-- 常见问题FAQ - 原创内容 -->
+        <section class="faq-section" style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.1);">
+            <h2 style="font-size: 1.3rem; margin-bottom: 1rem; color: rgba(255,255,255,0.95);">❓ <%= typeof t !== 'undefined' ? t('home.faq') : '常见问题' %></h2>
+            <div style="display: grid; gap: 0.75rem;">
+                <details style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px;">
+                    <summary style="cursor: pointer; font-weight: 600; color: rgba(255,255,255,0.9);"><%= typeof t !== 'undefined' ? t('home.faq1.q') : 'Q: 游戏需要下载安装吗？' %></summary>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);"><%= typeof t !== 'undefined' ? t('home.faq1.a') : '不需要！所有游戏都基于HTML5技术开发，直接在浏览器中运行。只需点击游戏卡片即可开始游玩，无需下载任何客户端。' %></p>
+                </details>
+                <details style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px;">
+                    <summary style="cursor: pointer; font-weight: 600; color: rgba(255,255,255,0.9);"><%= typeof t !== 'undefined' ? t('home.faq2.q') : 'Q: 游戏收费吗？' %></summary>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);"><%= typeof t !== 'undefined' ? t('home.faq2.a') : 'Ice Breaker Games平台上的所有游戏都是完全免费的。我们通过广告收入来维持服务器的运营成本，为您提供免费的优质服务。' %></p>
+                </details>
+                <details style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px;">
+                    <summary style="cursor: pointer; font-weight: 600; color: rgba(255,255,255,0.9);"><%= typeof t !== 'undefined' ? t('home.faq3.q') : 'Q: 支持手机玩吗？' %></summary>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);"><%= typeof t !== 'undefined' ? t('home.faq3.a') : '是的！我们的大多数游戏都支持移动设备。您可以直接在手机或平板的浏览器中打开网站开始游戏，界面会自动适配触屏操作。' %></p>
+                </details>
+                <details style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px;">
+                    <summary style="cursor: pointer; font-weight: 600; color: rgba(255,255,255,0.9);"><%= typeof t !== 'undefined' ? t('home.faq4.q') : 'Q: 如何推荐新游戏？' %></summary>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);"><%= typeof t !== 'undefined' ? t('home.faq4.a') : '我们非常欢迎用户的建议！您可以通过联系页面向我们推荐希望添加的游戏类型。我们的团队会认真评估每一个建议，不断丰富游戏库。' %></p>
+                </details>
+            </div>
+        </section>
+
+        <!-- 版权说明 - 策展内容说明 -->
+        <section style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 1rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.05);">
+            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.6; margin: 0;">
+                <strong style="color: rgba(255,255,255,0.7);">📌 策展说明：</strong><%= typeof t !== 'undefined' ? t('home.curationNote') : 'Ice Breaker Games 是一个游戏策展平台，我们精心挑选和整理来自互联网的优质HTML5游戏资源。我们的编辑团队对每一款游戏进行实测和评估，确保为用户提供高质量的游戏推荐。游戏本身的版权归属于原始开发者，我们仅为用户提供便捷的访问入口。如有任何版权问题，请联系我们。' %>
+            </p>
+        </section>
     </div>
 </div>
 

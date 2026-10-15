@@ -3,41 +3,49 @@ const path = require('path');
 
 // 支持的语言列表
 const SUPPORTED_LOCALES = ['en', 'zh-CN'];
-const DEFAULT_LOCALE = 'en';
+const DEFAULT_LOCALE = 'zh-CN'; // 默认语言改为中文
 
 // 缓存语言文件
 let localeCache = {};
 
 // 获取项目根目录（兼容 Lambda、Vercel 等环境）
 function getProjectRoot() {
-  // 尝试多种方式获取项目根目录
-  const possiblePaths = [
-    process.env.LAMBDA_TASK_ROOT,      // AWS Lambda
-    process.env.VERCEL                  // Vercel
-  ];
-  
   // 当前模块的目录
   const moduleDir = __dirname;
   
-  // 从模块目录向上查找
-  for (const envPath of possiblePaths) {
-    if (envPath && fs.existsSync(path.join(envPath, 'locales'))) {
-      return envPath;
-    }
+  // 直接返回 utils 的父目录（项目根目录）
+  // 因为 utils/i18n.js 位于 {project_root}/utils/ 目录
+  const projectRoot = path.join(moduleDir, '..');
+  
+  // 验证 locales 目录是否存在
+  const localesPath = path.join(projectRoot, 'locales');
+  if (fs.existsSync(localesPath)) {
+    console.log(`[i18n] Project root found: ${projectRoot}`);
+    return projectRoot;
   }
   
-  // 尝试从当前模块目录向上查找
+  // 如果找不到，尝试其他方式
+  // 尝试使用环境变量
+  const envRoot = process.cwd();
+  const envLocalesPath = path.join(envRoot, 'locales');
+  if (fs.existsSync(envLocalesPath)) {
+    console.log(`[i18n] Using cwd as project root: ${envRoot}`);
+    return envRoot;
+  }
+  
+  // 最后尝试向上查找
   let currentDir = moduleDir;
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 5; i++) {
     const parentDir = path.dirname(currentDir);
     if (fs.existsSync(path.join(parentDir, 'locales'))) {
+      console.log(`[i18n] Found project root at: ${parentDir}`);
       return parentDir;
     }
     currentDir = parentDir;
   }
   
-  // 如果都找不到，返回模块目录的父目录
-  return path.dirname(__dirname);
+  console.warn('[i18n] Could not find project root, using module dir parent');
+  return path.dirname(moduleDir);
 }
 
 /**

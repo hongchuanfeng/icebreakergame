@@ -1,0 +1,389 @@
+<%- include('partials/header', { 
+    pageTitle: article ? article.title + ' - Ice Breaker Games 博客' : '文章未找到',
+    metaDescription: article ? article.excerpt : '',
+    metaKeywords: article ? article.tags.join(', ') : '',
+    canonicalUrl: article ? (typeof localeUrl !== 'undefined' ? localeUrl('/blog/' + article.slug) : 'https://www.icebreakgame.com/blog/' + article.slug) : '',
+    structuredData: article ? `<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "${article.title}",
+        "description": "${article.excerpt}",
+        "author": {
+            "@type": "Organization",
+            "name": "${article.author}"
+        },
+        "datePublished": "${article.date}",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Ice Breaker Games"
+        }
+    }
+    </script>` : ''
+}) %>
+
+<style>
+.article-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.article-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.article-header .category-tag {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    background: rgba(102,126,234,0.3);
+    border-radius: 20px;
+    color: rgba(255,255,255,0.9);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.article-header h1 {
+    font-size: 2.2rem;
+    color: rgba(255,255,255,0.95);
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+    text-shadow: 0 2px 10px rgba(102,126,234,0.3);
+}
+
+.article-header .article-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.article-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.9rem;
+}
+
+.article-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.article-content {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+    border-radius: 20px;
+    padding: 2.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 2rem;
+    color: rgba(255,255,255,0.9);
+    line-height: 1.9;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.article-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px 0 0 4px;
+}
+
+.article-content h2 {
+    color: #fff;
+    font-size: 1.6rem;
+    margin: 2.5rem 0 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid rgba(102,126,234,0.4);
+    position: relative;
+    padding-left: 1rem;
+}
+
+.article-content h2::before {
+    content: '📌';
+    position: absolute;
+    left: -0.5rem;
+    top: 0;
+    font-size: 1rem;
+}
+
+.article-content h2:first-child {
+    margin-top: 0;
+}
+
+.article-content h2:first-child::before {
+    display: none;
+}
+
+.article-content h3 {
+    color: #a5b4fc;
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid #667eea;
+}
+
+.article-content p {
+    color: rgba(255,255,255,0.85);
+    line-height: 1.9;
+    margin-bottom: 1.2rem;
+    font-size: 1.05rem;
+}
+
+.article-content ul, .article-content ol {
+    margin: 1.2rem 0;
+    padding-left: 1.8rem;
+    position: relative;
+}
+
+.article-content ul {
+    list-style: none;
+}
+
+.article-content ul li {
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 0.8rem;
+    line-height: 1.7;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.article-content ul li::before {
+    content: '🎮';
+    position: absolute;
+    left: -0.2rem;
+    top: 0;
+    font-size: 0.9rem;
+}
+
+.article-content ol {
+    counter-reset: list-counter;
+}
+
+.article-content ol li {
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 0.8rem;
+    line-height: 1.7;
+    padding-left: 2rem;
+    position: relative;
+    counter-increment: list-counter;
+}
+
+.article-content ol li::before {
+    content: counter(list-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.article-content strong {
+    color: #fff;
+    font-weight: 600;
+    background: rgba(102,126,234,0.2);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+}
+
+.article-content em {
+    color: #c4b5fd;
+    font-style: italic;
+}
+
+.article-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.article-content th, .article-content td {
+    padding: 1rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    text-align: left;
+}
+
+.article-content th {
+    background: linear-gradient(135deg, rgba(102,126,234,0.4) 0%, rgba(118,75,162,0.4) 100%);
+    color: #fff;
+    font-weight: 600;
+}
+
+.article-content td {
+    color: rgba(255,255,255,0.85);
+}
+
+.article-content tr:hover td {
+    background: rgba(102,126,234,0.1);
+}
+
+.article-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.article-footer .tag {
+    padding: 0.3rem 0.8rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 15px;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.8rem;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(102,126,234,0.3);
+    border-radius: 8px;
+    color: rgba(255,255,255,0.9);
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.back-link:hover {
+    background: rgba(102,126,234,0.5);
+}
+
+.related-articles {
+    margin-top: 3rem;
+}
+
+.related-articles h2 {
+    color: rgba(255,255,255,0.95);
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.related-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    text-decoration: none;
+    transition: transform 0.3s, background 0.3s;
+}
+
+.related-card:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.08);
+}
+
+.related-card h4 {
+    color: rgba(255,255,255,0.95);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.related-card p {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .article-container {
+        padding: 1rem;
+    }
+    
+    .article-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .article-meta {
+        gap: 1rem;
+    }
+    
+    .article-content {
+        padding: 1.5rem;
+    }
+}
+</style>
+
+<div class="article-container">
+    <% if (article) { %>
+        <!-- 文章头部 -->
+        <header class="article-header">
+            <span class="article-icon"><%= article.coverImage %></span>
+            <span class="category-tag"><%= article.category %></span>
+            <h1><%= article.title %></h1>
+            <div class="article-meta">
+                <span>👤 <%= article.author %></span>
+                <span>📅 <%= article.date %></span>
+                <span>⏱ <%= article.readTime %></span>
+                <span>👁 <%= article.views.toLocaleString() %> <%= typeof t !== 'undefined' ? t('blog.views') : '阅读' %></span>
+            </div>
+        </header>
+
+        <!-- 文章内容 -->
+        <article class="article-content">
+            <%- article.content %>
+        </article>
+
+        <!-- 标签 -->
+        <div class="article-footer">
+            <% article.tags.forEach(function(tag) { %>
+                <span class="tag"><%= tag %></span>
+            <% }); %>
+        </div>
+
+        <!-- 返回链接 -->
+        <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/blog') : '/blog' %>" class="back-link">
+            ← <%= typeof t !== 'undefined' ? t('blog.backToBlog') : '返回博客' %>
+        </a>
+
+        <!-- 相关文章 -->
+        <% if (relatedArticles.length > 0) { %>
+        <section class="related-articles">
+            <h2>📖 <%= typeof t !== 'undefined' ? t('blog.relatedArticles') : '相关推荐' %></h2>
+            <div class="related-grid">
+                <% relatedArticles.forEach(function(related) { %>
+                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/blog/' + related.slug) : '/blog/' + related.slug %>" class="related-card">
+                        <h4><%= related.coverImage %> <%= related.title %></h4>
+                        <p><%= related.readTime %> · <%= related.date %></p>
+                    </a>
+                <% }); %>
+            </div>
+        </section>
+        <% } %>
+    <% } else { %>
+        <!-- 文章未找到 -->
+        <div style="text-align: center; padding: 4rem 0;">
+            <h1 style="color: rgba(255,255,255,0.9); margin-bottom: 1rem;">😕 <%= typeof t !== 'undefined' ? t('blog.notFound') : '文章未找到' %></h1>
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;"><%= typeof t !== 'undefined' ? t('blog.notFoundDesc') : '抱歉，您访问的文章不存在或已被删除。' %></p>
+            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/blog') : '/blog' %>" class="back-link">
+                ← <%= typeof t !== 'undefined' ? t('blog.backToBlog') : '返回博客' %>
+            </a>
+        </div>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>

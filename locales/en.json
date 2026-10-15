@@ -12,6 +12,7 @@
     "backToCategory": "Back to Category",
     "viewAll": "View All",
     "more": "More",
+    "gotIt": "Got it!",
     "copyright": "© 2024 Ice Breaker Games. All rights reserved.",
     "version": "Version 1.0.0",
     "friendshipLinks": "Friend Links",
@@ -58,7 +59,83 @@
     "sidebarTitle": "Ice Breaker Games",
     "sidebarIntro": "Free online HTML5 games platform offering diverse gaming experiences. No download required, play instantly anytime, anywhere.",
     "gameCategories": "Game Categories:",
-    "gamesCount": "games"
+    "gamesCount": "games",
+    "featuredGames": "Featured Games",
+    "featuredGamesDesc": "We carefully selected the most popular games on our platform. These games have been tested by our team, featuring fun gameplay and smooth operation that players love. Whether you're a casual player or a gaming enthusiast, you'll find the perfect game here.",
+    "featured1": {
+      "title": "Classic Tetris",
+      "desc": "A classic puzzle game that trains reaction ability and spatial thinking skills, endlessly entertaining."
+    },
+    "featured2": {
+      "title": "Flying Challenge",
+      "desc": "Control a bird through obstacles, testing your timing and reaction speed in this popular casual game."
+    },
+    "featured3": {
+      "title": "Two-Player Battle",
+      "desc": "Fun competitive games to play with friends! A great choice for strengthening friendships."
+    },
+    "gameTips": "Game Tips & Strategies",
+    "tip1": {
+      "title": "Tetris Tips",
+      "content": "In Tetris, it's recommended to prioritize handling bottom blocks and keep empty columns for emergencies. Observe upcoming blocks and plan their placement in advance to effectively increase your score."
+    },
+    "tip2": {
+      "title": "Flying Game Tips",
+      "content": "Maintaining rhythm is key in flying games. Don't rush to click. Master the frequency and timing of clicks to keep the bird in a stable flight trajectory."
+    },
+    "tip3": {
+      "title": "Puzzle Game Advice",
+      "content": "Puzzle games require patience and thinking. Don't rush for results. Observe the overall layout first and find key points before taking action for better results."
+    },
+    "userReviews": "Player Reviews",
+    "reviewsIntro": "Feedback and reviews from real players. See how others evaluate our gaming platform.",
+    "review1": {
+      "text": "There are so many game varieties, and they're all free! Perfect for relaxing during work breaks. Very convenient!",
+      "author": "Gaming enthusiast from Beijing"
+    },
+    "review2": {
+      "text": "The fact that you can play directly without downloading is amazing! Works on both phone and computer, gaming fun anytime, anywhere.",
+      "author": "Mr. Zhang from Shanghai"
+    },
+    "review3": {
+      "text": "Playing two-player games with friends is so much fun! The interface is beautifully designed. I recommend everyone to try it.",
+      "author": "University student Xiao Wang from Guangzhou"
+    },
+    "platformAdvantages": "Why Choose Us",
+    "adv1": {
+      "title": "Curated Content",
+      "desc": "We carefully screen each game to ensure top-quality content and provide you with the best gaming experience."
+    },
+    "adv2": {
+      "title": "Safe & Reliable",
+      "desc": "All games have passed security checks with no viruses or ad plugins, allowing you to play with peace of mind."
+    },
+    "adv3": {
+      "title": "Global Access",
+      "desc": "Multi-language interface support with players from around the world able to easily access and play."
+    },
+    "adv4": {
+      "title": "Mobile Friendly",
+      "desc": "Perfectly adapted for phones and tablets with smooth touch controls for gaming fun anytime, anywhere."
+    },
+    "faq": "FAQ",
+    "faq1": {
+      "q": "Q: Do I need to download and install games?",
+      "a": "No! All games are developed using HTML5 technology and run directly in your browser. Just click on a game card to start playing - no client download required."
+    },
+    "faq2": {
+      "q": "Q: Are the games free?",
+      "a": "Yes! All games on Ice Breaker Games are completely free. We sustain our server operations through advertising revenue to provide you with quality services at no cost."
+    },
+    "faq3": {
+      "q": "Q: Can I play on my phone?",
+      "a": "Yes! Most of our games support mobile devices. You can open the website in your phone or tablet browser to start playing, and the interface will automatically adapt to touch controls."
+    },
+    "faq4": {
+      "q": "Q: How do I recommend new games?",
+      "a": "We welcome user suggestions! You can recommend game types you'd like to see through our contact page. Our team carefully evaluates every suggestion to continuously enrich our game library."
+    },
+    "curationNote": "Ice Breaker Games is a game curation platform where we carefully select and organize quality HTML5 game resources from the internet. Our editorial team tests and evaluates each game to ensure we provide users with high-quality game recommendations. The copyright of the games themselves belongs to the original developers, and we only provide users with convenient access. Please contact us for any copyright issues."
   },
   "search": {
     "title": "Search \"{{query}}\" - Ice Breaker Games",
@@ -490,6 +567,97 @@
       "section7": "7. Applicable Law and Dispute Resolution",
       "section8": "8. Contact Information"
     }
+  },
+  "blog": {
+    "title": "Game Blog",
+    "description": "Sharing original game guides, industry insights, and healthy gaming information to help you enjoy games better.",
+    "keywords": "game blog, game guide, industry insights, healthy gaming, Ice Breaker Games",
+    "articles": "articles",
+    "categories": "categories",
+    "totalViews": "total views",
+    "featured": "Featured Articles",
+    "allArticles": "All Articles",
+    "all": "All",
+    "noArticles": "No articles yet",
+    "views": "views",
+    "backToBlog": "Back to Blog",
+    "relatedArticles": "Related Articles",
+    "notFound": "Article Not Found",
+    "notFoundDesc": "Sorry, the article you are looking for does not exist or has been removed."
+  },
+  "cookie": {
+    "title": "Cookie Policy - Ice Breaker Games",
+    "description": "Cookie Policy - Ice Breaker Games, explaining how we use cookies and similar technologies",
+    "subtitle": "Learn how we use cookies and similar technologies",
+    "bannerText": "We use cookies to enhance your browsing experience. By visiting our site, you agree to our <a href=\"/{{locale}}/cookie-policy\" style=\"color: #667eea; text-decoration: underline;\">Cookie Policy</a> and <a href=\"/{{locale}}/privacy\" style=\"color: #667eea; text-decoration: underline;\">Privacy Policy</a>.",
+    "effectiveDate": "Effective Date: December 21, 2024",
+    "tableOfContents": "Table of Contents",
+    "section1": {
+      "title": "1. What Are Cookies",
+      "desc": "Cookies are small text files that websites send to your browser when you visit them. This information is stored on your device and helps websites remember your preferences, login status, and other information to make your next visit more convenient.",
+      "desc2": "In addition to cookies, we may also use similar tracking technologies such as Local Storage and Session Storage. They function similarly to cookies but differ in storage method and expiration period."
+    },
+    "section2": {
+      "title": "2. Why We Use Cookies",
+      "intro": "We use cookies primarily for the following purposes:",
+      "li1": "Website functionality",
+      "li1Desc": "Remember your language preferences, login status, game favorites, etc., to ensure website functions work properly.",
+      "li2": "User experience optimization",
+      "li2Desc": "Remember your browsing preferences (such as display settings) to provide a more personalized experience.",
+      "li3": "Website analytics",
+      "li3Desc": "Understand how users interact with our website to help us improve content and functionality.",
+      "li4": "Security protection",
+      "li4Desc": "Detect abnormal logins and potential security threats to protect your account security."
+    },
+    "section3": {
+      "title": "3. Types of Cookies",
+      "essential": {
+        "title": "Essential Cookies",
+        "desc": "These cookies are essential for the proper functioning of the website. They enable you to browse the website and use basic features like accessing secure areas. Without these cookies, some services (such as shopping carts or online games) will not work properly."
+      },
+      "performance": {
+        "title": "Performance Cookies",
+        "desc": "These cookies collect information about how visitors use the website, such as which pages are most frequently visited and whether error messages are received. They don't collect any personally identifiable information - all information is anonymous."
+      },
+      "functionality": {
+        "title": "Functionality Cookies",
+        "desc": "These cookies allow the website to remember your choices (such as username, language, or region) and provide more personalized and enhanced features. For example, the website may remember your location through cookies."
+      },
+      "targeting": {
+        "title": "Targeting Cookies",
+        "desc": "These cookies are used to deliver ads relevant to you. We may use this information to limit how many times you see an ad and help measure the effectiveness of advertising campaigns."
+      }
+    },
+    "section4": {
+      "title": "4. How to Manage Cookies",
+      "intro": "You have the right to choose whether to accept or reject cookies. Here are the ways to manage cookies:",
+      "browser": {
+        "title": "Browser Settings",
+        "desc": "Most web browsers allow you to control cookies through browser settings. You can set your browser to warn you when receiving a cookie, or block cookies entirely. Please check your browser's \"Help\" function to learn how to do this."
+      },
+      "mobile": {
+        "title": "Mobile Device Settings",
+        "desc": "On mobile devices, you can find cookie control options in your device's \"Settings\". The exact location varies by device but is usually in \"Privacy\" or \"Security\" settings."
+      },
+      "note": "Please note that if you disable cookies, some features of the website may not work properly."
+    },
+    "section5": {
+      "title": "5. Third-Party Cookies",
+      "desc": "Our website may contain cookies from third parties, such as analytics service providers or advertising partners. These third parties have their own privacy policies, and we are not responsible for their cookie practices.",
+      "desc2": "Third-party services we may use include:",
+      "li1": "Website analytics tools (such as Google Analytics)",
+      "li2": "Advertising services (such as Google AdSense)",
+      "li3": "Social media plugins (such as sharing features)"
+    },
+    "section6": {
+      "title": "6. Changing Cookie Settings",
+      "desc": "You can reset your preferences at any time by clearing your browser's cookies. The next time you visit our website, the cookie banner will appear again, and you can make your preferences again."
+    },
+    "contactUs": "Contact Us",
+    "officialEmail": "Official Email:",
+    "relatedLinks": "Related Links",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
   }
 }
 

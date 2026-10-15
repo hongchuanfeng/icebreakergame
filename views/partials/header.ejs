@@ -57,6 +57,7 @@
                 </form>
             </div>
             <a href="/gameIndex.html" class="nav-game-link">🐟 摸鱼游戏</a>
+            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/blog') : '/blog' %>" class="nav-game-link">📝 博客</a>
                 <!-- 语言切换器 + 登录按钮 -->
                 <div class="language-switcher">
                     <% if (typeof supportedLocales !== 'undefined' && supportedLocales) { %>

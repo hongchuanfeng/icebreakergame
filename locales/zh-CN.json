@@ -12,6 +12,7 @@
     "backToCategory": "返回分类",
     "viewAll": "查看全部",
     "more": "更多",
+    "gotIt": "我知道了",
     "copyright": "© 2024 Ice Breaker Games. 保留所有权利。",
     "version": "版本 1.0.0",
     "friendshipLinks": "友情链接",
@@ -58,7 +59,83 @@
     "sidebarTitle": "Ice Breaker Games",
     "sidebarIntro": "免费在线HTML5游戏平台，提供丰富多样的游戏体验。无需下载，即开即玩，随时随地享受游戏乐趣。",
     "gameCategories": "游戏分类：",
-    "gamesCount": "款游戏"
+    "gamesCount": "款游戏",
+    "featuredGames": "精选推荐游戏",
+    "featuredGamesDesc": "我们精心挑选了平台最受欢迎的游戏，这些游戏经过我们团队实测，玩法有趣、操作流畅，深受玩家喜爱。无论您是休闲玩家还是游戏爱好者，都能在这里找到适合自己的游戏。",
+    "featured1": {
+      "title": "经典俄罗斯方块",
+      "desc": "锻炼反应能力和空间思维能力的经典益智游戏，百玩不厌。"
+    },
+    "featured2": {
+      "title": "飞行挑战",
+      "desc": "操控小鸟穿越障碍，考验时机把握和反应速度的热门休闲游戏。"
+    },
+    "featured3": {
+      "title": "双人对战",
+      "desc": "和朋友一起PK的趣味对战游戏，增进友谊的绝佳选择。"
+    },
+    "gameTips": "游戏攻略与技巧",
+    "tip1": {
+      "title": "俄罗斯方块技巧",
+      "content": "在俄罗斯方块中，建议优先处理底部方块，保持空列以备不时之需。观察即将落下的方块，提前规划放置位置，可以有效提高分数。"
+    },
+    "tip2": {
+      "title": "飞行游戏要诀",
+      "content": "保持节奏是飞行游戏的关键。不要急于点击，掌握好点击的频率和时机，让小鸟保持平稳的飞行轨迹。"
+    },
+    "tip3": {
+      "title": "益智游戏建议",
+      "content": "益智游戏需要耐心和思考。不要急于求成，先观察整体布局，找到关键点再下手，往往能获得更好的成绩。"
+    },
+    "userReviews": "玩家评价",
+    "reviewsIntro": "来自真实玩家的反馈与评价，了解其他人是如何评价这个游戏平台的。",
+    "review1": {
+      "text": "游戏种类很多，而且都是免费的！工作累了就上来玩两局放松一下，非常方便。",
+      "author": "来自北京的游戏爱好者"
+    },
+    "review2": {
+      "text": "不用下载直接玩这点太棒了！手机电脑都能玩，随时随地都能享受游戏乐趣。",
+      "author": "上海的张先生"
+    },
+    "review3": {
+      "text": "和朋友一起玩双人游戏很有意思！界面设计得很漂亮，推荐大家试试。",
+      "author": "广州的大学生小王"
+    },
+    "platformAdvantages": "为什么选择我们",
+    "adv1": {
+      "title": "精选内容",
+      "desc": "我们精心筛选每一款游戏，确保内容质量上乘，为您提供最佳的游戏体验。"
+    },
+    "adv2": {
+      "title": "安全可靠",
+      "desc": "所有游戏均经过安全检测，无病毒无广告插件，让您安心畅玩。"
+    },
+    "adv3": {
+      "title": "全球访问",
+      "desc": "支持多语言界面，来自世界各地的玩家都能轻松访问和游玩。"
+    },
+    "adv4": {
+      "title": "移动友好",
+      "desc": "完美适配手机和平板，触屏操作流畅，随时随地享受游戏乐趣。"
+    },
+    "faq": "常见问题",
+    "faq1": {
+      "q": "Q: 游戏需要下载安装吗？",
+      "a": "不需要！所有游戏都基于HTML5技术开发，直接在浏览器中运行。只需点击游戏卡片即可开始游玩，无需下载任何客户端。"
+    },
+    "faq2": {
+      "q": "Q: 游戏收费吗？",
+      "a": "Ice Breaker Games平台上的所有游戏都是完全免费的。我们通过广告收入来维持服务器的运营成本，为您提供免费的优质服务。"
+    },
+    "faq3": {
+      "q": "Q: 支持手机玩吗？",
+      "a": "是的！我们的大多数游戏都支持移动设备。您可以直接在手机或平板的浏览器中打开网站开始游戏，界面会自动适配触屏操作。"
+    },
+    "faq4": {
+      "q": "Q: 如何推荐新游戏？",
+      "a": "我们非常欢迎用户的建议！您可以通过联系页面向我们推荐希望添加的游戏类型。我们的团队会认真评估每一个建议，不断丰富游戏库。"
+    },
+    "curationNote": "Ice Breaker Games 是一个游戏策展平台，我们精心挑选和整理来自互联网的优质HTML5游戏资源。我们的编辑团队对每一款游戏进行实测和评估，确保为用户提供高质量的游戏推荐。游戏本身的版权归属于原始开发者，我们仅为用户提供便捷的访问入口。如有任何版权问题，请联系我们。"
   },
   "search": {
     "title": "搜索 \"{{query}}\" - Ice Breaker Games",
@@ -491,6 +568,97 @@
       "section7": "7. 法律适用与争议解决",
       "section8": "8. 联系方式"
     }
+  },
+  "blog": {
+    "title": "游戏博客",
+    "description": "分享原创游戏攻略、行业观察和健康游戏资讯，帮助你更好地享受游戏乐趣。",
+    "keywords": "游戏博客, 游戏攻略, 行业观察, 健康游戏, Ice Breaker Games",
+    "articles": "篇文章",
+    "categories": "个分类",
+    "totalViews": "总阅读",
+    "featured": "精选文章",
+    "allArticles": "全部文章",
+    "all": "全部",
+    "noArticles": "暂无文章",
+    "views": "阅读",
+    "backToBlog": "返回博客",
+    "relatedArticles": "相关推荐",
+    "notFound": "文章未找到",
+    "notFoundDesc": "抱歉，您访问的文章不存在或已被删除。"
+  },
+  "cookie": {
+    "title": "Cookie政策 - Ice Breaker Games",
+    "description": "Cookie政策 - Ice Breaker Games，详细说明网站如何使用Cookie和类似技术",
+    "subtitle": "了解我们如何使用Cookie和类似技术",
+    "bannerText": "我们使用Cookie来改善您的浏览体验。访问我们的网站即表示您同意我们的<a href=\"/{{locale}}/cookie-policy\" style=\"color: #667eea; text-decoration: underline;\">Cookie政策</a>和<a href=\"/{{locale}}/privacy\" style=\"color: #667eea; text-decoration: underline;\">隐私政策</a>。",
+    "effectiveDate": "生效日期：2024年12月21日",
+    "tableOfContents": "目录",
+    "section1": {
+      "title": "1. 什么是Cookie",
+      "desc": "Cookie是您访问网站时，网站向您的浏览器发送的一小段文本信息。这些信息存储在您的设备上，帮助网站记住您的偏好设置、登录状态和其他信息，使您下次访问时更加便捷。",
+      "desc2": "除了Cookie，我们还可能使用类似的追踪技术，如本地存储（Local Storage）和会话存储（Session Storage），它们的作用与Cookie类似，但存储方式和有效期有所不同。"
+    },
+    "section2": {
+      "title": "2. 我们使用Cookie的目的",
+      "intro": "我们使用Cookie主要是为了以下目的：",
+      "li1": "网站功能运行",
+      "li1Desc": "记住您的语言偏好、登录状态、游戏收藏等，确保网站功能正常运行。",
+      "li2": "用户体验优化",
+      "li2Desc": "记住您的浏览偏好（如显示设置），提供更个性化的体验。",
+      "li3": "网站分析",
+      "li3Desc": "了解用户如何与网站互动，帮助我们改进网站内容和功能。",
+      "li4": "安全防护",
+      "li4Desc": "检测异常登录和潜在的安全威胁，保护您的账户安全。"
+    },
+    "section3": {
+      "title": "3. Cookie的类型",
+      "essential": {
+        "title": "必要Cookie（Essential Cookies）",
+        "desc": "这些Cookie对于网站的正常运行必不可少。它们使您能够浏览网站并使用基本功能，如访问安全区域。没有这些Cookie，某些服务（如购物车或在线游戏）将无法正常工作。"
+      },
+      "performance": {
+        "title": "性能Cookie（Performance Cookies）",
+        "desc": "这些Cookie收集有关访问者如何使用网站的信息，例如哪些页面最常被访问，以及是否收到错误消息。它们不收集任何可识别访客身份的信息，所有信息都是匿名的。"
+      },
+      "functionality": {
+        "title": "功能Cookie（Functionality Cookies）",
+        "desc": "这些Cookie允许网站记住您的选择（如用户名、语言或地区），并提供更个性化、增强的功能。例如，网站可能会通过Cookie记住您的位置。"
+      },
+      "targeting": {
+        "title": "定向Cookie（Targeting Cookies）",
+        "desc": "这些Cookie用于投放与您相关的广告。我们可能会使用这些信息来限制您看到广告的次数，并帮助衡量广告活动的效果。"
+      }
+    },
+    "section4": {
+      "title": "4. 如何管理Cookie",
+      "intro": "您有权选择接受或拒绝Cookie。以下是管理Cookie的方法：",
+      "browser": {
+        "title": "浏览器设置",
+        "desc": "大多数网络浏览器允许您通过浏览器设置来控制Cookie。您可以设置浏览器在收到Cookie时发出警告，或完全阻止Cookie。请查看浏览器「帮助」功能了解如何操作。"
+      },
+      "mobile": {
+        "title": "移动设备设置",
+        "desc": "在移动设备上，您可以在设备的「设置」中找到Cookie控制选项。具体位置因设备而异，通常在「隐私」或「安全」设置中。"
+      },
+      "note": "请注意，如果您禁用Cookie，网站的某些功能可能无法正常工作。"
+    },
+    "section5": {
+      "title": "5. 第三方Cookie",
+      "desc": "我们的网站可能包含来自第三方的Cookie，例如分析服务提供商或广告合作伙伴。这些第三方有自己的隐私政策，我们不对其Cookie行为负责。",
+      "desc2": "我们使用的第三方服务可能包括：",
+      "li1": "网站分析工具（如Google Analytics）",
+      "li2": "广告服务（如Google AdSense）",
+      "li3": "社交媒体插件（如分享功能）"
+    },
+    "section6": {
+      "title": "6. 更改Cookie设置",
+      "desc": "您可以随时通过清除浏览器Cookie来重置您的偏好。下次访问我们的网站时，Cookie横幅将再次出现，您可以重新选择您的偏好。"
+    },
+    "contactUs": "联系我们",
+    "officialEmail": "官方邮箱：",
+    "relatedLinks": "相关链接",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款"
   }
 }
 

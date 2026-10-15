@@ -1037,6 +1037,213 @@ createLocaleRoutes('/terms', (req, res) => {
   });
 });
 
+// SSR 路由：Cookie政策页面
+createLocaleRoutes('/cookie-policy', (req, res) => {
+  const locale = req.locale;
+  res.render('cookie-policy', {
+    pageTitle: t(locale, 'cookie.title'),
+    metaDescription: t(locale, 'cookie.description'),
+    metaKeywords: 'cookie policy, cookies, 隐私, 数据追踪, Ice Breaker Games',
+    canonicalUrl: locale === DEFAULT_LOCALE ? 'https://www.icebreakgame.com/cookie-policy' : `https://www.icebreakgame.com/${locale}/cookie-policy`,
+    currentPage: 'cookie-policy'
+  });
+});
+
+// 引入博客数据
+const { 
+  getAllArticles, 
+  getFeaturedArticles, 
+  getArticleBySlug, 
+  getAllCategories,
+  getArticlesByCategory 
+} = require('./data/blog');
+
+// SSR 路由：博客列表页面
+app.get('/blog', (req, res) => {
+  const locale = req.locale || 'zh-CN';
+  const currentCategory = req.query.category || null;
+  
+  const articles = getAllArticles(locale);
+  const featuredArticles = getFeaturedArticles(locale);
+  const categories = getAllCategories(locale);
+  
+  let filteredArticles = articles;
+  if (currentCategory) {
+    filteredArticles = getArticlesByCategory(currentCategory, locale);
+  }
+  
+  res.render('blog', {
+    pageTitle: locale === 'zh-CN' ? '游戏博客 - Ice Breaker Games' : 'Game Blog - Ice Breaker Games',
+    metaDescription: locale === 'zh-CN' 
+      ? 'Ice Breaker Games官方博客，分享原创游戏攻略、行业观察和健康游戏资讯。' 
+      : 'Official blog of Ice Breaker Games, sharing original game guides, industry insights, and healthy gaming information.',
+    metaKeywords: locale === 'zh-CN' 
+      ? '游戏博客, 游戏攻略, 行业观察, 健康游戏, Ice Breaker Games' 
+      : 'game blog, game guide, industry insights, healthy gaming, Ice Breaker Games',
+    canonicalUrl: locale === DEFAULT_LOCALE 
+      ? 'https://www.icebreakgame.com/blog' 
+      : `https://www.icebreakgame.com/${locale}/blog`,
+    currentPage: 'blog',
+    locale: locale,
+    supportedLocales: SUPPORTED_LOCALES,
+    searchQuery: '',
+    articles: articles,
+    featuredArticles: featuredArticles,
+    categories: categories,
+    filteredArticles: filteredArticles,
+    currentCategory: currentCategory
+  });
+});
+
+// 中文博客页面
+app.get('/zh-CN/blog', (req, res) => {
+  const currentCategory = req.query.category || null;
+  
+  const articles = getAllArticles('zh-CN');
+  const featuredArticles = getFeaturedArticles('zh-CN');
+  const categories = getAllCategories('zh-CN');
+  
+  let filteredArticles = articles;
+  if (currentCategory) {
+    filteredArticles = getArticlesByCategory(currentCategory, 'zh-CN');
+  }
+  
+  res.render('blog', {
+    pageTitle: '游戏博客 - Ice Breaker Games',
+    metaDescription: 'Ice Breaker Games官方博客，分享原创游戏攻略、行业观察和健康游戏资讯。',
+    metaKeywords: '游戏博客, 游戏攻略, 行业观察, 健康游戏, Ice Breaker Games',
+    canonicalUrl: 'https://www.icebreakgame.com/zh-CN/blog',
+    currentPage: 'blog',
+    locale: 'zh-CN',
+    supportedLocales: SUPPORTED_LOCALES,
+    searchQuery: '',
+    articles: articles,
+    featuredArticles: featuredArticles,
+    categories: categories,
+    filteredArticles: filteredArticles,
+    currentCategory: currentCategory
+  });
+});
+
+// 英文博客页面
+app.get('/en/blog', (req, res) => {
+  const currentCategory = req.query.category || null;
+  
+  const articles = getAllArticles('en');
+  const featuredArticles = getFeaturedArticles('en');
+  const categories = getAllCategories('en');
+  
+  let filteredArticles = articles;
+  if (currentCategory) {
+    filteredArticles = getArticlesByCategory(currentCategory, 'en');
+  }
+  
+  res.render('blog', {
+    pageTitle: 'Game Blog - Ice Breaker Games',
+    metaDescription: 'Official blog of Ice Breaker Games, sharing original game guides, industry insights, and healthy gaming information.',
+    metaKeywords: 'game blog, game guide, industry insights, healthy gaming, Ice Breaker Games',
+    canonicalUrl: 'https://www.icebreakgame.com/en/blog',
+    currentPage: 'blog',
+    locale: 'en',
+    supportedLocales: SUPPORTED_LOCALES,
+    searchQuery: '',
+    articles: articles,
+    featuredArticles: featuredArticles,
+    categories: categories,
+    filteredArticles: filteredArticles,
+    currentCategory: currentCategory
+  });
+});
+
+// SSR 路由：博客文章详情页（默认）
+app.get('/blog/:slug', (req, res) => {
+  const locale = req.locale || 'zh-CN';
+  const slug = req.params.slug;
+  
+  const article = getArticleBySlug(slug, locale);
+  
+  let relatedArticles = [];
+  if (article) {
+    const allArticles = getAllArticles(locale);
+    relatedArticles = allArticles
+      .filter(a => a.category === article.category && a.slug !== article.slug)
+      .slice(0, 3);
+  }
+  
+  res.render('blog-article', {
+    pageTitle: article ? `${article.title} - Ice Breaker Games 博客` : '文章未找到',
+    metaDescription: article ? article.excerpt : '',
+    metaKeywords: article ? article.tags.join(', ') : '',
+    canonicalUrl: article 
+      ? (locale === DEFAULT_LOCALE 
+          ? `https://www.icebreakgame.com/blog/${article.slug}` 
+          : `https://www.icebreakgame.com/${locale}/blog/${article.slug}`)
+      : '',
+    currentPage: 'blog',
+    locale: locale,
+    supportedLocales: SUPPORTED_LOCALES,
+    searchQuery: '',
+    article: article,
+    relatedArticles: relatedArticles
+  });
+});
+
+// 中文博客文章详情页
+app.get('/zh-CN/blog/:slug', (req, res) => {
+  const slug = req.params.slug;
+  
+  const article = getArticleBySlug(slug, 'zh-CN');
+  
+  let relatedArticles = [];
+  if (article) {
+    const allArticles = getAllArticles('zh-CN');
+    relatedArticles = allArticles
+      .filter(a => a.category === article.category && a.slug !== article.slug)
+      .slice(0, 3);
+  }
+  
+  res.render('blog-article', {
+    pageTitle: article ? `${article.title} - Ice Breaker Games 博客` : '文章未找到',
+    metaDescription: article ? article.excerpt : '',
+    metaKeywords: article ? article.tags.join(', ') : '',
+    canonicalUrl: article ? `https://www.icebreakgame.com/zh-CN/blog/${article.slug}` : '',
+    currentPage: 'blog',
+    locale: 'zh-CN',
+    supportedLocales: SUPPORTED_LOCALES,
+    searchQuery: '',
+    article: article,
+    relatedArticles: relatedArticles
+  });
+});
+
+// 英文博客文章详情页
+app.get('/en/blog/:slug', (req, res) => {
+  const slug = req.params.slug;
+  
+  const article = getArticleBySlug(slug, 'en');
+  
+  let relatedArticles = [];
+  if (article) {
+    const allArticles = getAllArticles('en');
+    relatedArticles = allArticles
+      .filter(a => a.category === article.category && a.slug !== article.slug)
+      .slice(0, 3);
+  }
+  
+  res.render('blog-article', {
+    pageTitle: article ? `${article.title} - Ice Breaker Games Blog` : 'Article not found',
+    metaDescription: article ? article.excerpt : '',
+    metaKeywords: article ? article.tags.join(', ') : '',
+    canonicalUrl: article ? `https://www.icebreakgame.com/en/blog/${article.slug}` : '',
+    currentPage: 'blog',
+    locale: 'en',
+    supportedLocales: SUPPORTED_LOCALES,
+    searchQuery: '',
+    article: article,
+    relatedArticles: relatedArticles
+  });
+});
+
 // API 路由：获取所有数据
 app.get('/api/games', async (req, res) => {
   const locale = req.query.locale || 'en';
@@ -1555,6 +1762,8 @@ app.listen(PORT, () => {
   console.log(`  - GET /contact - 联系我们页面（服务端渲染）`);
   console.log(`  - GET /privacy - 隐私政策页面（服务端渲染）`);
   console.log(`  - GET /terms - 服务条款页面（服务端渲染）`);
+  console.log(`  - GET /blog - 游戏博客列表页（服务端渲染）`);
+  console.log(`  - GET /blog/:slug - 博客文章详情页（服务端渲染）`);
   console.log(`📡 API 接口:`);
   console.log(`  - GET /api/games - 获取所有游戏数据`);
   console.log(`  - GET /api/categories - 获取所有分类`);

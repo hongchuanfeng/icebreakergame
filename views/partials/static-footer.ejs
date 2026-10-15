@@ -1,3 +1,144 @@
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsentBanner" class="cookie-consent-banner" style="display: none;">
+        <div class="cookie-consent-content">
+            <div class="cookie-consent-text">
+                <%- typeof t !== 'undefined' ? t('cookie.bannerText', { locale: locale }) : 'Cookie consent text' %>
+            </div>
+            <div class="cookie-consent-buttons">
+                <button id="acceptCookies" class="cookie-btn cookie-btn-accept">
+                    <%= typeof t !== 'undefined' ? t('common.gotIt') : 'Got it!' %>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .cookie-consent-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(20, 20, 40, 0.98), rgba(30, 30, 60, 0.98));
+            backdrop-filter: blur(20px);
+            padding: 1.5rem;
+            z-index: 9999;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(102, 126, 234, 0.3);
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .cookie-consent-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .cookie-consent-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            flex: 1;
+            min-width: 280px;
+        }
+        
+        .cookie-consent-text a {
+            color: #667eea !important;
+            text-decoration: underline !important;
+        }
+        
+        .cookie-consent-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .cookie-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .cookie-btn-accept {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .cookie-btn-accept:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        @media (max-width: 600px) {
+            .cookie-consent-banner {
+                padding: 1rem;
+            }
+            
+            .cookie-consent-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .cookie-consent-text {
+                min-width: unset;
+            }
+        }
+    </style>
+    
+    <script>
+        // Cookie Consent Logic
+        (function() {
+            const banner = document.getElementById('cookieConsentBanner');
+            const acceptBtn = document.getElementById('acceptCookies');
+            const cookieName = 'cookie_consent_accepted';
+            
+            // 检查是否已经同意
+            function getCookie(name) {
+                const value = "; " + document.cookie;
+                const parts = value.split("; " + name + "=");
+                if (parts.length === 2) return parts.pop().split(";").shift();
+                return null;
+            }
+            
+            function setCookie(name, value, days) {
+                const expires = new Date();
+                expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+                document.cookie = name + "=" + value + ";expires=" + expires.toUTCString() + ";path=/";
+            }
+            
+            // 如果还没有同意，显示横幅
+            if (!getCookie(cookieName)) {
+                banner.style.display = 'block';
+            }
+            
+            // 点击同意按钮
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', function() {
+                    setCookie(cookieName, 'true', 365);
+                    banner.style.display = 'none';
+                });
+            }
+        })();
+    </script>
+
     <footer>
         <div class="container">
             <div class="footer-bottom">

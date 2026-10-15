@@ -1,0 +1,320 @@
+<%- include('partials/header', { 
+    pageTitle: typeof t !== 'undefined' ? t('blog.title') : '游戏博客 - Ice Breaker Games',
+    metaDescription: typeof t !== 'undefined' ? t('blog.description') : 'Ice Breaker Games官方博客，分享原创游戏攻略、行业观察和健康游戏资讯。',
+    metaKeywords: typeof t !== 'undefined' ? t('blog.keywords') : '游戏博客, 游戏攻略, 行业观察, 健康游戏, Ice Breaker Games',
+    canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/blog') : 'https://www.icebreakgame.com/blog',
+    structuredData: typeof structuredData !== 'undefined' ? structuredData : ''
+}) %>
+
+<style>
+.blog-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.blog-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.blog-header h1 {
+    font-size: 2rem;
+    color: rgba(255,255,255,0.95);
+    margin-bottom: 1rem;
+}
+
+.blog-header p {
+    color: rgba(255,255,255,0.7);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.blog-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #667eea;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+}
+
+.featured-section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: rgba(255,255,255,0.95);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #667eea;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.featured-card {
+    background: linear-gradient(135deg, rgba(102,126,234,0.2) 0%, rgba(118,75,162,0.2) 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+    display: block;
+}
+
+.featured-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(102,126,234,0.3);
+}
+
+.featured-card .card-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.featured-card h3 {
+    color: rgba(255,255,255,0.95);
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+}
+
+.featured-card p {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+}
+
+.all-articles-section {
+    margin-bottom: 3rem;
+}
+
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.article-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+    display: block;
+}
+
+.article-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.article-card .card-header {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.article-card .card-icon {
+    font-size: 2rem;
+}
+
+.article-card .card-title {
+    color: rgba(255,255,255,0.95);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.article-card .card-body {
+    padding: 0 1rem 1rem;
+}
+
+.article-card .card-excerpt {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.article-card .card-footer {
+    padding: 0.75rem 1rem;
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+}
+
+.tag {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    background: rgba(102,126,234,0.3);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.8);
+}
+
+.category-filter {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.category-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+}
+
+.category-btn:hover, .category-btn.active {
+    background: rgba(102,126,234,0.3);
+    border-color: #667eea;
+    color: rgba(255,255,255,0.95);
+}
+
+@media (max-width: 768px) {
+    .blog-container {
+        padding: 1rem;
+    }
+    
+    .featured-grid, .articles-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .blog-stats {
+        gap: 1rem;
+    }
+}
+</style>
+
+<div class="blog-container">
+    <!-- 博客头部 -->
+    <div class="blog-header">
+        <h1>📝 <%= typeof t !== 'undefined' ? t('blog.title') : '游戏博客' %></h1>
+        <p><%= typeof t !== 'undefined' ? t('blog.description') : '分享原创游戏攻略、行业观察和健康游戏资讯，帮助你更好地享受游戏乐趣。' %></p>
+        <div class="blog-stats">
+            <div class="stat-item">
+                <div class="stat-number"><%= articles.length %></div>
+                <div class="stat-label"><%= typeof t !== 'undefined' ? t('blog.articles') : '篇文章' %></div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number"><%= categories.length %></div>
+                <div class="stat-label"><%= typeof t !== 'undefined' ? t('blog.categories') : '个分类' %></div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number"><%= articles.reduce((sum, a) => sum + a.views, 0).toLocaleString() %></div>
+                <div class="stat-label"><%= typeof t !== 'undefined' ? t('blog.totalViews') : '总阅读' %></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 精选文章 -->
+    <% if (featuredArticles.length > 0) { %>
+    <section class="featured-section">
+        <h2 class="section-title">⭐ <%= typeof t !== 'undefined' ? t('blog.featured') : '精选文章' %></h2>
+        <div class="featured-grid">
+            <% featuredArticles.forEach(function(article) { %>
+                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/blog/' + article.slug) : '/blog/' + article.slug %>" class="featured-card">
+                    <div class="card-icon"><%= article.coverImage %></div>
+                    <h3><%= article.title %></h3>
+                    <p><%= article.excerpt %></p>
+                    <div class="card-meta">
+                        <span><%= article.readTime %></span>
+                        <span>👁 <%= article.views.toLocaleString() %></span>
+                    </div>
+                </a>
+            <% }); %>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- 分类筛选 -->
+    <section class="all-articles-section">
+        <h2 class="section-title">📚 <%= typeof t !== 'undefined' ? t('blog.allArticles') : '全部文章' %></h2>
+        <div class="category-filter">
+            <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/blog') : '/blog' %>" class="category-btn <%= !currentCategory ? 'active' : '' %>">
+                <%= typeof t !== 'undefined' ? t('blog.all') : '全部' %>
+            </a>
+            <% categories.forEach(function(cat) { %>
+                <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/blog?category=' + encodeURIComponent(cat)) : '/blog?category=' + encodeURIComponent(cat) %>" 
+                   class="category-btn <%= currentCategory === cat ? 'active' : '' %>">
+                    <%= cat %>
+                </a>
+            <% }); %>
+        </div>
+
+        <!-- 文章列表 -->
+        <div class="articles-grid">
+            <% if (filteredArticles.length > 0) { %>
+                <% filteredArticles.forEach(function(article) { %>
+                    <a href="<%= typeof localeUrl !== 'undefined' ? localeUrl('/blog/' + article.slug) : '/blog/' + article.slug %>" class="article-card">
+                        <div class="card-header">
+                            <span class="card-icon"><%= article.coverImage %></span>
+                            <span class="card-title"><%= article.title %></span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-excerpt"><%= article.excerpt %></p>
+                        </div>
+                        <div class="card-footer">
+                            <span><%= article.date %> · <%= article.readTime %></span>
+                            <span class="tag"><%= article.category %></span>
+                        </div>
+                    </a>
+                <% }); %>
+            <% } else { %>
+                <p style="color: rgba(255,255,255,0.7); grid-column: 1/-1; text-align: center; padding: 2rem;">
+                    <%= typeof t !== 'undefined' ? t('blog.noArticles') : '暂无文章' %>
+                </p>
+            <% } %>
+        </div>
+    </section>
+</div>
+
+<%- include('partials/footer') %>

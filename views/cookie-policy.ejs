@@ -1,0 +1,117 @@
+<%- include('partials/static-header', {
+    pageTitle: typeof t !== 'undefined' ? t('cookie.title') : 'Cookie Policy - Ice Breaker Games',
+    metaDescription: typeof t !== 'undefined' ? t('cookie.description') : 'Cookie Policy - Ice Breaker Games',
+    metaKeywords: 'cookie policy, cookies, privacy, data tracking, Ice Breaker Games',
+    canonicalUrl: typeof localeUrl !== 'undefined' ? localeUrl('/cookie-policy') : 'https://www.icebreakgame.com/cookie-policy',
+    currentPage: 'cookie-policy'
+}) %>
+
+<main>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title"><%= typeof t !== 'undefined' ? t('cookie.title').replace(' - Ice Breaker Games', '') : 'Cookie Policy' %></h1>
+            <p class="page-subtitle"><%= typeof t !== 'undefined' ? t('cookie.subtitle') : 'Learn how we use cookies and similar technologies' %></p>
+        </div>
+
+        <div class="effective-date">
+            <%= typeof t !== 'undefined' ? t('cookie.effectiveDate') : 'Effective Date: December 21, 2024' %>
+        </div>
+
+        <div class="toc">
+            <h3>📋 <%= typeof t !== 'undefined' ? t('cookie.tableOfContents') : 'Table of Contents' %></h3>
+            <ul>
+                <li><a href="#section1"><%= typeof t !== 'undefined' ? t('cookie.section1.title') : '1. What Are Cookies' %></a></li>
+                <li><a href="#section2"><%= typeof t !== 'undefined' ? t('cookie.section2.title') : '2. Why We Use Cookies' %></a></li>
+                <li><a href="#section3"><%= typeof t !== 'undefined' ? t('cookie.section3.title') : '3. Types of Cookies' %></a></li>
+                <li><a href="#section4"><%= typeof t !== 'undefined' ? t('cookie.section4.title') : '4. How to Manage Cookies' %></a></li>
+                <li><a href="#section5"><%= typeof t !== 'undefined' ? t('cookie.section5.title') : '5. Third-Party Cookies' %></a></li>
+                <li><a href="#section6"><%= typeof t !== 'undefined' ? t('cookie.section6.title') : '6. Changing Cookie Settings' %></a></li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <div id="section1" class="section-title"><%= typeof t !== 'undefined' ? t('cookie.section1.title') : '1. What Are Cookies' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('cookie.section1.desc') : 'Cookies are small text files that websites send to your browser when you visit them. This information is stored on your device and helps websites remember your preferences, login status, and other information to make your next visit more convenient.' %></p>
+                
+                <p><%= typeof t !== 'undefined' ? t('cookie.section1.desc2') : 'In addition to cookies, we may also use similar tracking technologies such as Local Storage and Session Storage. They function similarly to cookies but differ in storage method and expiration period.' %></p>
+            </div>
+
+            <div id="section2" class="section-title"><%= typeof t !== 'undefined' ? t('cookie.section2.title') : '2. Why We Use Cookies' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('cookie.section2.intro') : 'We use cookies primarily for the following purposes:' %></p>
+                <ul>
+                    <li><strong><%= typeof t !== 'undefined' ? t('cookie.section2.li1') : 'Website functionality' %>:</strong> <%= typeof t !== 'undefined' ? t('cookie.section2.li1Desc') : 'Remember your language preferences, login status, game favorites, etc., to ensure website functions work properly.' %></li>
+                    <li><strong><%= typeof t !== 'undefined' ? t('cookie.section2.li2') : 'User experience optimization' %>:</strong> <%= typeof t !== 'undefined' ? t('cookie.section2.li2Desc') : 'Remember your browsing preferences to provide a more personalized experience.' %></li>
+                    <li><strong><%= typeof t !== 'undefined' ? t('cookie.section2.li3') : 'Website analytics' %>:</strong> <%= typeof t !== 'undefined' ? t('cookie.section2.li3Desc') : 'Understand how users interact with our website to help us improve content and functionality.' %></li>
+                    <li><strong><%= typeof t !== 'undefined' ? t('cookie.section2.li4') : 'Security protection' %>:</strong> <%= typeof t !== 'undefined' ? t('cookie.section2.li4Desc') : 'Detect abnormal logins and potential security threats to protect your account security.' %></li>
+                </ul>
+            </div>
+
+            <div id="section3" class="section-title"><%= typeof t !== 'undefined' ? t('cookie.section3.title') : '3. Types of Cookies' %></div>
+            <div class="section-content">
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('cookie.section3.essential.title') : 'Essential Cookies' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('cookie.section3.essential.desc') : 'These cookies are essential for the proper functioning of the website. They enable you to browse the website and use basic features like accessing secure areas. Without these cookies, some services will not work properly.' %></p>
+                
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('cookie.section3.performance.title') : 'Performance Cookies' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('cookie.section3.performance.desc') : 'These cookies collect information about how visitors use the website, such as which pages are most frequently visited. They don\'t collect personally identifiable information - all information is anonymous.' %></p>
+                
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('cookie.section3.functionality.title') : 'Functionality Cookies' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('cookie.section3.functionality.desc') : 'These cookies allow the website to remember your choices and provide more personalized features.' %></p>
+                
+                <h4 style="color: rgba(102, 126, 234, 0.9); margin: 1.5rem 0 1rem;"><%= typeof t !== 'undefined' ? t('cookie.section3.targeting.title') : 'Targeting Cookies' %></h4>
+                <p><%= typeof t !== 'undefined' ? t('cookie.section3.targeting.desc') : 'These cookies are used to deliver ads relevant to you and help measure advertising effectiveness.' %></p>
+            </div>
+
+            <div id="section4" class="section-title"><%= typeof t !== 'undefined' ? t('cookie.section4.title') : '4. How to Manage Cookies' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('cookie.section4.intro') : 'You have the right to choose whether to accept or reject cookies. Here are the ways to manage cookies:' %></p>
+                
+                <div class="highlight-box highlight-box-border">
+                    <h4>🍪 <%= typeof t !== 'undefined' ? t('cookie.section4.browser.title') : 'Browser Settings' %></h4>
+                    <p><%= typeof t !== 'undefined' ? t('cookie.section4.browser.desc') : 'Most web browsers allow you to control cookies through browser settings. You can set your browser to warn you when receiving a cookie, or block cookies entirely.' %></p>
+                </div>
+                
+                <div class="highlight-box highlight-box-border">
+                    <h4>📱 <%= typeof t !== 'undefined' ? t('cookie.section4.mobile.title') : 'Mobile Device Settings' %></h4>
+                    <p><%= typeof t !== 'undefined' ? t('cookie.section4.mobile.desc') : 'On mobile devices, you can find cookie control options in your device\'s Settings. The exact location varies by device but is usually in Privacy or Security settings.' %></p>
+                </div>
+                
+                <p><%= typeof t !== 'undefined' ? t('cookie.section4.note') : 'Please note that if you disable cookies, some features of the website may not work properly.' %></p>
+            </div>
+
+            <div id="section5" class="section-title"><%= typeof t !== 'undefined' ? t('cookie.section5.title') : '5. Third-Party Cookies' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('cookie.section5.desc') : 'Our website may contain cookies from third parties, such as analytics service providers or advertising partners. These third parties have their own privacy policies.' %></p>
+                
+                <p><%= typeof t !== 'undefined' ? t('cookie.section5.desc2') : 'Third-party services we may use include:' %></p>
+                <ul>
+                    <li><%= typeof t !== 'undefined' ? t('cookie.section5.li1') : 'Website analytics tools (such as Google Analytics)' %></li>
+                    <li><%= typeof t !== 'undefined' ? t('cookie.section5.li2') : 'Advertising services (such as Google AdSense)' %></li>
+                    <li><%= typeof t !== 'undefined' ? t('cookie.section5.li3') : 'Social media plugins (such as sharing features)' %></li>
+                </ul>
+            </div>
+
+            <div id="section6" class="section-title"><%= typeof t !== 'undefined' ? t('cookie.section6.title') : '6. Changing Cookie Settings' %></div>
+            <div class="section-content">
+                <p><%= typeof t !== 'undefined' ? t('cookie.section6.desc') : 'You can reset your preferences at any time by clearing your browser\'s cookies. The next time you visit our website, the cookie banner will appear again.' %></p>
+            </div>
+
+            <div class="contact-info">
+                <h3>📞 <%= typeof t !== 'undefined' ? t('cookie.contactUs') : 'Contact Us' %></h3>
+                <p><%= typeof t !== 'undefined' ? t('cookie.officialEmail') : 'Official Email:' %> <a href="mailto:hcf@foxmail.com">hcf@foxmail.com</a></p>
+            </div>
+
+            <div class="highlight-box highlight-box-border">
+                <h4>🔗 <%= typeof t !== 'undefined' ? t('cookie.relatedLinks') : 'Related Links' %></h4>
+                <p>
+                    <a href="/privacy" style="color: #667eea;"><%= typeof t !== 'undefined' ? t('cookie.privacyPolicy') : 'Privacy Policy' %></a> | 
+                    <a href="/terms" style="color: #667eea;"><%= typeof t !== 'undefined' ? t('cookie.termsOfService') : 'Terms of Service' %></a> | 
+                    <a href="/contact" style="color: #667eea;"><%= typeof t !== 'undefined' ? t('cookie.contactUs') : 'Contact Us' %></a>
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/static-footer') %>
